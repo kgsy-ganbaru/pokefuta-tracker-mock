@@ -1,11 +1,14 @@
-// ポケふたIDごとの取得状況（ダミー）
-export const ownershipMap: Record<
-  number,
-  { nickname: string; count: number }[]
-> = {
+export type Ownership = {
+  user: string;
+  count: number;
+};
+export const ownershipMap: Record<number, Ownership[]> = {
   1: [
-    { nickname: "seiya", count: 3 },
-    { nickname: "satoshi", count: 1 },
+    { user: "seiya", count: 3 },
+    { user: "satoshi", count: 2 },
   ],
-  2: [],
+  2: [
+    { user: "seiya", count: 1 },
+    { user: "satoshi", count: 2 },
+  ],
 };
