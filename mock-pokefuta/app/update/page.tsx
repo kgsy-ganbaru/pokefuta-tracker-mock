@@ -7,6 +7,7 @@ import PrefectureModal from "../components/PrefectureModal";
 export default function UpdatePage() {
   const regions = Object.keys(prefecturesByRegion);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  
 
   return (
     <main style={{ padding: "16px" }}>

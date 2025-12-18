@@ -10,7 +10,7 @@ export default function Header() {
   const isEdit = pathname.startsWith("/update");
 
   return (
-    <header className="sticky top-0 z-20 bg-white border-b border-gray-200">
+    <header className="bg-white border-b border-gray-200">
       <div className="max-w-3xl mx-auto px-4 py-3">
         <h1 className="text-lg font-semibold text-gray-800">
           Pokefuta Tracker
