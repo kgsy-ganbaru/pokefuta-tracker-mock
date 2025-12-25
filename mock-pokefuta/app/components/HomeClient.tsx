@@ -2,32 +2,58 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
-
-import { pokefutaList } from "../data/pokefuta";
-import { ownershipMap } from "../data/ownership";
-import { recentGets } from "../data/recent";
 import { getRankClass } from "../utils/rankColor";
 
-export default function HomeClient() {
+/* =====================
+   型定義
+===================== */
+type RecentRow = {
+  id: number;
+  address: string;
+  image_url: string | null;
+  pokemon_names: string;
+  user_names: string;
+};
+
+type PokefutaRow = {
+  id: number;
+  region_id: number;
+  address: string;
+  difficulty_code: string;
+  image_url: string | null;
+  pokemon_names: string;
+};
+
+/* =====================
+   地域定数
+===================== */
+const REGION_LABELS: Record<number, string> = {
+  1: "北海道・東北",
+  2: "関東",
+  3: "中部",
+  4: "近畿",
+  5: "中国・四国",
+  6: "九州・沖縄",
+  7: "その他",
+};
+
+const REGION_ORDER = Object.keys(REGION_LABELS).map(Number);
+
+/* =====================
+   Component
+===================== */
+export default function HomeClient({
+  recentRows,
+  pokefutaRows,
+}: {
+  recentRows: RecentRow[];
+  pokefutaRows: PokefutaRow[];
+}) {
   const router = useRouter();
 
-  /* =====================
-     地域定義
-  ===================== */
-  const regions = [
-    "北海道・東北",
-    "関東",
-    "中部",
-    "近畿",
-    "中国・四国",
-    "九州・沖縄",
-    "その他",
-  ];
-
-  /* =====================
-     スクロール用 ref
-  ===================== */
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sectionRefs = useRef<Record<number, HTMLDivElement | null>>(
+    {}
+  );
 
   return (
     <>
@@ -44,39 +70,36 @@ export default function HomeClient() {
           </h2>
 
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {recentGets.map((item) => {
-              const owners = ownershipMap[item.id] ?? [];
+            {recentRows.map((r) => (
+              <div
+                key={r.id}
+                className="min-w-[220px] border rounded-xl p-4 bg-white"
+              >
+                <div className="flex flex-col items-center text-center gap-2">
+                  <img
+                    src={r.image_url || "/no-image.png"}
+                    onError={(e) =>
+                      ((e.currentTarget as HTMLImageElement).src =
+                        "/no-image.png")
+                    }
+                    className="w-20 h-20 rounded-xl object-cover"
+                    alt=""
+                  />
 
-              return (
-                <div
-                  key={item.id}
-                  className="min-w-[220px] bg-white rounded-xl border p-4"
-                >
-                  <div className="text-center">
-                    <div className="font-medium">
-                      {item.pokemonNames.join(" / ")}
-                    </div>
+                  <div className="font-medium">
+                    {r.pokemon_names}
+                  </div>
 
-                    <div className="text-xs text-gray-500">
-                      {item.address}
-                    </div>
+                  <div className="text-xs text-gray-500">
+                    {r.address}
+                  </div>
 
-                    <div className="text-xs mt-2">
-                      {owners.length === 0
-                        ? "未取得"
-                        : owners.map((o) => (
-                            <span
-                              key={o.user}
-                              className="inline-block mr-2"
-                            >
-                              {o.user} {o.count}枚
-                            </span>
-                          ))}
-                    </div>
+                  <div className="text-xs text-gray-600">
+                    {r.user_names}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -84,18 +107,18 @@ export default function HomeClient() {
             地域ナビ
         ===================== */}
         <section className="mt-8 mb-6">
-          <div className="flex gap-2 overflow-x-auto">
-            {regions.map((region) => (
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {REGION_ORDER.map((id) => (
               <button
-                key={region}
+                key={id}
                 onClick={() =>
-                  sectionRefs.current[region]?.scrollIntoView({
+                  sectionRefs.current[id]?.scrollIntoView({
                     behavior: "smooth",
                   })
                 }
                 className="px-4 py-2 rounded-full border text-sm whitespace-nowrap"
               >
-                {region}
+                {REGION_LABELS[id]}
               </button>
             ))}
           </div>
@@ -105,46 +128,66 @@ export default function HomeClient() {
             一覧
         ===================== */}
         <section>
-          {regions.map((region) => {
-            const items = pokefutaList.filter(
-              (p) => p.region === region
+          {REGION_ORDER.map((regionId) => {
+            const rows = pokefutaRows.filter(
+              (p) => p.region_id === regionId
             );
-            if (items.length === 0) return null;
 
             return (
               <div
-                key={region}
+                key={regionId}
                 ref={(el) => {
-                  sectionRefs.current[region] = el;
+                  sectionRefs.current[regionId] = el;
                 }}
                 className="mb-12"
               >
                 <h3 className="font-semibold mb-3">
-                  {region}
+                  {REGION_LABELS[regionId]}
                 </h3>
 
-                {items.map((p) => (
+                {rows.length === 0 && (
+                  <p className="text-sm text-gray-400">
+                    データがありません
+                  </p>
+                )}
+
+                {rows.map((p) => (
                   <div
                     key={p.id}
                     onClick={() =>
                       router.push(`/pokefuta/${p.id}`)
                     }
-                    className="py-4 border-b cursor-pointer hover:bg-gray-50"
+                    className="flex items-center gap-4 py-4 border-b cursor-pointer hover:bg-gray-50"
                   >
-                    <div className="font-medium">
-                      {p.pokemonNames.join(" / ")}
-                    </div>
+                    <img
+                      src={p.image_url || "/no-image.png"}
+                      onError={(e) =>
+                        ((e.currentTarget as HTMLImageElement).src =
+                          "/no-image.png")
+                      }
+                      className="w-14 h-14 rounded-full object-cover"
+                      alt=""
+                    />
 
-                    <div className="text-xs text-gray-500">
-                      {p.address}
+                    <div className="flex-1">
+                      <div className="font-medium">
+                        {p.pokemon_names}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {p.address}
+                      </div>
                     </div>
-
+                    <div className="flex items-center gap-2">
+                        {p.owned_count > 0 && (
+                          <span title="取得済み">◓⃙⁣</span>
+                        )}
+                    </div>
                     <span
-                      className={`text-xs ${getRankClass(
-                        p.difficulty
+                      className={`px-2 py-0.5 rounded-md text-xs font-semibold ${getRankClass(
+                        p.difficulty_code
                       )}`}
                     >
-                      {p.difficulty}
+                      {p.difficulty_code}
                     </span>
                   </div>
                 ))}
@@ -155,25 +198,13 @@ export default function HomeClient() {
       </main>
 
       {/* =====================
-          トップへ戻る（常時表示）
+          トップへ戻る
       ===================== */}
       <button
         onClick={() =>
           window.scrollTo({ top: 0, behavior: "smooth" })
         }
-        className="
-          fixed bottom-6 right-6
-          w-12 h-12
-          rounded-full
-          bg-blue-600
-          text-white
-          text-xl
-          shadow-lg
-          hover:bg-blue-700
-          active:scale-95
-          transition
-          z-50
-        "
+        className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
         aria-label="ページの先頭へ戻る"
       >
         ↑
