@@ -22,6 +22,7 @@ type PokefutaRow = {
   difficulty_code: string;
   image_url: string | null;
   pokemon_names: string;
+  owned_count: number;
 };
 
 /* =====================
