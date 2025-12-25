@@ -1,7 +1,6 @@
-// app/page.tsx（Server Component）
 import HomeClient from "./components/HomeClient";
 import { pool } from "./lib/db";
-
+export const dynamic = "force-dynamic";
 export default async function Page() {
   /* =====================
      最近ゲット（ownership 起点）
