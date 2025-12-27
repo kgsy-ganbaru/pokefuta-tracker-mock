@@ -1,45 +1,81 @@
 // app/pokefuta/[id]/page.tsx
-
 import { pool } from "@/app/lib/db";
 import DetailClient from "./DetailClient";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
+type PokefutaDetail = {
+  id: number;
+  address: string;
+  difficulty_code: string;
+  image_url: string | null;
+  pokemon_names: string[];
+};
+
+type OwnerRow = {
+  nickname: string;
+  count: number;
 };
 
 export default async function PokefutaDetailPage({
   params,
-}: PageProps) {
-  const id = Number(params.id);
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  // ★ ここが重要
+  const { id } = await params;
+  const numericId = Number(id);
 
-  if (Number.isNaN(id)) {
-    return <div className="p-4">不正なIDです</div>;
+  if (Number.isNaN(numericId)) {
+    return <p className="p-4">不正なIDです</p>;
   }
 
-  // ✅ Server Componentなので await OK
-  const res = await pool.query(
+  /* =====================
+     ポケふた + ポケモン名
+  ===================== */
+  const pokefutaRes = await pool.query<PokefutaDetail>(
     `
     SELECT
-      id,
-      address,
-      difficulty
-    FROM pokefuta
-    WHERE id = $1
+      p.id,
+      p.address,
+      p.difficulty_code,
+      p.image_url,
+      COALESCE(
+        array_agg(pp.pokemon_name ORDER BY pp.pokemon_name)
+        FILTER (WHERE pp.pokemon_name IS NOT NULL),
+        '{}'
+      ) AS pokemon_names
+    FROM pokefuta p
+    LEFT JOIN pokefuta_pokemon pp
+      ON pp.pokefuta_id = p.id
+    WHERE p.id = $1
+    GROUP BY p.id
     `,
-    [id]
+    [numericId]
   );
 
-  if (res.rows.length === 0) {
-    return (
-      <main className="p-4">
-        <p>該当するポケふたが見つかりません。</p>
-      </main>
-    );
+  if (pokefutaRes.rowCount === 0) {
+    return <p className="p-4">該当するポケふたが見つかりません</p>;
   }
 
-  const pokefuta = res.rows[0];
+  /* =====================
+     所持ユーザ一覧
+  ===================== */
+  const ownersRes = await pool.query<OwnerRow>(
+    `
+    SELECT
+      u.nickname,
+      o.count
+    FROM ownership o
+    JOIN users u ON u.id = o.user_id
+    WHERE o.pokefuta_id = $1
+    ORDER BY o.count DESC
+    `,
+    [numericId]
+  );
 
-  return <DetailClient pokefuta={pokefuta} />;
+  return (
+    <DetailClient
+      pokefuta={pokefutaRes.rows[0]}
+      owners={ownersRes.rows}
+    />
+  );
 }
