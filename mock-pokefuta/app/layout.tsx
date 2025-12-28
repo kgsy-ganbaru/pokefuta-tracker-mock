@@ -1,19 +1,19 @@
 import "./globals.css";
 import Header from "./components/Header";
-import { AuthProvider } from "./context/AuthContext";
+import { getAuthProfile } from "./lib/supabase/auth";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getAuthProfile();
+
   return (
     <html lang="ja">
       <body>
-        <AuthProvider>
-          <Header />
-          {children}
-        </AuthProvider>
+        <Header user={user} />
+        {children}
       </body>
     </html>
   );

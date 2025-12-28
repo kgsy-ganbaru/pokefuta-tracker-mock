@@ -1,82 +1,125 @@
 import HomeClient from "./components/HomeClient";
-import { pool } from "./lib/db";
+import { createClient } from "./lib/supabase/server";
+import { getAuthProfile } from "./lib/supabase/auth";
+
 export const dynamic = "force-dynamic";
+
+type RecentRow = {
+  id: number;
+  address: string;
+  image_url: string | null;
+  pokemon_names: string;
+  user_names: string;
+};
+
+type PokefutaRow = {
+  id: number;
+  region_id: number;
+  address: string;
+  difficulty_code: string;
+  image_url: string | null;
+  pokemon_names: string;
+  owned_count: number;
+};
+
+type PokemonRow = {
+  pokemon_name: string;
+  display_order: number | null;
+};
+
+type PokefutaRecord = {
+  id: number;
+  region_id: number;
+  prefecture_order: number | null;
+  address: string;
+  difficulty_code: string;
+  image_url: string | null;
+  pokefuta_pokemon: PokemonRow[] | null;
+};
+
+type RecentOwnership = {
+  pokefuta: {
+    id: number;
+    address: string;
+    image_url: string | null;
+    pokefuta_pokemon: PokemonRow[] | null;
+  } | null;
+  users: {
+    nickname: string | null;
+  } | null;
+};
+
+function formatPokemonNames(rows: PokemonRow[] | null) {
+  if (!rows?.length) return "";
+  return rows
+    .slice()
+    .sort(
+      (a, b) =>
+        (a.display_order ?? 0) - (b.display_order ?? 0)
+    )
+    .map((row) => row.pokemon_name)
+    .join(" / ");
+}
+
 export default async function Page() {
-  /* =====================
-     最近ゲット（ownership 起点）
-  ===================== */
-  const recentRes = await pool.query(`
-SELECT
-  p.id AS pokefuta_id,
-  p.address,
-  p.image_url,
-  STRING_AGG(DISTINCT pp.pokemon_name, ' / ' ORDER BY pp.pokemon_name) AS pokemon_names,
-  STRING_AGG(DISTINCT u.user_id, ', ' ORDER BY u.user_id) AS user_names,
-  MAX(o.updated_at) AS last_get_at
-FROM ownership o
-JOIN pokefuta p
-  ON p.id = o.pokefuta_id
-JOIN pokefuta_pokemon pp
-  ON pp.pokefuta_id = p.id
-JOIN users u
-  ON u.id = o.user_id
-GROUP BY
-  p.id,
-  p.address
-ORDER BY
-  last_get_at DESC
-LIMIT 5;
+  const supabase = createClient();
+  const user = await getAuthProfile();
 
+  const { data: recentData } = await supabase
+    .from("ownership")
+    .select(
+      "updated_at, pokefuta:pokefuta_id (id, address, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
+    )
+    .order("updated_at", { ascending: false })
+    .limit(5);
 
-  `);
+  const recentRows: RecentRow[] = (recentData ?? [])
+    .map((row: RecentOwnership) => ({
+      id: row.pokefuta?.id ?? 0,
+      address: row.pokefuta?.address ?? "",
+      image_url: row.pokefuta?.image_url ?? null,
+      pokemon_names: formatPokemonNames(
+        row.pokefuta?.pokefuta_pokemon ?? []
+      ),
+      user_names: row.users?.nickname ?? "",
+    }))
+    .filter((row) => row.id !== 0);
 
-  /* =====================
-     一覧用ポケふた
-     （今は北海道のみでもOK）
-  ===================== */
-  const pokefutaRes = await pool.query(`
-SELECT
-  p.id,
-  p.region_id,
-  p.prefecture_order,
-  p.address,
-  p.difficulty_code,
-  p.image_url,
-  COALESCE(
-    STRING_AGG(pp.pokemon_name, ' / ' ORDER BY pp.display_order),
-    ''
-  ) AS pokemon_names,
-  COALESCE(o.owned_count, 0) AS owned_count
-FROM pokefuta p
-LEFT JOIN pokefuta_pokemon pp
-  ON pp.pokefuta_id = p.id
-LEFT JOIN (
-  SELECT
-    pokefuta_id,
-    SUM(count) AS owned_count
-  FROM ownership
-  WHERE user_id = 1
-  GROUP BY pokefuta_id
-) o
-  ON o.pokefuta_id = p.id
-GROUP BY
-  p.id,
-  p.region_id,
-  p.prefecture_order,
-  p.address,
-  p.difficulty_code,
-  o.owned_count
-ORDER BY
-  p.region_id,
-  p.prefecture_order;
+  const { data: pokefutaData } = await supabase
+    .from("pokefuta")
+    .select(
+      "id, region_id, prefecture_order, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
+    )
+    .order("region_id", { ascending: true })
+    .order("prefecture_order", { ascending: true });
 
+  const { data: ownershipData } = user
+    ? await supabase
+        .from("ownership")
+        .select("pokefuta_id, count")
+        .eq("user_id", user.id)
+    : { data: [] };
 
-  `);
+  const ownershipMap = new Map<number, number>(
+    (ownershipData ?? []).map((row) => [row.pokefuta_id, row.count])
+  );
+
+  const pokefutaRows: PokefutaRow[] = (pokefutaData ?? []).map(
+    (row: PokefutaRecord) => ({
+      id: row.id,
+      region_id: row.region_id,
+      address: row.address,
+      difficulty_code: row.difficulty_code,
+      image_url: row.image_url,
+      pokemon_names: formatPokemonNames(row.pokefuta_pokemon),
+      owned_count: ownershipMap.get(row.id) ?? 0,
+    })
+  );
 
   return (
     <HomeClient
-      recentRows={recentRes.rows}
-      pokefutaRows={pokefutaRes.rows}
+      recentRows={recentRows}
+      pokefutaRows={pokefutaRows}
     />
   );
 }

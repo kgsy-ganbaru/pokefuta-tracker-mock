@@ -1,26 +1,47 @@
-// app/pokefuta/[id]/page.tsx
-import { pool } from "@/app/lib/db";
+import { createClient } from "@/app/lib/supabase/server";
+import { getAuthProfile } from "@/app/lib/supabase/auth";
 import DetailClient from "./DetailClient";
+
+export const dynamic = "force-dynamic";
+
+type PokemonRow = {
+  pokemon_name: string;
+  display_order: number | null;
+};
 
 type PokefutaDetail = {
   id: number;
   address: string;
   difficulty_code: string;
   image_url: string | null;
-  pokemon_names: string[];
+  region_id: number | null;
+  prefecture_id: number | null;
+  pokefuta_pokemon: PokemonRow[] | null;
 };
 
 type OwnerRow = {
-  nickname: string;
+  users: {
+    nickname: string | null;
+  } | null;
   count: number;
 };
+
+function formatPokemonNames(rows: PokemonRow[] | null) {
+  if (!rows?.length) return [] as string[];
+  return rows
+    .slice()
+    .sort(
+      (a, b) =>
+        (a.display_order ?? 0) - (b.display_order ?? 0)
+    )
+    .map((row) => row.pokemon_name);
+}
 
 export default async function PokefutaDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // ★ ここが重要
   const { id } = await params;
   const numericId = Number(id);
 
@@ -28,54 +49,58 @@ export default async function PokefutaDetailPage({
     return <p className="p-4">不正なIDです</p>;
   }
 
-  /* =====================
-     ポケふた + ポケモン名
-  ===================== */
-  const pokefutaRes = await pool.query<PokefutaDetail>(
-    `
-    SELECT
-      p.id,
-      p.address,
-      p.difficulty_code,
-      p.image_url,
-      COALESCE(
-        array_agg(pp.pokemon_name ORDER BY pp.pokemon_name)
-        FILTER (WHERE pp.pokemon_name IS NOT NULL),
-        '{}'
-      ) AS pokemon_names
-    FROM pokefuta p
-    LEFT JOIN pokefuta_pokemon pp
-      ON pp.pokefuta_id = p.id
-    WHERE p.id = $1
-    GROUP BY p.id
-    `,
-    [numericId]
-  );
+  const supabase = createClient();
+  const user = await getAuthProfile();
 
-  if (pokefutaRes.rowCount === 0) {
+  const { data: pokefuta } = await supabase
+    .from("pokefuta")
+    .select(
+      "id, address, difficulty_code, image_url, region_id, prefecture_id, pokefuta_pokemon (pokemon_name, display_order)"
+    )
+    .eq("id", numericId)
+    .maybeSingle();
+
+  if (!pokefuta) {
     return <p className="p-4">該当するポケふたが見つかりません</p>;
   }
 
-  /* =====================
-     所持ユーザ一覧
-  ===================== */
-  const ownersRes = await pool.query<OwnerRow>(
-    `
-    SELECT
-      u.nickname,
-      o.count
-    FROM ownership o
-    JOIN users u ON u.id = o.user_id
-    WHERE o.pokefuta_id = $1
-    ORDER BY o.count DESC
-    `,
-    [numericId]
-  );
+  const { data: ownersData } = await supabase
+    .from("ownership")
+    .select("count, users (nickname)")
+    .eq("pokefuta_id", numericId)
+    .order("count", { ascending: false });
+
+  const { data: myOwnership } = user
+    ? await supabase
+        .from("ownership")
+        .select("count")
+        .eq("pokefuta_id", numericId)
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
 
   return (
     <DetailClient
-      pokefuta={pokefutaRes.rows[0]}
-      owners={ownersRes.rows}
+      pokefuta={{
+        ...pokefuta,
+        pokemon_names: formatPokemonNames(
+          pokefuta.pokefuta_pokemon
+        ),
+      }}
+      owners={(ownersData ?? []).map((row: OwnerRow) => ({
+        nickname: row.users?.nickname ?? "",
+        count: row.count,
+      }))}
+      isLoggedIn={!!user}
+      initialCount={myOwnership?.count ?? 0}
+      regionLabel={
+        pokefuta.region_id ? `地域${pokefuta.region_id}` : ""
+      }
+      prefectureLabel={
+        pokefuta.prefecture_id
+          ? `都道府県${pokefuta.prefecture_id}`
+          : ""
+      }
     />
   );
 }

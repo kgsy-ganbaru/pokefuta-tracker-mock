@@ -1,0 +1,46 @@
+import { createClient } from "./server";
+
+export type AuthProfile = {
+  id: string;
+  user_id: string;
+  nickname: string;
+};
+
+function deriveUserIdFromEmail(email?: string | null) {
+  if (!email) return "";
+  return email.split("@")[0] ?? email;
+}
+
+export async function getAuthProfile() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("users")
+    .select("id, user_id, nickname")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const fallbackUserId = deriveUserIdFromEmail(user.email);
+
+  return {
+    id: profile?.id ?? user.id,
+    user_id: profile?.user_id ?? fallbackUserId,
+    nickname:
+      profile?.nickname ??
+      (user.user_metadata?.nickname as string | undefined) ??
+      fallbackUserId ??
+      "",
+  } satisfies AuthProfile;
+}
+
+export function userIdToEmail(userId: string) {
+  if (userId.includes("@")) {
+    return userId;
+  }
+  return `${userId}@pokefuta.local`;
+}

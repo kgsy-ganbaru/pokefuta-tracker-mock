@@ -1,26 +1,16 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 
-export default function Header() {
+type HeaderUser = {
+  nickname: string;
+} | null;
+
+export default function Header({ user }: { user: HeaderUser }) {
   const router = useRouter();
   const pathname = usePathname();
-
-  /* =====================
-     仮ログイン状態
-     ※ 後で Supabase Auth に置き換える
-  ===================== */
-  const [currentUser] = useState<{
-    nickname: string;
-  } | null>(null);
-  // ↑ null = ゲスト
-  // 例）ログイン中なら { nickname: "seiya" }
-
   const isHome = pathname === "/";
   const isUpdate = pathname.startsWith("/update");
-  const { user } = useAuth();
   return (
     <header className="border-b bg-white">
       <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -72,9 +62,7 @@ export default function Header() {
             className="flex flex-col items-center text-sm"
           >
             <span className="text-xl">👤</span>
-            <span className="text-xs">
-              {user ? user.nickname : "ゲスト"}
-            </span>
+             <span className="text-xs">{user ? user.nickname : "ゲスト"}</span>
           </button>
         </div>
       </div>

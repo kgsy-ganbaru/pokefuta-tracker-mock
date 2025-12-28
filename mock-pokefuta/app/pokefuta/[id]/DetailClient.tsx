@@ -1,8 +1,8 @@
-// app/pokefuta/[id]/DetailClient.tsx
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
+import { updateOwnershipAction } from "@/app/actions/ownership";
 
 type Pokefuta = {
   id: number;
@@ -20,36 +20,46 @@ type Owner = {
 type Props = {
   pokefuta: Pokefuta;
   owners: Owner[];
-  // 今は仮。あとで auth に差し替える
-  isLoggedIn?: boolean;
+  isLoggedIn: boolean;
+  initialCount: number;
+  regionLabel: string;
+  prefectureLabel: string;
 };
+
+function SubmitButton({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type={isLoggedIn ? "submit" : "button"}
+      className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-70"
+      disabled={pending}
+    >
+      {pending ? "更新中..." : "更新する"}
+    </button>
+  );
+}
 
 export default function DetailClient({
   pokefuta,
   owners,
-  isLoggedIn = false, // ← デフォルトはゲスト
+  isLoggedIn,
+  initialCount,
+  regionLabel,
+  prefectureLabel,
 }: Props) {
-  const router = useRouter();
-
-  // ゲストでも触れる枚数
-  const [count, setCount] = useState(0);
-
-  const handleUpdate = () => {
-    if (!isLoggedIn) {
-      alert("ポケふたを登録するにはログインが必要です！");
-      return;
-    }
-
-    // TODO: ここに DB 更新処理を入れる
-    alert("更新しました（仮）");
-    router.push("/");
-  };
+  const [count, setCount] = useState(initialCount);
+  const [guestWarning, setGuestWarning] = useState(false);
+  const [state, formAction] = useFormState(updateOwnershipAction, {
+    error: "",
+    success: false,
+  });
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-6">
       {/* 一覧へ戻る */}
       <button
-        onClick={() => router.push("/")}
+        onClick={() => history.back()}
         className="text-sm text-blue-600 mb-4"
       >
         ← 一覧へ戻る
@@ -68,9 +78,15 @@ export default function DetailClient({
             {pokefuta.pokemon_names.join(" / ")}
           </h1>
 
-          <p className="text-sm text-gray-600">
-            {pokefuta.address}
-          </p>
+          <p className="text-sm text-gray-600">{pokefuta.address}</p>
+
+          {(regionLabel || prefectureLabel) && (
+            <p className="text-xs text-gray-500">
+              {regionLabel}
+              {regionLabel && prefectureLabel && " / "}
+              {prefectureLabel}
+            </p>
+          )}
 
           <span className="text-sm font-semibold">
             難易度：{pokefuta.difficulty_code}
@@ -92,9 +108,7 @@ export default function DetailClient({
             −
           </button>
 
-          <div className="text-2xl font-semibold">
-            {count} 枚
-          </div>
+          <div className="text-2xl font-semibold">{count} 枚</div>
 
           <button
             onClick={() => setCount((c) => c + 1)}
@@ -104,37 +118,46 @@ export default function DetailClient({
           </button>
         </div>
 
-        <div className="flex justify-center">
-          <button
-            onClick={handleUpdate}
-            className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold"
-          >
-            更新する
-          </button>
-        </div>
+        <form
+          action={formAction}
+          className="flex flex-col items-center gap-3"
+          onSubmit={(event) => {
+            if (!isLoggedIn) {
+              event.preventDefault();
+              setGuestWarning(true);
+            }
+          }}
+        >
+          <input type="hidden" name="pokefutaId" value={pokefuta.id} />
+          <input type="hidden" name="count" value={count} />
 
-        {!isLoggedIn && (
-          <p className="mt-3 text-sm text-center text-gray-500">
-            ※ 登録・更新にはログインが必要です
-          </p>
-        )}
+          <SubmitButton isLoggedIn={isLoggedIn} />
+
+          {state.error && (
+            <p className="text-sm text-red-600">{state.error}</p>
+          )}
+          {state.success && (
+            <p className="text-sm text-green-600">更新しました</p>
+          )}
+          {guestWarning && (
+            <p className="text-sm text-center text-gray-500">
+              ポケふたを登録するにはログインが必要です
+            </p>
+          )}
+        </form>
       </section>
 
       {/* 所持ユーザ一覧 */}
       <section>
-        <h2 className="text-md font-semibold mb-2">
-          所持ユーザ
-        </h2>
+        <h2 className="text-md font-semibold mb-2">所持ユーザ</h2>
 
         {owners.length === 0 ? (
-          <p className="text-sm text-gray-500">
-            まだ誰も取得していません
-          </p>
+          <p className="text-sm text-gray-500">まだ誰も取得していません</p>
         ) : (
           <ul className="divide-y">
-            {owners.map((o) => (
+            {owners.map((o, index) => (
               <li
-                key={o.nickname}
+                key={`${o.nickname}-${o.count}-${index}`}
                 className="flex justify-between py-2 text-sm"
               >
                 <span>{o.nickname}</span>
