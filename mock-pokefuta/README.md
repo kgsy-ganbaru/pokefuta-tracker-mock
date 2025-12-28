@@ -142,18 +142,21 @@
 
 ### pokefuta_pokemon
 
-- id
 - pokefuta_id
 - pokemon_name
+- display_order
 
 ### ownership
 
-- id
 - user_id
 - pokefuta_id
 - count
 - updated_at
 
+### difficulty_master
+- code
+- label
+- sort_order
 ---
 
 ## 並び順ルール
