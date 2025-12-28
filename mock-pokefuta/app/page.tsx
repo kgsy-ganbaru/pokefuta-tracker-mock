@@ -11,7 +11,7 @@ SELECT
   p.address,
   p.image_url,
   STRING_AGG(DISTINCT pp.pokemon_name, ' / ' ORDER BY pp.pokemon_name) AS pokemon_names,
-  STRING_AGG(DISTINCT u.username, ', ' ORDER BY u.username) AS user_names,
+  STRING_AGG(DISTINCT u.user_id, ', ' ORDER BY u.user_id) AS user_names,
   MAX(o.updated_at) AS last_get_at
 FROM ownership o
 JOIN pokefuta p
