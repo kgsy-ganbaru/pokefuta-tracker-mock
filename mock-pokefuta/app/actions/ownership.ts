@@ -20,12 +20,15 @@ export async function updateOwnershipAction(
     return { error: "不正なポケふたIDです" };
   }
 
-  const user = await getAuthProfile();
+  const supabase = createClient();
+  if (!supabase) {
+    return { error: "Supabase環境変数が設定されていません" };
+  }
+
+  const user = await getAuthProfile(supabase);
   if (!user) {
     return { error: "ポケふたを登録するにはログインが必要です" };
   }
-
-  const supabase = createClient();
 
   if (count <= 0) {
     const { error } = await supabase

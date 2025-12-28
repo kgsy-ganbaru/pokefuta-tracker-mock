@@ -50,7 +50,11 @@ export default async function PokefutaDetailPage({
   }
 
   const supabase = createClient();
-  const user = await getAuthProfile();
+  const user = await getAuthProfile(supabase);
+
+  if (!supabase) {
+    return <p className="p-4">Supabase環境変数が設定されていません</p>;
+  }
 
   const { data: pokefuta } = await supabase
     .from("pokefuta")

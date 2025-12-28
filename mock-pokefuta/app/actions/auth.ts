@@ -1,3 +1,6 @@
++7
+-1
+
 "use server";
 
 import { redirect } from "next/navigation";
@@ -20,6 +23,9 @@ export async function loginAction(
   }
 
   const supabase = createClient();
+  if (!supabase) {
+    return { error: "Supabase環境変数が設定されていません" };
+  }
   const { error } = await supabase.auth.signInWithPassword({
     email: userIdToEmail(userId),
     password,
@@ -34,6 +40,9 @@ export async function loginAction(
 
 export async function logoutAction() {
   const supabase = createClient();
+  if (!supabase) {
+    redirect("/account");
+  }
   await supabase.auth.signOut();
   redirect("/account");
 }

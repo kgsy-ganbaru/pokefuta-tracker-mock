@@ -11,16 +11,28 @@ type CookieOptions = {
   secure?: boolean;
 };
 
-export function createClient() {
-  const cookieStore = cookies();
+export type SupabaseServerClient = ReturnType<typeof createServerClient>;
+
+function getSupabaseConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Supabase環境変数が設定されていません");
+    return null;
   }
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  return { supabaseUrl, supabaseAnonKey };
+}
+
+export function createClient(): SupabaseServerClient | null {
+  const cookieStore = cookies();
+  const config = getSupabaseConfig();
+
+  if (!config) {
+    return null;
+  }
+
+  return createServerClient(config.supabaseUrl, config.supabaseAnonKey, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;

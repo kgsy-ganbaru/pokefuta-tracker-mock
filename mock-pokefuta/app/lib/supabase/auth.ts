@@ -1,4 +1,4 @@
-import { createClient } from "./server";
+import { createClient, SupabaseServerClient } from "./server";
 
 export type AuthProfile = {
   id: string;
@@ -11,8 +11,13 @@ function deriveUserIdFromEmail(email?: string | null) {
   return email.split("@")[0] ?? email;
 }
 
-export async function getAuthProfile() {
-  const supabase = createClient();
+export async function getAuthProfile(
+  supabaseClient?: SupabaseServerClient | null
+) {
+  const supabase = supabaseClient ?? createClient();
+  if (!supabase) {
+    return null;
+  }
   const {
     data: { user },
   } = await supabase.auth.getUser();
