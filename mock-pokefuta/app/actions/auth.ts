@@ -65,7 +65,7 @@ export async function registerAction(
     return { error: "Supabase環境変数が設定されていません" };
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: userIdToEmail(userId),
     password,
     options: {
@@ -76,7 +76,17 @@ export async function registerAction(
     },
   });
 
-  if (error) {
+  if (error || !data.user) {
+    return { error: "新規登録に失敗しました" };
+  }
+
+  const { error: insertError } = await supabase.from("users").insert({
+    id: data.user.id,
+    user_id: userId,
+    nickname,
+  });
+
+  if (insertError) {
     return { error: "新規登録に失敗しました" };
   }
 
