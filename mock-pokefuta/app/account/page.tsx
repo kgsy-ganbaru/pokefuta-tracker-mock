@@ -2,6 +2,7 @@ import { loginAction, logoutAction } from "../actions/auth";
 import { getAuthProfile } from "../lib/supabase/auth";
 import Link from "next/link";
 import LoginForm from "./LoginForm";
+import LogoutForm from "./LogoutForm";
 
 export default async function AccountPage() {
   const user = await getAuthProfile();
@@ -14,14 +15,7 @@ export default async function AccountPage() {
         <p className="mb-1">ニックネーム：{user.nickname}</p>
         <p className="text-sm text-gray-500">ユーザーID：{user.user_id}</p>
 
-        <form action={logoutAction}>
-          <button
-            type="submit"
-            className="mt-6 w-full py-2 rounded bg-gray-200 hover:bg-gray-300"
-          >
-            ログアウト
-          </button>
-        </form>
+        <LogoutForm action={logoutAction} />
       </main>
     );
   }
