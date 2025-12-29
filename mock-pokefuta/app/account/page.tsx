@@ -1,7 +1,7 @@
 import { loginAction, logoutAction } from "../actions/auth";
 import { getAuthProfile } from "../lib/supabase/auth";
+import Link from "next/link";
 import LoginForm from "./LoginForm";
-import SignupButton from "./SignupButton";
 
 export default async function AccountPage() {
   const user = await getAuthProfile();
@@ -32,7 +32,12 @@ export default async function AccountPage() {
 
       <LoginForm action={loginAction} />
 
-      <SignupButton />
+      <Link
+        href="/account/register"
+        className="block w-full mt-2 py-2 rounded border text-center hover:bg-gray-50"
+      >
+        新規登録
+      </Link>
     </main>
   );
 }
