@@ -32,6 +32,7 @@ export default function RegisterForm({
         placeholder="ユーザーID"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
+        required
       />
 
       <input
@@ -39,6 +40,7 @@ export default function RegisterForm({
         placeholder="ニックネーム"
         className="w-full border px-3 py-2 rounded"
         autoComplete="nickname"
+        required
       />
 
       <input
@@ -47,6 +49,8 @@ export default function RegisterForm({
         placeholder="パスワード"
         className="w-full border px-3 py-2 rounded"
         autoComplete="new-password"
+        minLength={6}
+        required
       />
 
       {state.error && (

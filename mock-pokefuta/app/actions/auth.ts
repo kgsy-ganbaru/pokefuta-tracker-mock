@@ -16,6 +16,8 @@ export type LogoutState = {
   error?: string;
 };
 
+const MIN_PASSWORD_LENGTH = 6;
+
 export async function loginAction(
   _prevState: LoginState,
   formData: FormData
@@ -25,6 +27,11 @@ export async function loginAction(
 
   if (!userId || !password) {
     return { error: "ユーザーIDとパスワードを入力してください" };
+  }
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return {
+      error: `パスワードは${MIN_PASSWORD_LENGTH}文字以上で入力してください`,
+    };
   }
 
   const supabase = await createClient();
@@ -66,6 +73,11 @@ export async function registerAction(
   if (!userId || !nickname || !password) {
     return { error: "ユーザーID・ニックネーム・パスワードを入力してください" };
   }
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return {
+      error: `パスワードは${MIN_PASSWORD_LENGTH}文字以上で入力してください`,
+    };
+  }
 
   const supabase = await createClient();
   if (!supabase) {
@@ -98,6 +110,14 @@ export async function registerAction(
   });
 
   if (error || !data.user) {
+    const message = error?.message ?? "";
+    if (
+      error?.code === "23505" ||
+      message.includes("already registered") ||
+      message.includes("duplicate key")
+    ) {
+      return { error: "このユーザーIDは既に使用されています" };
+    }
     return { error: "新規登録に失敗しました" };
   }
 
