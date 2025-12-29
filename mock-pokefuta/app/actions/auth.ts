@@ -12,6 +12,10 @@ export type RegisterState = {
   error?: string;
 };
 
+export type LogoutState = {
+  error?: string;
+};
+
 export async function loginAction(
   _prevState: LoginState,
   formData: FormData
@@ -39,10 +43,13 @@ export async function loginAction(
   redirect("/account");
 }
 
-export async function logoutAction() {
+export async function logoutAction(
+  _prevState: LogoutState,
+  _formData: FormData
+): Promise<LogoutState> {
   const supabase = await createClient();
   if (!supabase) {
-    redirect("/account");
+    return { error: "Supabase環境変数が設定されていません" };
   }
   await supabase.auth.signOut();
   redirect("/account");
