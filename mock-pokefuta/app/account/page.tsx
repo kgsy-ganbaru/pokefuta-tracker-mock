@@ -1,6 +1,7 @@
 import { loginAction, logoutAction } from "../actions/auth";
 import { getAuthProfile } from "../lib/supabase/auth";
 import LoginForm from "./LoginForm";
+import SignupButton from "./SignupButton";
 
 export default async function AccountPage() {
   const user = await getAuthProfile();
@@ -31,13 +32,7 @@ export default async function AccountPage() {
 
       <LoginForm action={loginAction} />
 
-      <button
-        type="button"
-        onClick={() => alert("新規登録は次に実装")}
-        className="w-full mt-2 py-2 rounded border hover:bg-gray-50"
-      >
-        新規登録
-      </button>
+      <SignupButton />
     </main>
   );
 }
