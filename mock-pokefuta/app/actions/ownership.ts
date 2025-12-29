@@ -20,7 +20,7 @@ export async function updateOwnershipAction(
     return { error: "不正なポケふたIDです" };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }

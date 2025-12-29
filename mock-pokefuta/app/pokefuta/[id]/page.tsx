@@ -49,7 +49,7 @@ export default async function PokefutaDetailPage({
     return <p className="p-4">不正なIDです</p>;
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const user = await getAuthProfile(supabase);
 
   if (!supabase) {

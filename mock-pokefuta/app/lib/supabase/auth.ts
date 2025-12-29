@@ -14,7 +14,7 @@ function deriveUserIdFromEmail(email?: string | null) {
 export async function getAuthProfile(
   supabaseClient?: SupabaseServerClient | null
 ) {
-  const supabase = supabaseClient ?? createClient();
+  const supabase = supabaseClient ?? (await createClient());
   if (!supabase) {
     return null;
   }

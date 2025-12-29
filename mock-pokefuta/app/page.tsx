@@ -62,13 +62,13 @@ function formatPokemonNames(rows: PokemonRow[] | null) {
 }
 
 export default async function Page() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const user = await getAuthProfile(supabase);
 
   if (!supabase) {
     return <HomeClient recentRows={[]} pokefutaRows={[]} />;
   }
-  
+
   const { data: recentData } = await supabase
     .from("ownership")
     .select(

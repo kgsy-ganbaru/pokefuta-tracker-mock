@@ -28,8 +28,8 @@ function getSupabaseConfig() {
   return { supabaseUrl, supabaseAnonKey };
 }
 
-export function createClient(): SupabaseServerClient | null {
-  const cookieStore = cookies();
+export async function createClient(): Promise<SupabaseServerClient | null> {
+  const cookieStore = await cookies();
   const config = getSupabaseConfig();
 
   if (!config) {

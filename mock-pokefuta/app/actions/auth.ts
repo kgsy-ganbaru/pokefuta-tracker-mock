@@ -19,7 +19,7 @@ export async function loginAction(
     return { error: "ユーザーIDとパスワードを入力してください" };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
@@ -36,7 +36,7 @@ export async function loginAction(
 }
 
 export async function logoutAction() {
-  const supabase = createClient();
+  const supabase = await createClient();
   if (!supabase) {
     redirect("/account");
   }
