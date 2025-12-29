@@ -32,6 +32,7 @@ export default function LoginForm({
         placeholder="ユーザーID"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
+        required
       />
 
       <input
@@ -40,6 +41,8 @@ export default function LoginForm({
         placeholder="パスワード"
         className="w-full border px-3 py-2 rounded"
         autoComplete="current-password"
+        minLength={6}
+        required
       />
 
       {state.error && (
