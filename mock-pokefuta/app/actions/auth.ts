@@ -65,6 +65,20 @@ export async function registerAction(
     return { error: "Supabase環境変数が設定されていません" };
   }
 
+  const { data: existingUser, error: existingError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existingError) {
+    return { error: "ユーザーIDの確認に失敗しました" };
+  }
+
+  if (existingUser) {
+    return { error: "このユーザーIDは既に使用されています" };
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email: userIdToEmail(userId),
     password,
@@ -87,6 +101,9 @@ export async function registerAction(
   });
 
   if (insertError) {
+    if (insertError.code === "23505") {
+      return { error: "このユーザーIDは既に使用されています" };
+    }
     return { error: "新規登録に失敗しました" };
   }
 
