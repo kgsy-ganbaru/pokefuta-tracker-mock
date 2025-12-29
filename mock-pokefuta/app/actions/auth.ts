@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "../lib/supabase/server";
+import { createAdminClient, createClient } from "../lib/supabase/server";
 import { userIdToEmail } from "../lib/supabase/auth";
 
 export type LoginState = {
@@ -121,7 +121,12 @@ export async function registerAction(
     return { error: "新規登録に失敗しました" };
   }
 
-  const { error: insertError } = await supabase.from("users").insert({
+  const adminSupabase = createAdminClient();
+  if (!adminSupabase) {
+    return { error: "Supabase環境変数が設定されていません" };
+  }
+
+  const { error: insertError } = await adminSupabase.from("users").insert({
     id: data.user.id,
     user_id: userId,
     nickname,
