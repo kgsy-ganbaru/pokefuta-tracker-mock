@@ -50,3 +50,28 @@ export async function createClient(): Promise<SupabaseServerClient | null> {
     },
   });
 }
+
+export function createAdminClient(): SupabaseServerClient | null {
+  const config = getSupabaseConfig();
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE;
+
+  if (!config || !serviceRoleKey) {
+    return null;
+  }
+
+  return createServerClient(config.supabaseUrl, serviceRoleKey, {
+    cookies: {
+      get() {
+        return undefined;
+      },
+      set() {
+        return undefined;
+      },
+      remove() {
+        return undefined;
+      },
+    },
+  });
+}
