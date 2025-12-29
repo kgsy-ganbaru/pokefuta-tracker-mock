@@ -110,6 +110,14 @@ export async function registerAction(
   });
 
   if (error || !data.user) {
+    const message = error?.message ?? "";
+    if (
+      error?.code === "23505" ||
+      message.includes("already registered") ||
+      message.includes("duplicate key")
+    ) {
+      return { error: "このユーザーIDは既に使用されています" };
+    }
     return { error: "新規登録に失敗しました" };
   }
 
