@@ -10,7 +10,6 @@ export default function Header({ user }: { user: HeaderUser }) {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isUpdate = pathname.startsWith("/update");
   return (
     <header className="border-b bg-white">
       <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -39,19 +38,6 @@ export default function Header({ user }: { user: HeaderUser }) {
               }`}
           >
             一覧
-          </button>
-
-          {/* 登録・削除 */}
-          <button
-            onClick={() => router.push("/update")}
-            className={`px-3 py-1.5 rounded-md text-sm transition
-              ${
-                isUpdate
-                  ? "bg-blue-600 text-white"
-                  : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-              }`}
-          >
-            登録・削除
           </button>
 
           {/* =====================
