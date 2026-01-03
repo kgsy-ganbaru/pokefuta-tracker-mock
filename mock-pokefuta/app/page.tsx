@@ -21,6 +21,7 @@ type PokefutaRow = {
   image_url: string | null;
   pokemon_names: string;
   owned_count: number;
+  any_owned_count: number;
 };
 
 type PokemonRow = {
@@ -109,6 +110,18 @@ export default async function Page() {
     (ownershipData ?? []).map((row) => [row.pokefuta_id, row.count])
   );
 
+  const { data: anyOwnershipData } = await supabase
+    .from("ownership")
+    .select("pokefuta_id, count");
+
+  const anyOwnershipMap = new Map<number, number>();
+  (anyOwnershipData ?? []).forEach((row) => {
+    anyOwnershipMap.set(
+      row.pokefuta_id,
+      (anyOwnershipMap.get(row.pokefuta_id) ?? 0) + row.count
+    );
+  });
+
   const pokefutaRows: PokefutaRow[] = (pokefutaData ?? []).map(
     (row: PokefutaRecord) => ({
       id: row.id,
@@ -119,6 +132,7 @@ export default async function Page() {
       image_url: row.image_url,
       pokemon_names: formatPokemonNames(row.pokefuta_pokemon),
       owned_count: ownershipMap.get(row.id) ?? 0,
+      any_owned_count: anyOwnershipMap.get(row.id) ?? 0,
     })
   );
 
