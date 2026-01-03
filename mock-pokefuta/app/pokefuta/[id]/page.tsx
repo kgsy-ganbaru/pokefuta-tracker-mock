@@ -14,8 +14,6 @@ type PokefutaDetail = {
   address: string;
   difficulty_code: string;
   image_url: string | null;
-  region_id: number | null;
-  prefecture_id: number | null;
   pokefuta_pokemon: PokemonRow[] | null;
 };
 
@@ -59,7 +57,7 @@ export default async function PokefutaDetailPage({
   const { data: pokefuta } = await supabase
     .from("pokefuta")
     .select(
-      "id, address, difficulty_code, image_url, region_id, prefecture_id, pokefuta_pokemon (pokemon_name, display_order)"
+      "id, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
     .eq("id", numericId)
     .maybeSingle();
@@ -97,14 +95,6 @@ export default async function PokefutaDetailPage({
       }))}
       isLoggedIn={!!user}
       initialCount={myOwnership?.count ?? 0}
-      regionLabel={
-        pokefuta.region_id ? `地域${pokefuta.region_id}` : ""
-      }
-      prefectureLabel={
-        pokefuta.prefecture_id
-          ? `都道府県${pokefuta.prefecture_id}`
-          : ""
-      }
     />
   );
 }
