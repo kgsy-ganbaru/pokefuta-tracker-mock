@@ -38,7 +38,6 @@ const REGION_LABELS: Record<number, string> = {
   4: "近畿",
   5: "中国・四国",
   6: "九州・沖縄",
-  7: "その他",
 };
 
 const REGION_ORDER = Object.keys(REGION_LABELS).map(Number);
@@ -100,7 +99,6 @@ const PREFECTURE_IDS_BY_REGION_ID: Record<number, number[]> = {
   4: [24, 25, 26, 27, 28, 29, 30],
   5: [31, 32, 33, 34, 35, 36, 37, 38, 39],
   6: [40, 41, 42, 43, 44, 45, 46, 47],
-  7: [],
 };
 
 /* =====================
@@ -301,22 +299,26 @@ export default function HomeClient({
                               {p.city_name}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-gray-700">
-                              {p.owned_count}枚
-                            </span>
-                            {Math.max(
-                              0,
-                              p.any_owned_count - p.owned_count
-                            ) > 0 && (
-                              <Image
-                                src="/status-any-owned.svg"
-                                alt="他のユーザーが取得済み"
-                                title="他のユーザーが取得済み"
-                                width={16}
-                                height={16}
-                              />
+                          <div className="flex items-center gap-2 min-w-[72px] justify-end">
+                            {p.owned_count > 0 && (
+                              <span className="text-xs font-semibold text-gray-700">
+                                {p.owned_count}枚
+                              </span>
                             )}
+                            <span className="inline-flex w-4 justify-center">
+                              {Math.max(
+                                0,
+                                p.any_owned_count - p.owned_count
+                              ) > 0 && (
+                                <Image
+                                  src="/status-any-owned.svg"
+                                  alt="他のユーザーが取得済み"
+                                  title="他のユーザーが取得済み"
+                                  width={16}
+                                  height={16}
+                                />
+                              )}
+                            </span>
                           </div>
                           <span
                             className={`px-2 py-0.5 rounded-md text-xs font-semibold ${getRankClass(

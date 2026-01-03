@@ -6,7 +6,6 @@ export default function RegionTabs() {
     "近畿",
     "中国・四国",
     "九州・沖縄",
-    "その他",
   ];
 
   return (
