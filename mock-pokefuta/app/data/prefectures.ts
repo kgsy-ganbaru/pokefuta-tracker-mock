@@ -5,5 +5,4 @@ export const prefecturesByRegion: Record<string, string[]> = {
   近畿: ["大阪府", "京都府"],
   "中国・四国": ["広島県", "愛媛県"],
   "九州・沖縄": ["福岡県", "沖縄県"],
-  その他: ["海外"],
 };
