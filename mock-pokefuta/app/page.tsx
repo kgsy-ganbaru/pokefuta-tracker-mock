@@ -15,6 +15,7 @@ type RecentRow = {
 type PokefutaRow = {
   id: number;
   region_id: number;
+  prefecture_order: number | null;
   address: string;
   difficulty_code: string;
   image_url: string | null;
@@ -112,6 +113,7 @@ export default async function Page() {
     (row: PokefutaRecord) => ({
       id: row.id,
       region_id: row.region_id,
+      prefecture_order: row.prefecture_order,
       address: row.address,
       difficulty_code: row.difficulty_code,
       image_url: row.image_url,
