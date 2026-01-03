@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getRankClass } from "../utils/rankColor";
 
@@ -24,6 +25,7 @@ type PokefutaRow = {
   image_url: string | null;
   pokemon_names: string;
   owned_count: number;
+  any_owned_count: number;
 };
 
 /* =====================
@@ -291,7 +293,22 @@ export default function HomeClient({
                           </div>
                           <div className="flex items-center gap-2">
                             {p.owned_count > 0 && (
-                              <span title="取得済み">◓⃙⁣</span>
+                              <Image
+                                src="/status-owned.svg"
+                                alt="取得済み"
+                                title="取得済み"
+                                width={16}
+                                height={16}
+                              />
+                            )}
+                            {p.any_owned_count > 0 && (
+                              <Image
+                                src="/status-any-owned.svg"
+                                alt="誰かが取得済み"
+                                title="誰かが取得済み"
+                                width={16}
+                                height={16}
+                              />
                             )}
                           </div>
                           <span
