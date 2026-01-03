@@ -22,8 +22,6 @@ type Props = {
   owners: Owner[];
   isLoggedIn: boolean;
   initialCount: number;
-  regionLabel: string;
-  prefectureLabel: string;
 };
 
 function SubmitButton({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -45,8 +43,6 @@ export default function DetailClient({
   owners,
   isLoggedIn,
   initialCount,
-  regionLabel,
-  prefectureLabel,
 }: Props) {
   const [count, setCount] = useState(initialCount);
   const [guestWarning, setGuestWarning] = useState(false);
@@ -61,8 +57,9 @@ export default function DetailClient({
       <button
         onClick={() => history.back()}
         className="text-sm text-blue-600 mb-4"
+        aria-label="一覧へ戻る"
       >
-        ← 一覧へ戻る
+        ←
       </button>
 
       {/* 基本情報 */}
@@ -79,14 +76,6 @@ export default function DetailClient({
           </h1>
 
           <p className="text-sm text-gray-600">{pokefuta.address}</p>
-
-          {(regionLabel || prefectureLabel) && (
-            <p className="text-xs text-gray-500">
-              {regionLabel}
-              {regionLabel && prefectureLabel && " / "}
-              {prefectureLabel}
-            </p>
-          )}
 
           <span className="text-sm font-semibold">
             難易度：{pokefuta.difficulty_code}
