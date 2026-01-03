@@ -18,7 +18,7 @@ type RecentRow = {
 type PokefutaRow = {
   id: number;
   region_id: number;
-  prefecture_order: number | null;
+  prefecture_id: number | null;
   address: string;
   difficulty_code: string;
   image_url: string | null;
@@ -41,67 +41,64 @@ const REGION_LABELS: Record<number, string> = {
 
 const REGION_ORDER = Object.keys(REGION_LABELS).map(Number);
 
-const PREFECTURES_BY_REGION_ID: Record<number, string[]> = {
-  1: [
-    "北海道",
-    "青森県",
-    "岩手県",
-    "宮城県",
-    "秋田県",
-    "山形県",
-    "福島県",
-  ],
-  2: [
-    "茨城県",
-    "栃木県",
-    "群馬県",
-    "埼玉県",
-    "千葉県",
-    "東京都",
-    "神奈川県",
-  ],
-  3: [
-    "新潟県",
-    "富山県",
-    "石川県",
-    "福井県",
-    "山梨県",
-    "長野県",
-    "岐阜県",
-    "静岡県",
-    "愛知県",
-  ],
-  4: [
-    "三重県",
-    "滋賀県",
-    "京都府",
-    "大阪府",
-    "兵庫県",
-    "奈良県",
-    "和歌山県",
-  ],
-  5: [
-    "鳥取県",
-    "島根県",
-    "岡山県",
-    "広島県",
-    "山口県",
-    "徳島県",
-    "香川県",
-    "愛媛県",
-    "高知県",
-  ],
-  6: [
-    "福岡県",
-    "佐賀県",
-    "長崎県",
-    "熊本県",
-    "大分県",
-    "宮崎県",
-    "鹿児島県",
-    "沖縄県",
-  ],
-  7: ["海外"],
+const PREFECTURE_LABELS: Record<number, string> = {
+  1: "北海道",
+  2: "青森県",
+  3: "岩手県",
+  4: "宮城県",
+  5: "秋田県",
+  6: "山形県",
+  7: "福島県",
+  8: "茨城県",
+  9: "栃木県",
+  10: "群馬県",
+  11: "埼玉県",
+  12: "千葉県",
+  13: "東京都",
+  14: "神奈川県",
+  15: "新潟県",
+  16: "富山県",
+  17: "石川県",
+  18: "福井県",
+  19: "山梨県",
+  20: "長野県",
+  21: "岐阜県",
+  22: "静岡県",
+  23: "愛知県",
+  24: "三重県",
+  25: "滋賀県",
+  26: "京都府",
+  27: "大阪府",
+  28: "兵庫県",
+  29: "奈良県",
+  30: "和歌山県",
+  31: "鳥取県",
+  32: "島根県",
+  33: "岡山県",
+  34: "広島県",
+  35: "山口県",
+  36: "徳島県",
+  37: "香川県",
+  38: "愛媛県",
+  39: "高知県",
+  40: "福岡県",
+  41: "佐賀県",
+  42: "長崎県",
+  43: "熊本県",
+  44: "大分県",
+  45: "宮崎県",
+  46: "鹿児島県",
+  47: "沖縄県",
+};
+
+const PREFECTURE_IDS_BY_REGION_ID: Record<number, number[]> = {
+  1: [1, 2, 3, 4, 5, 6, 7],
+  2: [8, 9, 10, 11, 12, 13, 14],
+  3: [15, 16, 17, 18, 19, 20, 21, 22, 23],
+  4: [24, 25, 26, 27, 28, 29, 30],
+  5: [31, 32, 33, 34, 35, 36, 37, 38, 39],
+  6: [40, 41, 42, 43, 44, 45, 46, 47],
+  7: [],
 };
 
 /* =====================
@@ -123,21 +120,18 @@ export default function HomeClient({
     Record<string, HTMLDivElement | null>
   >({});
 
-  const getPrefectureName = (
-    regionId: number,
-    prefectureOrder: number | null
-  ) => {
-    if (!prefectureOrder) return "未設定";
-    const list = PREFECTURES_BY_REGION_ID[regionId] ?? [];
+  const getPrefectureName = (prefectureId: number | null) => {
+    if (!prefectureId) return "未設定";
     return (
-      list[prefectureOrder - 1] ??
-      `都道府県${prefectureOrder}`
+      PREFECTURE_LABELS[prefectureId] ??
+      `都道府県${prefectureId}`
     );
   };
 
-  const activePrefectures = activeRegionId
-    ? PREFECTURES_BY_REGION_ID[activeRegionId] ?? []
-    : [];
+  const activePrefectureIds =
+    activeRegionId !== null
+      ? PREFECTURE_IDS_BY_REGION_ID[activeRegionId] ?? []
+      : [];
 
   return (
     <>
@@ -212,20 +206,28 @@ export default function HomeClient({
             const rows = pokefutaRows.filter(
               (p) => p.region_id === regionId
             );
-            const rowsByPrefecture = rows.reduce(
+            const rowsByPrefectureId = rows.reduce(
               (acc, row) => {
-                const prefectureName = getPrefectureName(
-                  row.region_id,
-                  row.prefecture_order
-                );
-                if (!acc.has(prefectureName)) {
-                  acc.set(prefectureName, []);
+                const prefectureId = row.prefecture_id ?? 0;
+                if (!acc.has(prefectureId)) {
+                  acc.set(prefectureId, []);
                 }
-                acc.get(prefectureName)?.push(row);
+                acc.get(prefectureId)?.push(row);
                 return acc;
               },
-              new Map<string, PokefutaRow[]>()
+              new Map<number, PokefutaRow[]>()
             );
+            const orderedPrefectureIds =
+              PREFECTURE_IDS_BY_REGION_ID[regionId] ?? [];
+            const extraPrefectureIds = Array.from(
+              rowsByPrefectureId.keys()
+            )
+              .filter((id) => !orderedPrefectureIds.includes(id))
+              .sort((a, b) => a - b);
+            const prefectureIdsToRender = [
+              ...orderedPrefectureIds,
+              ...extraPrefectureIds,
+            ].filter((id) => rowsByPrefectureId.has(id));
 
             return (
               <div
@@ -242,13 +244,18 @@ export default function HomeClient({
                   </p>
                 )}
 
-                {Array.from(rowsByPrefecture.entries()).map(
-                  ([prefectureName, prefectureRows]) => (
+                {prefectureIdsToRender.map((prefectureId) => {
+                  const prefectureRows =
+                    rowsByPrefectureId.get(prefectureId) ??
+                    [];
+                  const prefectureName =
+                    getPrefectureName(prefectureId);
+                  return (
                     <div
-                      key={`${regionId}-${prefectureName}`}
+                      key={`${regionId}-${prefectureId}`}
                       ref={(el) => {
                         sectionRefs.current[
-                          `${regionId}-${prefectureName}`
+                          `${regionId}-${prefectureId}`
                         ] = el;
                       }}
                       className="mb-6"
@@ -297,8 +304,8 @@ export default function HomeClient({
                         </div>
                       ))}
                     </div>
-                  )
-                )}
+                  );
+                })}
               </div>
             );
           })}
@@ -320,20 +327,24 @@ export default function HomeClient({
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {activePrefectures.map((prefecture) => (
-                <button
-                  key={prefecture}
-                  onClick={() => {
-                    sectionRefs.current[
-                      `${activeRegionId}-${prefecture}`
-                    ]?.scrollIntoView({ behavior: "smooth" });
-                    setActiveRegionId(null);
-                  }}
-                  className="px-3 py-2 rounded-lg border text-sm text-left hover:bg-gray-50"
-                >
-                  {prefecture}
-                </button>
-              ))}
+              {activePrefectureIds.map((prefectureId) => {
+                const prefectureName =
+                  getPrefectureName(prefectureId);
+                return (
+                  <button
+                    key={prefectureId}
+                    onClick={() => {
+                      sectionRefs.current[
+                        `${activeRegionId}-${prefectureId}`
+                      ]?.scrollIntoView({ behavior: "smooth" });
+                      setActiveRegionId(null);
+                    }}
+                    className="px-3 py-2 rounded-lg border text-sm text-left hover:bg-gray-50"
+                  >
+                    {prefectureName}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ type RecentRow = {
 type PokefutaRow = {
   id: number;
   region_id: number;
-  prefecture_order: number | null;
+  prefecture_id: number | null;
   address: string;
   difficulty_code: string;
   image_url: string | null;
@@ -31,7 +31,7 @@ type PokemonRow = {
 type PokefutaRecord = {
   id: number;
   region_id: number;
-  prefecture_order: number | null;
+  prefecture_id: number | null;
   address: string;
   difficulty_code: string;
   image_url: string | null;
@@ -93,10 +93,10 @@ export default async function Page() {
   const { data: pokefutaData } = await supabase
     .from("pokefuta")
     .select(
-      "id, region_id, prefecture_order, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
+      "id, region_id, prefecture_id, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
     .order("region_id", { ascending: true })
-    .order("prefecture_order", { ascending: true });
+    .order("prefecture_id", { ascending: true });
 
   const { data: ownershipData } = user
     ? await supabase
@@ -113,7 +113,7 @@ export default async function Page() {
     (row: PokefutaRecord) => ({
       id: row.id,
       region_id: row.region_id,
-      prefecture_order: row.prefecture_order,
+      prefecture_id: row.prefecture_id,
       address: row.address,
       difficulty_code: row.difficulty_code,
       image_url: row.image_url,
