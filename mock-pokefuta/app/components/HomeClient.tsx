@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getRankClass } from "../utils/rankColor";
@@ -10,7 +10,7 @@ import { getRankClass } from "../utils/rankColor";
 ===================== */
 type RecentRow = {
   id: number;
-  address: string;
+  city_name: string;
   image_url: string | null;
   pokemon_names: string;
   user_names: string;
@@ -20,7 +20,7 @@ type PokefutaRow = {
   id: number;
   region_id: number;
   prefecture_id: number | null;
-  address: string;
+  city_name: string;
   difficulty_code: string;
   image_url: string | null;
   pokemon_names: string;
@@ -118,6 +118,7 @@ export default function HomeClient({
   const [activeRegionId, setActiveRegionId] = useState<
     number | null
   >(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const sectionRefs = useRef<
     Record<string, HTMLDivElement | null>
   >({});
@@ -134,6 +135,15 @@ export default function HomeClient({
     activeRegionId !== null
       ? PREFECTURE_IDS_BY_REGION_ID[activeRegionId] ?? []
       : [];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -171,7 +181,7 @@ export default function HomeClient({
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    {r.address}
+                    {r.city_name}
                   </div>
 
                   <div className="text-xs text-gray-600">
@@ -288,24 +298,21 @@ export default function HomeClient({
                               {p.pokemon_names}
                             </div>
                             <div className="text-xs text-gray-500">
-                              {p.address}
+                              {p.city_name}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            {p.owned_count > 0 && (
-                              <Image
-                                src="/status-owned.svg"
-                                alt="取得済み"
-                                title="取得済み"
-                                width={16}
-                                height={16}
-                              />
-                            )}
-                            {p.any_owned_count > 0 && (
+                            <span className="text-xs font-semibold text-gray-700">
+                              {p.owned_count}枚
+                            </span>
+                            {Math.max(
+                              0,
+                              p.any_owned_count - p.owned_count
+                            ) > 0 && (
                               <Image
                                 src="/status-any-owned.svg"
-                                alt="誰かが取得済み"
-                                title="誰かが取得済み"
+                                alt="他のユーザーが取得済み"
+                                title="他のユーザーが取得済み"
                                 width={16}
                                 height={16}
                               />
@@ -355,6 +362,7 @@ export default function HomeClient({
                         `${activeRegionId}-${prefectureId}`
                       ]?.scrollIntoView({ behavior: "smooth" });
                       setActiveRegionId(null);
+                      setShowBackToTop(true);
                     }}
                     className="px-3 py-2 rounded-lg border text-sm text-left hover:bg-gray-50"
                   >
@@ -370,15 +378,17 @@ export default function HomeClient({
       {/* =====================
           トップへ戻る
       ===================== */}
-      <button
-        onClick={() =>
-          window.scrollTo({ top: 0, behavior: "smooth" })
-        }
-        className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
-        aria-label="ページの先頭へ戻る"
-      >
-        ↑
-      </button>
+      {showBackToTop && (
+        <button
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: "smooth" })
+          }
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
+          aria-label="ページの先頭へ戻る"
+        >
+          ↑
+        </button>
+      )}
     </>
   );
 }

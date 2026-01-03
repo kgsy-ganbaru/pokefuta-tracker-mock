@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 type RecentRow = {
   id: number;
-  address: string;
+  city_name: string;
   image_url: string | null;
   pokemon_names: string;
   user_names: string;
@@ -16,7 +16,7 @@ type PokefutaRow = {
   id: number;
   region_id: number;
   prefecture_id: number | null;
-  address: string;
+  city_name: string;
   difficulty_code: string;
   image_url: string | null;
   pokemon_names: string;
@@ -33,7 +33,7 @@ type PokefutaRecord = {
   id: number;
   region_id: number;
   prefecture_id: number | null;
-  address: string;
+  city_name: string;
   difficulty_code: string;
   image_url: string | null;
   pokefuta_pokemon: PokemonRow[] | null;
@@ -42,7 +42,7 @@ type PokefutaRecord = {
 type RecentOwnership = {
   pokefuta: {
     id: number;
-    address: string;
+    city_name: string;
     image_url: string | null;
     pokefuta_pokemon: PokemonRow[] | null;
   } | null;
@@ -74,7 +74,7 @@ export default async function Page() {
   const { data: recentData } = await supabase
     .from("ownership")
     .select(
-      "updated_at, pokefuta:pokefuta_id (id, address, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
+      "updated_at, pokefuta:pokefuta_id (id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
     )
     .order("updated_at", { ascending: false })
     .limit(5);
@@ -82,7 +82,7 @@ export default async function Page() {
   const recentRows: RecentRow[] = (recentData ?? [])
     .map((row: RecentOwnership) => ({
       id: row.pokefuta?.id ?? 0,
-      address: row.pokefuta?.address ?? "",
+      city_name: row.pokefuta?.city_name ?? "",
       image_url: row.pokefuta?.image_url ?? null,
       pokemon_names: formatPokemonNames(
         row.pokefuta?.pokefuta_pokemon ?? []
@@ -94,7 +94,7 @@ export default async function Page() {
   const { data: pokefutaData } = await supabase
     .from("pokefuta")
     .select(
-      "id, region_id, prefecture_id, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
+      "id, region_id, prefecture_id, city_name, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
     .order("region_id", { ascending: true })
     .order("prefecture_id", { ascending: true });
@@ -127,7 +127,7 @@ export default async function Page() {
       id: row.id,
       region_id: row.region_id,
       prefecture_id: row.prefecture_id,
-      address: row.address,
+      city_name: row.city_name,
       difficulty_code: row.difficulty_code,
       image_url: row.image_url,
       pokemon_names: formatPokemonNames(row.pokefuta_pokemon),
