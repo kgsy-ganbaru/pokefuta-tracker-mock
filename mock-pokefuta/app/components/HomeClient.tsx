@@ -7,7 +7,6 @@ import { PokefutaRow, RecentRow } from "../lib/pokefuta/listData";
 import {
   buildRegionSections,
   getPrefectureName,
-  PREFECTURE_IDS_BY_REGION_ID,
   REGION_LABELS,
   REGION_ORDER,
 } from "../utils/pokefutaGrouping";
@@ -37,11 +36,13 @@ export default function HomeClient({
     Record<string, HTMLDivElement | null>
   >({});
 
+  const regionSections = buildRegionSections(pokefutaRows);
   const activePrefectureIds =
     activeRegionId !== null
-      ? PREFECTURE_IDS_BY_REGION_ID[activeRegionId] ?? []
+      ? regionSections.find(
+          (section) => section.regionId === activeRegionId
+        )?.prefectureIdsToRender ?? []
       : [];
-  const regionSections = buildRegionSections(pokefutaRows);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -194,7 +195,7 @@ export default function HomeClient({
                                 p.any_owned_count - p.owned_count
                               ) > 0 && (
                                 <Image
-                                  src="/status-any-owned.svg"
+                                  src="/status-any-owned-pokeball.svg"
                                   alt="他のユーザーが取得済み"
                                   title="他のユーザーが取得済み"
                                   width={16}
