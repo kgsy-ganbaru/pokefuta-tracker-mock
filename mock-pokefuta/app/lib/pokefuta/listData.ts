@@ -35,21 +35,26 @@ type PokefutaRecord = {
   pokefuta_pokemon: PokemonRow[] | null;
 };
 
-type RecentOwnership = {
-  pokefuta:
-    | {
-        id: number;
-        city_name: string;
-        image_url: string | null;
-        pokefuta_pokemon: PokemonRow[] | null;
-      }[]
-    | null;
-  users:
-    | {
-        nickname: string | null;
-      }[]
-    | null;
+type RecentPokefuta = {
+  id: number;
+  city_name: string;
+  image_url: string | null;
+  pokefuta_pokemon: PokemonRow[] | null;
 };
+
+type RecentUser = {
+  nickname: string | null;
+};
+
+type RecentOwnership = {
+  pokefuta: RecentPokefuta | RecentPokefuta[] | null;
+  users: RecentUser | RecentUser[] | null;
+};
+
+function takeFirst<T>(value: T | T[] | null | undefined) {
+  if (!value) return null;
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
 
 export function formatPokemonNames(rows: PokemonRow[] | null) {
   if (!rows?.length) return "";
@@ -76,20 +81,23 @@ export async function fetchRecentRows(
 
   return (recentData ?? [])
     .map((row: RecentOwnership) => {
-      const pokefuta = row.pokefuta?.[0] ?? null;
-      const user = row.users?.[0] ?? null;
+      const pokefuta = takeFirst(row.pokefuta);
+      if (!pokefuta) {
+        return null;
+      }
+      const user = takeFirst(row.users);
 
       return {
-        id: pokefuta?.id ?? 0,
-        city_name: pokefuta?.city_name ?? "",
-        image_url: pokefuta?.image_url ?? null,
+        id: pokefuta.id,
+        city_name: pokefuta.city_name,
+        image_url: pokefuta.image_url ?? null,
         pokemon_names: formatPokemonNames(
-          pokefuta?.pokefuta_pokemon ?? []
+          pokefuta.pokefuta_pokemon ?? []
         ),
         user_names: user?.nickname ?? "",
       };
     })
-    .filter((row) => row.id !== 0);
+    .filter((row): row is RecentRow => row !== null);
 }
 
 export async function fetchPokefutaRows(
