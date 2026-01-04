@@ -17,6 +17,9 @@ type UserRow = {
   nickname: string | null;
 };
 
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export default async function UserDetailPage({
   params,
 }: UserDetailPageProps) {
@@ -45,16 +48,42 @@ export default async function UserDetailPage({
     );
   }
 
+  const lookupColumn = uuidPattern.test(params.userId)
+    ? "id"
+    : "user_id";
   const { data: userRows } = await supabase
     .from("users")
     .select("id, user_id, nickname")
-    .eq("id", params.userId)
+    .eq(lookupColumn, params.userId)
     .limit(1);
 
   const user = (userRows ?? [])[0] as UserRow | undefined;
   const userName =
     user?.nickname ?? user?.user_id ?? "ユーザー";
-  const userId = user?.id ?? params.userId;
+  const userId = user?.id ?? null;
+
+  if (!user) {
+    return (
+      <main className="max-w-5xl mx-auto px-4 pb-16">
+        <section className="mt-6">
+          <h1 className="text-xl font-semibold mb-2">
+            ユーザーのポケフタ状況
+          </h1>
+          <p className="text-sm text-gray-500">
+            指定されたユーザーが見つかりませんでした。
+          </p>
+        </section>
+        <div className="mt-10">
+          <Link
+            href="/users"
+            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+          >
+            ユーザー一覧に戻る
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   const pokefutaRows = await fetchPokefutaRows(supabase, userId);
   const ownedRows = pokefutaRows.filter(
