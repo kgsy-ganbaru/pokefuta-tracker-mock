@@ -16,6 +16,10 @@ export type UserListItem = {
   userId: string;
   name: string;
   pokefutaCount: number;
+  ownedTypesCount: number;
+  totalPokefutaCount: number;
+  regionCounts: Array<{ id: number; label: string; count: number }>;
+  prefectureCounts: Array<{ id: number; label: string; count: number }>;
   registeredAt: string;
 };
 
@@ -103,7 +107,7 @@ export default function UsersListClient({
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative flex w-full justify-end sm:w-auto">
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -165,10 +169,56 @@ export default function UsersListClient({
                     <p className="text-xs text-gray-500">
                       登録日：{formatDate(user.registeredAt)}
                     </p>
+                    <div className="mt-2 space-y-2 text-xs text-gray-500">
+                      <p>
+                        所持種類：
+                        <span className="ml-1 font-semibold text-gray-700">
+                          {user.ownedTypesCount}
+                        </span>
+                        <span className="mx-1 text-gray-400">/</span>
+                        {user.totalPokefutaCount}種類
+                      </p>
+                      {user.regionCounts.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[11px] font-semibold text-gray-600">
+                            地域別
+                          </span>
+                          {user.regionCounts.map((region) => (
+                            <span
+                              key={region.id}
+                              className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] text-gray-600"
+                            >
+                              {region.label}
+                              <span className="ml-1 text-gray-800">
+                                {region.count}
+                              </span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {user.prefectureCounts.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[11px] font-semibold text-gray-600">
+                            都道府県別
+                          </span>
+                          {user.prefectureCounts.map((prefecture) => (
+                            <span
+                              key={prefecture.id}
+                              className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] text-gray-600"
+                            >
+                              {prefecture.label}
+                              <span className="ml-1 text-gray-800">
+                                {prefecture.count}
+                              </span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-500">
-                      所持ポケフタ：{user.pokefutaCount}枚
+                      登録枚数：{user.pokefutaCount}枚
                     </p>
                     <span className="text-xs text-blue-600">詳細を見る</span>
                   </div>
