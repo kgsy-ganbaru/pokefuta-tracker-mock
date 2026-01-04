@@ -16,6 +16,16 @@ export default function BulkRegisterClient({
   pokefutaRows: PokefutaRow[];
   isLoggedIn: boolean;
 }) {
+  type BulkSelection = {
+    id: number;
+    region_id: number;
+    prefecture_id: number | null;
+    city_name: string;
+    image_url: string | null;
+    pokemon_names: string;
+    count: number;
+  };
+
   const router = useRouter();
   const regionSections = buildRegionSections(pokefutaRows);
   const [expandedRegionIds, setExpandedRegionIds] = useState<
@@ -43,8 +53,39 @@ export default function BulkRegisterClient({
   );
 
   useEffect(() => {
-    setCounts(initialCounts);
-    setTouchedIds(new Set());
+    if (typeof window === "undefined") {
+      setCounts(initialCounts);
+      setTouchedIds(new Set());
+      return;
+    }
+
+    const stored = window.localStorage.getItem(
+      "bulkUpdateSelections"
+    );
+    if (!stored) {
+      setCounts(initialCounts);
+      setTouchedIds(new Set());
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(stored) as BulkSelection[];
+      const storedCounts: Record<number, number> = {};
+      const storedTouched = new Set<number>();
+      if (Array.isArray(parsed)) {
+        parsed.forEach((row) => {
+          if (row.count > 0) {
+            storedCounts[row.id] = row.count;
+            storedTouched.add(row.id);
+          }
+        });
+      }
+      setCounts({ ...initialCounts, ...storedCounts });
+      setTouchedIds(storedTouched);
+    } catch {
+      setCounts(initialCounts);
+      setTouchedIds(new Set());
+    }
   }, [initialCounts]);
 
   const toggleRegion = (
@@ -93,6 +134,36 @@ export default function BulkRegisterClient({
       }
       return next;
     });
+  };
+
+  const handleConfirm = () => {
+    if (!isLoggedIn || typeof window === "undefined") {
+      return;
+    }
+
+    const selections: BulkSelection[] = pokefutaRows
+      .map((row) => {
+        const count = counts[row.id] ?? 0;
+        if (count <= 0) {
+          return null;
+        }
+        return {
+          id: row.id,
+          region_id: row.region_id,
+          prefecture_id: row.prefecture_id,
+          city_name: row.city_name,
+          image_url: row.image_url,
+          pokemon_names: row.pokemon_names,
+          count,
+        };
+      })
+      .filter((row): row is BulkSelection => row !== null);
+
+    window.localStorage.setItem(
+      "bulkUpdateSelections",
+      JSON.stringify(selections)
+    );
+    router.push("/bulk/confirm");
   };
 
   return (
@@ -300,7 +371,7 @@ export default function BulkRegisterClient({
       <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
         <button
           type="button"
-          onClick={() => router.push("/bulk/confirm")}
+          onClick={handleConfirm}
           disabled={!isLoggedIn}
           className="w-36 rounded-full bg-green-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-green-700 disabled:bg-gray-300"
         >
