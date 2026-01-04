@@ -54,6 +54,8 @@ export default async function UserDetailPage({
   params,
 }: UserDetailPageProps) {
   const supabase = await createClient();
+  const userIdParam =
+    typeof params?.userId === "string" ? params.userId : "";
 
   if (!supabase) {
     return (
@@ -78,13 +80,36 @@ export default async function UserDetailPage({
     );
   }
 
-  const lookupColumn = uuidPattern.test(params.userId)
+  if (!userIdParam) {
+    return (
+      <main className="max-w-5xl mx-auto px-4 pb-16">
+        <section className="mt-6">
+          <h1 className="text-xl font-semibold mb-2">
+            ユーザーのポケフタ状況
+          </h1>
+          <p className="text-sm text-gray-500">
+            指定されたユーザーが見つかりませんでした。
+          </p>
+        </section>
+        <div className="mt-10">
+          <Link
+            href="/users"
+            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+          >
+            ユーザー一覧に戻る
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const lookupColumn = uuidPattern.test(userIdParam)
     ? "id"
     : "user_id";
   const { data: userRows } = await supabase
     .from("users")
     .select("id, user_id, nickname")
-    .eq(lookupColumn, params.userId)
+    .eq(lookupColumn, userIdParam)
     .limit(1);
 
   const user = (userRows ?? [])[0] as UserRow | undefined;
