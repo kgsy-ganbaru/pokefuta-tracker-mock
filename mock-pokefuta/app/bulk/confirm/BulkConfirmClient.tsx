@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   getPrefectureName,
   REGION_LABELS,
   REGION_ORDER,
 } from "../../utils/pokefutaGrouping";
+import {
+  bulkUpdateOwnershipAction,
+  BulkOwnershipSelection,
+} from "@/app/actions/ownership";
 
 type BulkSelection = {
   id: number;
@@ -21,6 +25,8 @@ type BulkSelection = {
 export default function BulkConfirmClient() {
   const router = useRouter();
   const [rows, setRows] = useState<BulkSelection[]>([]);
+  const [submitError, setSubmitError] = useState<string>("");
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -70,10 +76,23 @@ export default function BulkConfirmClient() {
 
   const handleSubmit = () => {
     if (typeof window === "undefined") return;
+    if (rows.length === 0 || isPending) return;
     const confirmed = window.confirm("更新しますか？");
     if (!confirmed) return;
-    window.localStorage.removeItem("bulkUpdateSelections");
-    router.push("/");
+    const payload: BulkOwnershipSelection[] = rows.map((row) => ({
+      id: row.id,
+      count: row.count,
+    }));
+    setSubmitError("");
+    startTransition(async () => {
+      const result = await bulkUpdateOwnershipAction(payload);
+      if (result?.error) {
+        setSubmitError(result.error);
+        return;
+      }
+      window.localStorage.removeItem("bulkUpdateSelections");
+      router.push("/");
+    });
   };
 
   return (
@@ -175,11 +194,17 @@ export default function BulkConfirmClient() {
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-48 rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-green-700"
+          disabled={rows.length === 0 || isPending}
+          className="w-48 rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
-          更新する
+          {isPending ? "更新中..." : "更新する"}
         </button>
       </div>
+      {submitError && (
+        <p className="mt-4 text-center text-sm text-red-600">
+          {submitError}
+        </p>
+      )}
     </main>
   );
 }

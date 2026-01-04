@@ -9,6 +9,16 @@ export type OwnershipState = {
   success?: boolean;
 };
 
+export type BulkOwnershipState = {
+  error?: string;
+  success?: boolean;
+};
+
+export type BulkOwnershipSelection = {
+  id: number;
+  count: number;
+};
+
 export async function updateOwnershipAction(
   _prevState: OwnershipState,
   formData: FormData
@@ -61,6 +71,63 @@ export async function updateOwnershipAction(
   }
 
   revalidatePath(`/pokefuta/${pokefutaId}`);
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function bulkUpdateOwnershipAction(
+  selections: BulkOwnershipSelection[]
+): Promise<BulkOwnershipState> {
+  if (!Array.isArray(selections)) {
+    return { error: "更新対象が不正です" };
+  }
+
+  const supabase = await createClient();
+  if (!supabase) {
+    return { error: "Supabase環境変数が設定されていません" };
+  }
+
+  const user = await getAuthProfile(supabase);
+  if (!user) {
+    return { error: "ポケふたを登録するにはログインが必要です" };
+  }
+
+  for (const selection of selections) {
+    const pokefutaId = Number(selection.id);
+    const count = Number(selection.count);
+    if (!Number.isFinite(pokefutaId) || !Number.isFinite(count)) {
+      return { error: "更新対象が不正です" };
+    }
+
+    if (count <= 0) {
+      const { error } = await supabase
+        .from("ownership")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("pokefuta_id", pokefutaId);
+
+      if (error) {
+        return { error: "更新に失敗しました" };
+      }
+    } else {
+      const { error } = await supabase.from("ownership").upsert(
+        {
+          user_id: user.id,
+          pokefuta_id: pokefutaId,
+          count,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,pokefuta_id" }
+      );
+
+      if (error) {
+        return { error: "更新に失敗しました" };
+      }
+    }
+
+    revalidatePath(`/pokefuta/${pokefutaId}`);
+  }
+
   revalidatePath("/");
   return { success: true };
 }
