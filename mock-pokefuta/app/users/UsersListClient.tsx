@@ -163,9 +163,6 @@ export default function UsersListClient({
                       {user.name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      ユーザーID：{user.userId}
-                    </p>
-                    <p className="text-xs text-gray-500">
                       登録日：{formatDate(user.registeredAt)}
                     </p>
                   </div>
