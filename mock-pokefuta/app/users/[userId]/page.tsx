@@ -48,24 +48,13 @@ export default async function UserDetailPage({
   const { data: userRows } = await supabase
     .from("users")
     .select("id, user_id, nickname")
-    .eq("user_id", params.userId)
+    .eq("id", params.userId)
     .limit(1);
 
-  const { data: fallbackRows } =
-    userRows && userRows.length > 0
-      ? { data: null }
-      : await supabase
-          .from("users")
-          .select("id, user_id, nickname")
-          .eq("id", params.userId)
-          .limit(1);
-
-  const user = ((userRows ?? [])[0] ??
-    (fallbackRows ?? [])[0]) as UserRow | undefined;
+  const user = (userRows ?? [])[0] as UserRow | undefined;
   const userName =
     user?.nickname ?? user?.user_id ?? "ユーザー";
-  const userId =
-    user?.user_id ?? user?.id ?? params.userId;
+  const userId = user?.id ?? params.userId;
 
   const pokefutaRows = await fetchPokefutaRows(supabase, userId);
   const ownedRows = pokefutaRows.filter(
