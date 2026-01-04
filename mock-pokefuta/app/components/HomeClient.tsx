@@ -43,6 +43,12 @@ export default function HomeClient({
           (section) => section.regionId === activeRegionId
         )?.prefectureIdsToRender ?? []
       : [];
+  const regionSectionsById = regionSections.reduce<
+    Record<number, typeof regionSections[number]>
+  >((acc, section) => {
+    acc[section.regionId] = section;
+    return acc;
+  }, {});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,16 +120,65 @@ export default function HomeClient({
             地域ナビ
         ===================== */}
         <section className="mt-8 mb-6">
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {REGION_ORDER.map((id) => (
-              <button
-                key={id}
-                onClick={() => setActiveRegionId(id)}
-                className="px-4 py-2 rounded-full border text-sm whitespace-nowrap"
-              >
-                {REGION_LABELS[id]}
-              </button>
-            ))}
+          <div className="space-y-3">
+            {REGION_ORDER.map((id) => {
+              const isActive = activeRegionId === id;
+              const prefectureIds =
+                regionSectionsById[id]?.prefectureIdsToRender ??
+                [];
+              return (
+                <div
+                  key={id}
+                  className="rounded-2xl border bg-white"
+                >
+                  <button
+                    onClick={() =>
+                      setActiveRegionId((prev) =>
+                        prev === id ? null : id
+                      )
+                    }
+                    className="w-full px-4 py-3 text-left text-sm font-semibold flex items-center justify-between"
+                  >
+                    <span>{REGION_LABELS[id]}</span>
+                    <span className="text-xs text-gray-400">
+                      {isActive ? "閉じる" : "開く"}
+                    </span>
+                  </button>
+                  {isActive && (
+                    <div className="border-t px-4 py-3">
+                      {prefectureIds.length === 0 ? (
+                        <p className="text-sm text-gray-400">
+                          データがありません
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {prefectureIds.map((prefectureId) => {
+                            const prefectureName =
+                              getPrefectureName(prefectureId);
+                            return (
+                              <button
+                                key={prefectureId}
+                                onClick={() => {
+                                  sectionRefs.current[
+                                    `${id}-${prefectureId}`
+                                  ]?.scrollIntoView({
+                                    behavior: "smooth",
+                                  });
+                                  setShowBackToTop(true);
+                                }}
+                                className="px-3 py-2 rounded-full border text-sm hover:bg-gray-50"
+                              >
+                                {prefectureName}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -231,43 +286,10 @@ export default function HomeClient({
         </section>
       </main>
 
-      {activeRegionId !== null && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm font-semibold">
-                {REGION_LABELS[activeRegionId]}の都道府県
-              </div>
-              <button
-                onClick={() => setActiveRegionId(null)}
-                className="text-sm text-gray-500"
-              >
-                閉じる
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {activePrefectureIds.map((prefectureId) => {
-                const prefectureName =
-                  getPrefectureName(prefectureId);
-                return (
-                  <button
-                    key={prefectureId}
-                    onClick={() => {
-                      sectionRefs.current[
-                        `${activeRegionId}-${prefectureId}`
-                      ]?.scrollIntoView({ behavior: "smooth" });
-                      setActiveRegionId(null);
-                      setShowBackToTop(true);
-                    }}
-                    className="px-3 py-2 rounded-lg border text-sm text-left hover:bg-gray-50"
-                  >
-                    {prefectureName}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+      {activeRegionId !== null && activePrefectureIds.length === 0 && (
+        <p className="sr-only">
+          {REGION_LABELS[activeRegionId]}に都道府県データがありません。
+        </p>
       )}
 
       {/* =====================

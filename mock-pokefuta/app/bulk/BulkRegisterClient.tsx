@@ -6,7 +6,6 @@ import {
   buildRegionSections,
   getPrefectureName,
   REGION_LABELS,
-  REGION_ORDER,
 } from "../utils/pokefutaGrouping";
 import { PokefutaRow } from "../lib/pokefuta/listData";
 
@@ -111,13 +110,16 @@ export default function BulkRegisterClient({
           )}
         </section>
 
-        <section className="mt-8 space-y-8">
+        <section className="mt-8 space-y-6">
           {regionSections.map((section) => {
             const isRegionExpanded = expandedRegionIds.has(
               section.regionId
             );
             return (
-              <div key={section.regionId}>
+              <div
+                key={section.regionId}
+                className="rounded-2xl border bg-white"
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -126,17 +128,20 @@ export default function BulkRegisterClient({
                       section.prefectureIdsToRender
                     )
                   }
-                  className={`px-4 py-2 rounded-full border text-sm font-semibold transition ${
+                  className={`w-full px-4 py-3 text-left text-sm font-semibold flex items-center justify-between transition ${
                     isRegionExpanded
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "text-blue-700"
                       : "hover:bg-gray-50"
                   }`}
                 >
-                  {REGION_LABELS[section.regionId]}
+                  <span>{REGION_LABELS[section.regionId]}</span>
+                  <span className="text-xs text-gray-400">
+                    {isRegionExpanded ? "閉じる" : "開く"}
+                  </span>
                 </button>
                 {isRegionExpanded ? (
                   section.prefectureIdsToRender.length > 0 ? (
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="border-t px-4 py-3 flex flex-wrap gap-2">
                       {section.prefectureIdsToRender.map(
                         (prefectureId) => {
                           const prefectureName =
@@ -152,7 +157,7 @@ export default function BulkRegisterClient({
                               onClick={() =>
                                 togglePrefecture(prefectureId)
                               }
-                              className={`px-3 py-2 rounded-lg border text-sm transition ${
+                              className={`px-3 py-2 rounded-full border text-sm transition ${
                                 isPrefectureExpanded
                                   ? "bg-blue-600 text-white border-blue-600"
                                   : "hover:bg-gray-50"
@@ -165,7 +170,7 @@ export default function BulkRegisterClient({
                       )}
                     </div>
                   ) : (
-                    <p className="mt-4 text-sm text-gray-400">
+                    <p className="border-t px-4 py-3 text-sm text-gray-400">
                       データがありません
                     </p>
                   )
@@ -188,7 +193,7 @@ export default function BulkRegisterClient({
                       return (
                         <div
                           key={prefectureId}
-                          className="mt-6"
+                          className="border-t px-4 py-5"
                         >
                           <h4 className="text-sm font-semibold text-gray-600 mb-2">
                             {getPrefectureName(prefectureId)}
