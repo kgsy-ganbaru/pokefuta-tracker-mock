@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/server";
-import { fetchPokefutaRows } from "@/app/lib/pokefuta/listData";
+import {
+  fetchPokefutaRows,
+  PokefutaRow,
+} from "@/app/lib/pokefuta/listData";
 import {
   buildRegionSections,
   getPrefectureName,
@@ -19,6 +22,33 @@ type UserRow = {
 
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+type PokefutaRowInput = Pick<PokefutaRow, "id"> &
+  Partial<PokefutaRow>;
+
+const normalizePokefutaRows = (
+  rows: PokefutaRowInput[]
+): PokefutaRow[] =>
+  rows.map((row, index) => {
+    const rawId =
+      typeof row.id === "number" ? row.id : Number(row.id);
+    const safeId = Number.isFinite(rawId)
+      ? rawId
+      : index + 1;
+
+    return {
+      id: safeId,
+      region_id: row.region_id ?? 1,
+      prefecture_id: row.prefecture_id ?? null,
+      city_name: row.city_name ?? "",
+      difficulty_code: row.difficulty_code ?? "",
+      image_url: row.image_url ?? null,
+      pokemon_names: row.pokemon_names ?? "",
+      owned_count: row.owned_count ?? 0,
+      any_owned_count:
+        row.any_owned_count ?? row.owned_count ?? 0,
+    };
+  });
 
 export default async function UserDetailPage({
   params,
@@ -86,7 +116,7 @@ export default async function UserDetailPage({
   }
 
   const pokefutaRows = await fetchPokefutaRows(supabase, userId);
-  const ownedRows = pokefutaRows.filter(
+  const ownedRows = normalizePokefutaRows(pokefutaRows).filter(
     (row) => row.owned_count > 0
   );
   const regionSections = buildRegionSections(ownedRows);
