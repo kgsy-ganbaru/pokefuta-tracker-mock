@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/server";
-import { fetchPokefutaRows } from "@/app/lib/pokefuta/listData";
+// import { fetchPokefutaRows } from "@/app/lib/pokefuta/listData";
 import {
   buildRegionSections,
   getPrefectureName,
@@ -85,10 +85,18 @@ export default async function UserDetailPage({
     );
   }
 
-  const pokefutaRows = await fetchPokefutaRows(supabase, userId);
-  const ownedRows = pokefutaRows.filter(
-    (row) => row.owned_count > 0
-  );
+  // const pokefutaRows = await fetchPokefutaRows(supabase, userId);
+  // const ownedRows = pokefutaRows.filter(
+  //   (row) => row.owned_count > 0
+  // );
+  // const regionSections = buildRegionSections(ownedRows);
+  const ownedRows: Array<{
+    id: string;
+    owned_count: number;
+    image_url: string | null;
+    city_name: string | null;
+    prefecture_id: number | null;
+  }> = [];
   const regionSections = buildRegionSections(ownedRows);
 
   return (
