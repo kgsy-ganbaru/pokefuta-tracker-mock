@@ -59,10 +59,19 @@ export default function HomeClient({
         id="scroll-root"
         className="max-w-3xl mx-auto px-4 pb-24"
       >
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={() => router.push("/bulk")}
+            className="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+          >
+            一括登録
+          </button>
+        </div>
+
         {/* =====================
             最近ゲット
         ===================== */}
-        <section className="mt-6">
+        <section className="mt-4">
           <h2 className="text-lg font-semibold mb-3">
             最近ゲット
           </h2>
