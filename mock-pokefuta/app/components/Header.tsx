@@ -77,6 +77,8 @@ export default function Header({ user }: { user: HeaderUser }) {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isUsers = pathname?.startsWith("/users");
+  const isBoard = pathname === "/board";
   return (
     <header className="border-b bg-white">
       <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
@@ -107,10 +109,12 @@ export default function Header({ user }: { user: HeaderUser }) {
             <span>ホーム</span>
           </button>
 
-          {/* ユーザ一覧（将来追加予定） */}
+          {/* ユーザ一覧 */}
           <button
-            type="button"
-            className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-blue-600"
+            onClick={() => router.push("/users")}
+            className={`flex flex-col items-center text-[10px] font-medium transition ${
+              isUsers ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+            }`}
           >
             <span className="text-current">
               <UsersIcon />
@@ -118,10 +122,12 @@ export default function Header({ user }: { user: HeaderUser }) {
             <span>ユーザ一覧</span>
           </button>
 
-          {/* 掲示板（将来追加予定） */}
+          {/* 掲示板 */}
           <button
-            type="button"
-            className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-blue-600"
+            onClick={() => router.push("/board")}
+            className={`flex flex-col items-center text-[10px] font-medium transition ${
+              isBoard ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+            }`}
           >
             <span className="text-current">
               <BoardIcon />
