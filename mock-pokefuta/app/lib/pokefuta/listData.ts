@@ -51,6 +51,11 @@ type RecentOwnership = {
   users: RecentUser | RecentUser[] | null;
 };
 
+type OwnershipCountRow = {
+  pokefuta_id: number | string;
+  count: number | string | null;
+};
+
 function takeFirst<T>(value: T | T[] | null | undefined) {
   if (!value) return null;
   return Array.isArray(value) ? value[0] ?? null : value;
@@ -119,19 +124,31 @@ export async function fetchPokefutaRows(
         .eq("user_id", userId)
     : { data: [] };
 
-  const ownershipMap = new Map<number, number>(
-    (ownershipData ?? []).map((row) => [row.pokefuta_id, row.count])
-  );
+  const ownershipMap = new Map<number, number>();
+  (ownershipData ?? []).forEach((row: OwnershipCountRow) => {
+    const pokefutaId = Number(row.pokefuta_id);
+    if (!Number.isFinite(pokefutaId)) return;
+    const count = Number(row.count ?? 0);
+    ownershipMap.set(
+      pokefutaId,
+      (ownershipMap.get(pokefutaId) ?? 0) +
+        (Number.isFinite(count) ? count : 0)
+    );
+  });
 
   const { data: anyOwnershipData } = await supabase
     .from("ownership")
     .select("pokefuta_id, count");
 
   const anyOwnershipMap = new Map<number, number>();
-  (anyOwnershipData ?? []).forEach((row) => {
+  (anyOwnershipData ?? []).forEach((row: OwnershipCountRow) => {
+    const pokefutaId = Number(row.pokefuta_id);
+    if (!Number.isFinite(pokefutaId)) return;
+    const count = Number(row.count ?? 0);
     anyOwnershipMap.set(
-      row.pokefuta_id,
-      (anyOwnershipMap.get(row.pokefuta_id) ?? 0) + row.count
+      pokefutaId,
+      (anyOwnershipMap.get(pokefutaId) ?? 0) +
+        (Number.isFinite(count) ? count : 0)
     );
   });
 
