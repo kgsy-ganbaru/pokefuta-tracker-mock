@@ -40,13 +40,16 @@ export default async function UsersPage() {
     );
   });
 
-  const users: UserListItem[] = (usersData ?? []).map((row: UserRow) => ({
-    id: row.id,
-    userId: row.user_id ?? row.id,
-    name: row.nickname ?? row.user_id ?? "未設定",
-    pokefutaCount: ownershipMap.get(row.id) ?? 0,
-    registeredAt: row.created_at ?? "",
-  }));
+  const users: UserListItem[] = (usersData ?? []).map((row: UserRow) => {
+    const resolvedUserId = row.user_id ?? row.id;
+    return {
+      id: row.id,
+      userId: resolvedUserId,
+      name: row.nickname ?? row.user_id ?? "未設定",
+      pokefutaCount: ownershipMap.get(resolvedUserId) ?? 0,
+      registeredAt: row.created_at ?? "",
+    };
+  });
 
   return (
     <main className="max-w-3xl mx-auto p-6">
