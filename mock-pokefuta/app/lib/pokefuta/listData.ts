@@ -36,15 +36,19 @@ type PokefutaRecord = {
 };
 
 type RecentOwnership = {
-  pokefuta: {
-    id: number;
-    city_name: string;
-    image_url: string | null;
-    pokefuta_pokemon: PokemonRow[] | null;
-  } | null;
-  users: {
-    nickname: string | null;
-  } | null;
+  pokefuta:
+    | {
+        id: number;
+        city_name: string;
+        image_url: string | null;
+        pokefuta_pokemon: PokemonRow[] | null;
+      }[]
+    | null;
+  users:
+    | {
+        nickname: string | null;
+      }[]
+    | null;
 };
 
 export function formatPokemonNames(rows: PokemonRow[] | null) {
@@ -71,15 +75,20 @@ export async function fetchRecentRows(
     .limit(5);
 
   return (recentData ?? [])
-    .map((row: RecentOwnership) => ({
-      id: row.pokefuta?.id ?? 0,
-      city_name: row.pokefuta?.city_name ?? "",
-      image_url: row.pokefuta?.image_url ?? null,
-      pokemon_names: formatPokemonNames(
-        row.pokefuta?.pokefuta_pokemon ?? []
-      ),
-      user_names: row.users?.nickname ?? "",
-    }))
+    .map((row: RecentOwnership) => {
+      const pokefuta = row.pokefuta?.[0] ?? null;
+      const user = row.users?.[0] ?? null;
+
+      return {
+        id: pokefuta?.id ?? 0,
+        city_name: pokefuta?.city_name ?? "",
+        image_url: pokefuta?.image_url ?? null,
+        pokemon_names: formatPokemonNames(
+          pokefuta?.pokefuta_pokemon ?? []
+        ),
+        user_names: user?.nickname ?? "",
+      };
+    })
     .filter((row) => row.id !== 0);
 }
 
