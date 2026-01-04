@@ -34,6 +34,7 @@ export default function BulkRegisterClient({
   const [expandedPrefectureIds, setExpandedPrefectureIds] = useState<
     Set<number>
   >(new Set());
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const initialCounts = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -74,10 +75,8 @@ export default function BulkRegisterClient({
       const storedTouched = new Set<number>();
       if (Array.isArray(parsed)) {
         parsed.forEach((row) => {
-          if (row.count > 0) {
-            storedCounts[row.id] = row.count;
-            storedTouched.add(row.id);
-          }
+          storedCounts[row.id] = row.count;
+          storedTouched.add(row.id);
         });
       }
       setCounts({ ...initialCounts, ...storedCounts });
@@ -87,6 +86,16 @@ export default function BulkRegisterClient({
       setTouchedIds(new Set());
     }
   }, [initialCounts]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleRegion = (
     regionId: number,
@@ -127,7 +136,8 @@ export default function BulkRegisterClient({
     setCounts((prev) => ({ ...prev, [id]: clamped }));
     setTouchedIds((prev) => {
       const next = new Set(prev);
-      if (clamped === 0) {
+      const baseline = initialCounts[id] ?? 0;
+      if (clamped === baseline) {
         next.delete(id);
       } else {
         next.add(id);
@@ -144,7 +154,8 @@ export default function BulkRegisterClient({
     const selections: BulkSelection[] = pokefutaRows
       .map((row) => {
         const count = counts[row.id] ?? 0;
-        if (count <= 0) {
+        const baseline = initialCounts[row.id] ?? 0;
+        if (count === baseline) {
           return null;
         }
         return {
@@ -378,6 +389,18 @@ export default function BulkRegisterClient({
           更新
         </button>
       </div>
+
+      {showBackToTop && (
+        <button
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: "smooth" })
+          }
+          className="fixed bottom-20 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
+          aria-label="ページの先頭へ戻る"
+        >
+          ↑
+        </button>
+      )}
     </>
   );
 }
