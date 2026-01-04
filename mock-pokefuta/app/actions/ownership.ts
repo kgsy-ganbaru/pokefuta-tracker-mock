@@ -30,7 +30,7 @@ export async function updateOwnershipAction(
     return { error: "不正なポケふたIDです" };
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
@@ -82,7 +82,7 @@ export async function bulkUpdateOwnershipAction(
     return { error: "更新対象が不正です" };
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }

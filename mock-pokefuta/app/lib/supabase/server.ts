@@ -28,7 +28,15 @@ function getSupabaseConfig() {
   return { supabaseUrl, supabaseAnonKey };
 }
 
-export async function createClient(): Promise<SupabaseServerClient | null> {
+type CookieMode = "read-only" | "read-write";
+
+type CreateClientOptions = {
+  cookieMode?: CookieMode;
+};
+
+export async function createClient(
+  options: CreateClientOptions = {}
+): Promise<SupabaseServerClient | null> {
   const cookieStore = await cookies();
   const config = getSupabaseConfig();
 
@@ -36,16 +44,22 @@ export async function createClient(): Promise<SupabaseServerClient | null> {
     return null;
   }
 
+  const cookieMode = options.cookieMode ?? "read-only";
+
   return createServerClient(config.supabaseUrl, config.supabaseAnonKey, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
       set(name: string, value: string, options: CookieOptions) {
-        cookieStore.set({ name, value, ...options });
+        if (cookieMode === "read-write") {
+          cookieStore.set({ name, value, ...options });
+        }
       },
       remove(name: string, options: CookieOptions) {
-        cookieStore.set({ name, value: "", ...options });
+        if (cookieMode === "read-write") {
+          cookieStore.set({ name, value: "", ...options });
+        }
       },
     },
   });

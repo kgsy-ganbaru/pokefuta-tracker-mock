@@ -34,7 +34,7 @@ export async function loginAction(
     };
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
@@ -54,7 +54,7 @@ export async function logoutAction(
   _prevState: LogoutState,
   _formData: FormData
 ): Promise<LogoutState> {
-  const supabase = await createClient();
+  const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
@@ -79,7 +79,7 @@ export async function registerAction(
     };
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
