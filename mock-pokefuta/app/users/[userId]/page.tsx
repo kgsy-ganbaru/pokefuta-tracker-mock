@@ -11,7 +11,7 @@ import {
 } from "@/app/utils/pokefutaGrouping";
 
 type UserDetailPageProps = {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 };
 
 type UserRow = {
@@ -54,8 +54,11 @@ export default async function UserDetailPage({
   params,
 }: UserDetailPageProps) {
   const supabase = await createClient();
+  const resolvedParams = await params;
   const userIdParam =
-    typeof params?.userId === "string" ? params.userId : "";
+    typeof resolvedParams?.userId === "string"
+      ? resolvedParams.userId
+      : "";
 
   if (!supabase) {
     return (
