@@ -9,6 +9,7 @@ import {
   getPrefectureName,
   REGION_LABELS,
 } from "@/app/utils/pokefutaGrouping";
+import ImageWithFallback from "@/app/components/ImageWithFallback";
 
 type UserDetailPageProps = {
   params: Promise<{ userId: string }>;
@@ -203,14 +204,10 @@ export default async function UserDetailPage({
                                   key={row.id}
                                   className="border rounded-xl p-2 text-center shadow-sm bg-white"
                                 >
-                                  <img
+                                  <ImageWithFallback
                                     src={
                                       row.image_url ||
                                       "/no-image.png"
-                                    }
-                                    onError={(e) =>
-                                      ((e.currentTarget as HTMLImageElement).src =
-                                        "/no-image.png")
                                     }
                                     className="w-full aspect-square rounded-full object-cover"
                                     alt=""
