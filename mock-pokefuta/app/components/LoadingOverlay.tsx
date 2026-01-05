@@ -2,10 +2,14 @@ export default function LoadingOverlay() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 text-gray-900 backdrop-blur-sm">
       <div className="flex flex-col items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"
-        />
+        <div aria-hidden="true" className="pokeball-swing">
+          <div className="pokeball-shell">
+            <span className="pokeball-top" />
+            <span className="pokeball-bottom" />
+            <span className="pokeball-line" />
+            <span className="pokeball-button" />
+          </div>
+        </div>
         <p className="text-sm font-medium">画面を読み込み中…</p>
       </div>
     </div>
