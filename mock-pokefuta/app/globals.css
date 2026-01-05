@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f3e8;
+  --background: #ffffff;
   --foreground: #2d3a2f;
   --pf-surface: #fffdf8;
   --pf-surface-alt: #f1f7ee;
@@ -12,8 +12,8 @@
   --pf-green-strong: #4ea46a;
   --pf-yellow: #f7d277;
   --pf-yellow-soft: #fbe6a3;
-  --pf-red: #f3a7a7;
-  --pf-red-strong: #e68484;
+  --pf-red: #cc3333;
+  --pf-red-strong: #cc3333;
 }
 
 @theme inline {
@@ -25,7 +25,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #f7f3e8;
+    --background: #ffffff;
     --foreground: #2d3a2f;
     --pf-surface: #fffdf8;
     --pf-surface-alt: #f1f7ee;
@@ -36,8 +36,8 @@
     --pf-green-strong: #4ea46a;
     --pf-yellow: #f7d277;
     --pf-yellow-soft: #fbe6a3;
-    --pf-red: #f3a7a7;
-    --pf-red-strong: #e68484;
+    --pf-red: #cc3333;
+    --pf-red-strong: #cc3333;
   }
 }
 
