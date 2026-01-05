@@ -19,6 +19,7 @@ type UserRow = {
   id: string;
   user_id: string | null;
   nickname: string | null;
+  comment: string | null;
 };
 
 const uuidPattern =
@@ -112,7 +113,7 @@ export default async function UserDetailPage({
     : "user_id";
   const { data: userRows } = await supabase
     .from("users")
-    .select("id, user_id, nickname")
+    .select("id, user_id, nickname, comment")
     .eq(lookupColumn, userIdParam)
     .limit(1);
 
@@ -120,6 +121,10 @@ export default async function UserDetailPage({
   const userName =
     user?.nickname ?? user?.user_id ?? "ユーザー";
   const userId = user?.id ?? null;
+  const comment =
+    user?.comment && user.comment.trim().length > 0
+      ? user.comment
+      : "コメントはまだありません";
 
   if (!user) {
     return (
@@ -156,9 +161,7 @@ export default async function UserDetailPage({
         <h1 className="text-xl font-semibold mb-2">
           {userName}さんのポケフタ状況
         </h1>
-        <p className="text-sm text-gray-500">
-          ユーザーが所持しているポケフタの一覧を確認できます。
-        </p>
+        <p className="text-sm text-gray-500">{comment}</p>
         <p className="text-sm font-semibold text-gray-700 mt-2">
           所持ポケフタ {ownedRows.length} 件
         </p>
