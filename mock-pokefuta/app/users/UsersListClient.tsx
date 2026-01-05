@@ -27,8 +27,8 @@ type UsersListClientProps = {
 const sortLabels: Record<SortKey, string> = {
   "pokefuta-desc": "ポケフタ所持数：多い順",
   "pokefuta-asc": "ポケフタ所持数：少ない順",
-  "nickname-asc": "ユーザー名：昇順",
-  "nickname-desc": "ユーザー名：降順",
+  "nickname-asc": "ユーザ名：昇順",
+  "nickname-desc": "ユーザ名：降順",
   "registered-asc": "登録日：古い順",
   "registered-desc": "登録日：新しい順",
 };
@@ -123,13 +123,13 @@ export default function UsersListClient({
       <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-gray-800">
-            ユーザー一覧
+            ユーザ一覧
           </h2>
           <p className="text-sm text-gray-500">
-            ユーザーを選択すると、所持しているポケフタの状況を確認できます。
+            ユーザを選択すると、所持しているポケフタの状況を確認できます。
           </p>
           <div className="mt-2 text-xs text-gray-500">
-            登録ユーザー：
+            登録ユーザ：
             <span className="ml-1 font-semibold text-gray-700">
               {users.length}人
             </span>
@@ -177,11 +177,11 @@ export default function UsersListClient({
       <section className="rounded-lg border bg-white">
         {!isReady ? (
           <div className="px-4 py-6 text-sm text-gray-500">
-            Supabaseの接続設定が未完了のため、ユーザー一覧を取得できませんでした。
+            Supabaseの接続設定が未完了のため、ユーザ一覧を取得できませんでした。
           </div>
         ) : sortedUsers.length === 0 ? (
           <div className="px-4 py-6 text-sm text-gray-500">
-            まだユーザーが登録されていません。
+            まだユーザが登録されていません。
           </div>
         ) : (
           <ul className="divide-y">

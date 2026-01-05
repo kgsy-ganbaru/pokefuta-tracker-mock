@@ -29,7 +29,7 @@ export default function RegisterForm({
     <form action={formAction} className="space-y-2">
       <input
         name="userId"
-        placeholder="ユーザーID"
+        placeholder="ユーザID"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
         required

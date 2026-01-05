@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -380,14 +381,22 @@ export default function BulkRegisterClient({
       </main>
 
       <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-        <button
-          type="button"
-          onClick={handleConfirm}
-          disabled={!isLoggedIn}
-          className="w-36 rounded-full bg-green-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-green-700 disabled:bg-gray-300"
-        >
-          更新
-        </button>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/"
+            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
+          >
+            一覧へ戻る
+          </Link>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={!isLoggedIn}
+            className="w-36 rounded-full bg-green-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-green-700 disabled:bg-gray-300"
+          >
+            更新
+          </button>
+        </div>
       </div>
 
       {showBackToTop && (

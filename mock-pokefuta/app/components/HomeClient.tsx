@@ -204,8 +204,8 @@ export default function HomeClient({
                               ) > 0 && (
                                 <Image
                                   src="/status-any-owned-pokeball.svg"
-                                  alt="他のユーザーが取得済み"
-                                  title="他のユーザーが取得済み"
+                                  alt="他のユーザが取得済み"
+                                  title="他のユーザが取得済み"
                                   width={16}
                                   height={16}
                                 />

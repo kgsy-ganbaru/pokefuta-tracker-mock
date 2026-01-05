@@ -64,47 +64,51 @@ export default async function UserDetailPage({
 
   if (!supabase) {
     return (
-      <main className="max-w-5xl mx-auto px-4 pb-16">
-        <section className="mt-6">
-          <h1 className="text-xl font-semibold mb-2">
-            ユーザーのポケフタ状況
-          </h1>
-          <p className="text-sm text-gray-500">
-            Supabaseの接続設定が未完了のため、詳細情報を取得できませんでした。
-          </p>
-        </section>
-        <div className="mt-10">
+      <>
+        <main className="max-w-5xl mx-auto px-4 pb-32">
+          <section className="mt-6">
+            <h1 className="text-xl font-semibold mb-2">
+              ユーザのポケフタ状況
+            </h1>
+            <p className="text-sm text-gray-500">
+              Supabaseの接続設定が未完了のため、詳細情報を取得できませんでした。
+            </p>
+          </section>
+        </main>
+        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
           <Link
             href="/users"
-            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
           >
-            ユーザー一覧に戻る
+            ユーザ一覧に戻る
           </Link>
         </div>
-      </main>
+      </>
     );
   }
 
   if (!userIdParam) {
     return (
-      <main className="max-w-5xl mx-auto px-4 pb-16">
-        <section className="mt-6">
-          <h1 className="text-xl font-semibold mb-2">
-            ユーザーのポケフタ状況
-          </h1>
-          <p className="text-sm text-gray-500">
-            指定されたユーザーが見つかりませんでした。
-          </p>
-        </section>
-        <div className="mt-10">
+      <>
+        <main className="max-w-5xl mx-auto px-4 pb-32">
+          <section className="mt-6">
+            <h1 className="text-xl font-semibold mb-2">
+              ユーザのポケフタ状況
+            </h1>
+            <p className="text-sm text-gray-500">
+              指定されたユーザが見つかりませんでした。
+            </p>
+          </section>
+        </main>
+        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
           <Link
             href="/users"
-            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
           >
-            ユーザー一覧に戻る
+            ユーザ一覧に戻る
           </Link>
         </div>
-      </main>
+      </>
     );
   }
 
@@ -119,7 +123,7 @@ export default async function UserDetailPage({
 
   const user = (userRows ?? [])[0] as UserRow | undefined;
   const userName =
-    user?.nickname ?? user?.user_id ?? "ユーザー";
+    user?.nickname ?? user?.user_id ?? "ユーザ";
   const userId = user?.id ?? null;
   const comment =
     user?.comment && user.comment.trim().length > 0
@@ -128,24 +132,26 @@ export default async function UserDetailPage({
 
   if (!user) {
     return (
-      <main className="max-w-5xl mx-auto px-4 pb-16">
-        <section className="mt-6">
-          <h1 className="text-xl font-semibold mb-2">
-            ユーザーのポケフタ状況
-          </h1>
-          <p className="text-sm text-gray-500">
-            指定されたユーザーが見つかりませんでした。
-          </p>
-        </section>
-        <div className="mt-10">
+      <>
+        <main className="max-w-5xl mx-auto px-4 pb-32">
+          <section className="mt-6">
+            <h1 className="text-xl font-semibold mb-2">
+              ユーザのポケフタ状況
+            </h1>
+            <p className="text-sm text-gray-500">
+              指定されたユーザが見つかりませんでした。
+            </p>
+          </section>
+        </main>
+        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
           <Link
             href="/users"
-            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
           >
-            ユーザー一覧に戻る
+            ユーザ一覧に戻る
           </Link>
         </div>
-      </main>
+      </>
     );
   }
 
@@ -156,99 +162,101 @@ export default async function UserDetailPage({
   const regionSections = buildRegionSections(ownedRows);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 pb-16">
-      <section className="mt-6">
-        <h1 className="text-xl font-semibold mb-2">
-          {userName}さんのポケフタ状況
-        </h1>
-        <div className="mt-3">
-          <p className="text-sm font-medium text-gray-700">コメント</p>
-          <div className="mt-2 rounded-lg border bg-white px-3 py-2 text-sm text-gray-600">
-            {comment}
+    <>
+      <main className="max-w-7xl mx-auto px-4 pb-32">
+        <section className="mt-6">
+          <h1 className="text-xl font-semibold mb-2">
+            {userName}さんのポケフタ状況
+          </h1>
+          <div className="mt-3">
+            <p className="text-sm font-medium text-gray-700">コメント</p>
+            <div className="mt-2 rounded-lg border bg-white px-3 py-2 text-sm text-gray-600">
+              {comment}
+            </div>
           </div>
-        </div>
-        <p className="text-sm font-semibold text-gray-700 mt-2">
-          所持ポケフタ {ownedRows.length} 件
-        </p>
-      </section>
+          <p className="text-sm font-semibold text-gray-700 mt-2">
+            所持ポケフタ {ownedRows.length} 件
+          </p>
+        </section>
 
-      <section className="mt-8">
-        {ownedRows.length === 0 ? (
-          <div className="rounded-2xl border bg-white p-8 text-center text-sm text-gray-500">
-            所持しているポケフタがありません。
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {regionSections.map((section) => {
-              if (section.rows.length === 0) return null;
-              return (
-                <div
-                  key={section.regionId}
-                  className="rounded-2xl border bg-white p-4"
-                >
-                  <h2 className="text-sm font-semibold text-blue-700 mb-3">
-                    {REGION_LABELS[section.regionId]}
-                  </h2>
-                  <div className="space-y-5">
-                    {section.prefectureIdsToRender.map(
-                      (prefectureId) => {
-                        const entries =
-                          section.rowsByPrefectureId.get(
-                            prefectureId
-                          ) ?? [];
-                        if (entries.length === 0) return null;
-                        return (
-                          <div key={prefectureId}>
-                            <h3 className="text-xs font-semibold text-gray-600 mb-2">
-                              {getPrefectureName(
-                                prefectureId === 0
-                                  ? null
-                                  : prefectureId
-                              )}
-                            </h3>
-                            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
-                              {entries.map((row) => (
-                                <div
-                                  key={row.id}
-                                  className="border rounded-xl p-2 text-center shadow-sm bg-white"
-                                >
-                                  <ImageWithFallback
-                                    src={
-                                      row.image_url ||
-                                      "/no-image.png"
-                                    }
-                                    className="w-full aspect-square rounded-full object-cover"
-                                    alt=""
-                                  />
-                                  <div className="mt-2 text-xs font-semibold text-gray-700">
-                                    {row.city_name}
+        <section className="mt-8">
+          {ownedRows.length === 0 ? (
+            <div className="rounded-2xl border bg-white p-8 text-center text-sm text-gray-500">
+              所持しているポケフタがありません。
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {regionSections.map((section) => {
+                if (section.rows.length === 0) return null;
+                return (
+                  <div
+                    key={section.regionId}
+                    className="rounded-2xl border bg-white p-4"
+                  >
+                    <h2 className="text-sm font-semibold text-blue-700 mb-3">
+                      {REGION_LABELS[section.regionId]}
+                    </h2>
+                    <div className="space-y-5">
+                      {section.prefectureIdsToRender.map(
+                        (prefectureId) => {
+                          const entries =
+                            section.rowsByPrefectureId.get(
+                              prefectureId
+                            ) ?? [];
+                          if (entries.length === 0) return null;
+                          return (
+                            <div key={prefectureId}>
+                              <h3 className="text-xs font-semibold text-gray-600 mb-2">
+                                {getPrefectureName(
+                                  prefectureId === 0
+                                    ? null
+                                    : prefectureId
+                                )}
+                              </h3>
+                              <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
+                                {entries.map((row) => (
+                                  <div
+                                    key={row.id}
+                                    className="border rounded-xl p-2 text-center shadow-sm bg-white"
+                                  >
+                                    <ImageWithFallback
+                                      src={
+                                        row.image_url ||
+                                        "/no-image.png"
+                                      }
+                                      className="w-full aspect-square rounded-full object-cover"
+                                      alt=""
+                                    />
+                                    <div className="mt-2 text-xs font-semibold text-gray-700">
+                                      {row.city_name}
+                                    </div>
+                                    <div className="mt-2 text-xs font-semibold text-emerald-600">
+                                      登録数: {row.owned_count}
+                                    </div>
                                   </div>
-                                  <div className="mt-2 text-xs font-semibold text-emerald-600">
-                                    登録数: {row.owned_count}
-                                  </div>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      }
-                    )}
+                          );
+                        }
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </main>
 
-      <div className="mt-10 flex justify-center">
+      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
         <Link
           href="/users"
-          className="w-48 rounded-full border border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
         >
-          ユーザー一覧に戻る
+          ユーザ一覧に戻る
         </Link>
       </div>
-    </main>
+    </>
   );
 }
