@@ -87,7 +87,7 @@ export default function AccountProfileEditor({
           </>
         )}
         <div className="mt-3">
-          <p className="text-sm text-gray-500">ユーザーID</p>
+          <p className="text-sm text-gray-500">ユーザID</p>
           <p className="mt-1 text-base font-medium text-gray-900">
             {user.user_id}
           </p>

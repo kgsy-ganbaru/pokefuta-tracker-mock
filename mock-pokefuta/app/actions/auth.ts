@@ -34,7 +34,7 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
 
   if (!userId || !password) {
-    return { error: "ユーザーIDとパスワードを入力してください" };
+    return { error: "ユーザIDとパスワードを入力してください" };
   }
   if (password.length < MIN_PASSWORD_LENGTH) {
     return {
@@ -52,7 +52,7 @@ export async function loginAction(
   });
 
   if (error) {
-    return { error: "ユーザーIDまたはパスワードが違います" };
+    return { error: "ユーザIDまたはパスワードが違います" };
   }
 
   redirect("/account");
@@ -79,7 +79,7 @@ export async function registerAction(
   const password = String(formData.get("password") ?? "");
 
   if (!userId || !nickname || !password) {
-    return { error: "ユーザーID・ニックネーム・パスワードを入力してください" };
+    return { error: "ユーザID・ニックネーム・パスワードを入力してください" };
   }
   if (password.length < MIN_PASSWORD_LENGTH) {
     return {
@@ -99,11 +99,11 @@ export async function registerAction(
     .maybeSingle();
 
   if (existingError) {
-    return { error: "ユーザーIDの確認に失敗しました" };
+    return { error: "ユーザIDの確認に失敗しました" };
   }
 
   if (existingUser) {
-    return { error: "このユーザーIDは既に使用されています" };
+    return { error: "このユーザIDは既に使用されています" };
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -124,7 +124,7 @@ export async function registerAction(
       message.includes("already registered") ||
       message.includes("duplicate key")
     ) {
-      return { error: "このユーザーIDは既に使用されています" };
+      return { error: "このユーザIDは既に使用されています" };
     }
     return { error: "新規登録に失敗しました" };
   }
@@ -142,7 +142,7 @@ export async function registerAction(
 
   if (insertError) {
     if (insertError.code === "23505") {
-      return { error: "このユーザーIDは既に使用されています" };
+      return { error: "このユーザIDは既に使用されています" };
     }
     return { error: "新規登録に失敗しました" };
   }
