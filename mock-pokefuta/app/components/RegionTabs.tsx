@@ -10,28 +10,12 @@ export default function RegionTabs() {
 
   return (
     <div
-      style={{
-        position: "sticky",
-        top: 0,
-        background: "#fff",
-        borderBottom: "1px solid #ddd",
-        padding: "8px",
-        zIndex: 10,
-        display: "flex",
-        gap: "8px",
-        overflowX: "auto",
-      }}
+      className="sticky top-0 z-10 flex gap-2 overflow-x-auto border-b p-2 pft-tabbar"
     >
       {regions.map((r) => (
         <button
           key={r}
-          style={{
-            padding: "6px 12px",
-            borderRadius: "16px",
-            border: "1px solid #999",
-            background: "#fff",
-            whiteSpace: "nowrap",
-          }}
+          className="px-3 py-1.5 rounded-full text-sm whitespace-nowrap pft-chip"
         >
           {r}
         </button>

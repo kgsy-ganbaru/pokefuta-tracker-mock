@@ -9,42 +9,25 @@ export default function RecentGets({
   }[];
 }) {
   return (
-    <div style={{ padding: "12px" }}>
-      <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
+    <div className="p-3">
+      <div className="font-semibold mb-2 pft-section-title">
         最近ゲット
       </div>
 
-      <div style={{ display: "flex", gap: "12px", overflowX: "auto" }}>
+      <div className="flex gap-3 overflow-x-auto">
         {items.map((item) => (
           <div
             key={item.id}
-            style={{
-              minWidth: "120px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              padding: "8px",
-              textAlign: "center",
-              fontSize: "12px",
-            }}
+            className="min-w-[120px] rounded-lg p-2 text-center text-xs pft-card"
           >
             <div
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                background: "#f0f0f0",
-                margin: "0 auto 4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#666",
-              }}
+              className="w-12 h-12 rounded-full pft-placeholder mx-auto mb-1 flex items-center justify-center text-xs"
             >
               No Image
             </div>
 
             <div>{item.pokemonNames.join(" / ")}</div>
-            <div style={{ color: "#666" }}>
+            <div className="pft-muted">
               {item.nickname} {item.count}枚
             </div>
           </div>

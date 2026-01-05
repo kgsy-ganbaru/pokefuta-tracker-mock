@@ -61,7 +61,7 @@ export default function HomeClient({
         <div className="mt-6 flex justify-end">
           <button
             onClick={() => router.push("/bulk")}
-            className="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+            className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold"
           >
             一括登録
           </button>
@@ -71,7 +71,7 @@ export default function HomeClient({
             最近ゲット
         ===================== */}
         <section className="mt-4">
-          <h2 className="text-lg font-semibold mb-3">
+          <h2 className="text-lg font-semibold mb-3 pft-section-title">
             最近ゲット
           </h2>
 
@@ -79,7 +79,7 @@ export default function HomeClient({
             {recentRows.map((r) => (
               <div
                 key={r.id}
-                className="min-w-[220px] border rounded-xl p-4 bg-white"
+                className="min-w-[220px] rounded-xl p-4 pft-card"
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <img
@@ -118,7 +118,7 @@ export default function HomeClient({
               <button
                 key={id}
                 onClick={() => setActiveRegionId(id)}
-                className="px-4 py-2 rounded-full border text-sm whitespace-nowrap"
+                className="px-4 py-2 rounded-full text-sm whitespace-nowrap pft-chip"
               >
                 {REGION_LABELS[id]}
               </button>
@@ -162,7 +162,7 @@ export default function HomeClient({
                       }}
                       className="mb-6"
                     >
-                      <h4 className="text-sm font-semibold text-gray-600 mb-2">
+                      <h4 className="text-sm font-semibold text-gray-600 mb-2 pft-section-title">
                         {prefectureName}
                       </h4>
                       {prefectureRows.map((p) => (
@@ -171,7 +171,7 @@ export default function HomeClient({
                           onClick={() =>
                             router.push(`/pokefuta/${p.id}`)
                           }
-                          className="flex items-center gap-4 py-4 border-b cursor-pointer hover:bg-gray-50"
+                          className="flex items-center gap-4 py-4 cursor-pointer pft-row"
                         >
                           <img
                             src={p.image_url || "/no-image.png"}
@@ -232,7 +232,7 @@ export default function HomeClient({
 
       {activeRegionId !== null && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl p-4">
+          <div className="w-full max-w-md rounded-2xl p-4 pft-modal">
             <div className="flex items-center justify-between mb-3">
               <div className="text-sm font-semibold">
                 {REGION_LABELS[activeRegionId]}の都道府県
@@ -258,7 +258,7 @@ export default function HomeClient({
                       setActiveRegionId(null);
                       setShowBackToTop(true);
                     }}
-                    className="px-3 py-2 rounded-lg border text-sm text-left hover:bg-gray-50"
+                    className="px-3 py-2 rounded-lg text-sm text-left pft-chip"
                   >
                     {prefectureName}
                   </button>
@@ -277,7 +277,7 @@ export default function HomeClient({
           onClick={() =>
             window.scrollTo({ top: 0, behavior: "smooth" })
           }
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full text-white text-xl shadow-lg z-50 pft-primary-button"
           aria-label="ページの先頭へ戻る"
         >
           ↑

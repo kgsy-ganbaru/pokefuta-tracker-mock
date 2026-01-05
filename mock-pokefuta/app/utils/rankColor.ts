@@ -1,16 +1,16 @@
 export function getRankClass(rank: string) {
   switch (rank) {
     case "S":
-      return "bg-purple-600 text-white";
+      return "pft-rank-s";
     case "A":
-      return "bg-orange-500 text-white";
+      return "pft-rank-a";
     case "B":
-      return "bg-blue-500 text-white";
+      return "pft-rank-b";
     case "C":
-      return "bg-gray-400 text-white";
+      return "pft-rank-c";
     case "I":
-      return "bg-green-500 text-white";
+      return "pft-rank-i";
     default:
-      return "bg-gray-300 text-gray-800";
+      return "pft-rank-default";
   }
 }
