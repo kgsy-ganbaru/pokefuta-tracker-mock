@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { updateOwnershipAction } from "@/app/actions/ownership";
@@ -52,16 +53,7 @@ export default function DetailClient({
   });
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-6">
-      {/* 一覧へ戻る */}
-      <button
-        onClick={() => history.back()}
-        className="text-sm text-blue-600 mb-4"
-        aria-label="一覧へ戻る"
-      >
-        ←
-      </button>
-
+    <main className="max-w-3xl mx-auto px-4 py-6 pb-16">
       {/* 基本情報 */}
       <section className="bg-white border rounded-xl p-5 mb-6">
         <div className="flex flex-col items-center gap-3 text-center">
@@ -137,25 +129,36 @@ export default function DetailClient({
       </section>
 
       {/* 所持ユーザ一覧 */}
-      <section>
+      <section className="bg-white border rounded-xl p-5">
         <h2 className="text-md font-semibold mb-2">所持ユーザ</h2>
 
         {owners.length === 0 ? (
           <p className="text-sm text-gray-500">まだ誰も取得していません</p>
         ) : (
-          <ul className="divide-y">
-            {owners.map((o, index) => (
-              <li
-                key={`${o.nickname}-${o.count}-${index}`}
-                className="flex justify-between py-2 text-sm"
-              >
-                <span>{o.nickname}</span>
-                <span>{o.count} 枚</span>
-              </li>
-            ))}
-          </ul>
+          <div className="max-h-64 overflow-y-auto pr-2">
+            <ul className="divide-y">
+              {owners.map((o, index) => (
+                <li
+                  key={`${o.nickname}-${o.count}-${index}`}
+                  className="flex justify-between py-2 text-sm"
+                >
+                  <span>{o.nickname}</span>
+                  <span>{o.count} 枚</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
+
+      <div className="mt-8 flex justify-center">
+        <Link
+          href="/"
+          className="w-48 rounded-full border border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50"
+        >
+          一覧に戻る
+        </Link>
+      </div>
     </main>
   );
 }
