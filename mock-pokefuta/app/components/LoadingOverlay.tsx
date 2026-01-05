@@ -10,7 +10,7 @@ export default function LoadingOverlay() {
             <span className="pokeball-button" />
           </div>
         </div>
-        <p className="text-sm font-medium">画面を読み込み中…</p>
+        <p className="text-sm font-medium">Now Loading…</p>
       </div>
     </div>
   );
