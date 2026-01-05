@@ -161,7 +161,12 @@ export default async function UserDetailPage({
         <h1 className="text-xl font-semibold mb-2">
           {userName}さんのポケフタ状況
         </h1>
-        <p className="text-sm text-gray-500">{comment}</p>
+        <div className="mt-3">
+          <p className="text-sm font-medium text-gray-700">コメント</p>
+          <div className="mt-2 rounded-lg border bg-white px-3 py-2 text-sm text-gray-600">
+            {comment}
+          </div>
+        </div>
         <p className="text-sm font-semibold text-gray-700 mt-2">
           所持ポケフタ {ownedRows.length} 件
         </p>
