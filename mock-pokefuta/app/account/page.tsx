@@ -3,6 +3,7 @@ import { getAuthProfile } from "../lib/supabase/auth";
 import Link from "next/link";
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
+import AccountProfileEditor from "./AccountProfileEditor";
 
 export default async function AccountPage() {
   const user = await getAuthProfile();
@@ -12,8 +13,7 @@ export default async function AccountPage() {
       <main className="max-w-md mx-auto p-6">
         <h2 className="text-lg font-semibold mb-4">アカウント</h2>
 
-        <p className="mb-1">ニックネーム：{user.nickname}</p>
-        <p className="text-sm text-gray-500">ユーザーID：{user.user_id}</p>
+        <AccountProfileEditor user={user} />
 
         <LogoutForm action={logoutAction} />
       </main>

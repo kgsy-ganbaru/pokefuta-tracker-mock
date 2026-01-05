@@ -4,6 +4,7 @@ export type AuthProfile = {
   id: string;
   user_id: string;
   nickname: string;
+  comment: string | null;
 };
 
 function deriveUserIdFromEmail(email?: string | null) {
@@ -26,7 +27,7 @@ export async function getAuthProfile(
 
   const { data: profile } = await supabase
     .from("users")
-    .select("id, user_id, nickname")
+    .select("id, user_id, nickname, comment")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -40,6 +41,7 @@ export async function getAuthProfile(
       (user.user_metadata?.nickname as string | undefined) ??
       fallbackUserId ??
       "",
+    comment: profile?.comment ?? null,
   } satisfies AuthProfile;
 }
 

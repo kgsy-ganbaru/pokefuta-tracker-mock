@@ -16,7 +16,15 @@ export type LogoutState = {
   error?: string;
 };
 
+export type UpdateProfileState = {
+  error?: string;
+  success?: boolean;
+  nickname?: string;
+  comment?: string;
+};
+
 const MIN_PASSWORD_LENGTH = 6;
+const MAX_COMMENT_LENGTH = 200;
 
 export async function loginAction(
   _prevState: LoginState,
@@ -140,4 +148,46 @@ export async function registerAction(
   }
 
   redirect("/account");
+}
+
+export async function updateProfileAction(
+  _prevState: UpdateProfileState,
+  formData: FormData
+): Promise<UpdateProfileState> {
+  const nickname = String(formData.get("nickname") ?? "").trim();
+  const comment = String(formData.get("comment") ?? "");
+
+  if (!nickname) {
+    return { error: "ニックネームを入力してください" };
+  }
+
+  if (comment.length > MAX_COMMENT_LENGTH) {
+    return {
+      error: `コメントは${MAX_COMMENT_LENGTH}文字以内で入力してください`,
+    };
+  }
+
+  const supabase = await createClient({ cookieMode: "read-write" });
+  if (!supabase) {
+    return { error: "Supabase環境変数が設定されていません" };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "ログイン情報を確認できませんでした" };
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .update({ nickname, comment })
+    .eq("id", user.id);
+
+  if (error) {
+    return { error: "プロフィールの更新に失敗しました" };
+  }
+
+  return { success: true, nickname, comment };
 }
