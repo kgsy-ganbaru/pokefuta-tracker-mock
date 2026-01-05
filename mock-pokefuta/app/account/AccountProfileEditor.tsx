@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import type { AuthProfile } from "../lib/supabase/auth";
 import {
@@ -21,6 +22,7 @@ const initialState: UpdateProfileState = {
 export default function AccountProfileEditor({
   user,
 }: AccountProfileEditorProps) {
+  const router = useRouter();
   const [nickname, setNickname] = useState(user.nickname);
   const [comment, setComment] = useState(user.comment ?? "");
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -48,8 +50,16 @@ export default function AccountProfileEditor({
       setBaseNickname(nextNickname);
       setBaseComment(nextComment);
       setIsEditingNickname(false);
+      router.refresh();
     }
-  }, [comment, nickname, state.comment, state.nickname, state.success]);
+  }, [
+    comment,
+    nickname,
+    router,
+    state.comment,
+    state.nickname,
+    state.success,
+  ]);
 
   const isDirty = useMemo(() => {
     return nickname !== baseNickname || comment !== baseComment;
@@ -76,9 +86,12 @@ export default function AccountProfileEditor({
             <input type="hidden" name="nickname" value={nickname} />
           </>
         )}
-        <p className="mt-1 text-sm text-gray-500">
-          ユーザーID：{user.user_id}
-        </p>
+        <div className="mt-3">
+          <p className="text-sm text-gray-500">ユーザーID</p>
+          <p className="mt-1 text-base font-medium text-gray-900">
+            {user.user_id}
+          </p>
+        </div>
       </div>
 
       <button
