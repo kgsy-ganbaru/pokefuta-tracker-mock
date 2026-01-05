@@ -1,4 +1,5 @@
 import UsersListClient, { type UserListItem } from "./UsersListClient";
+import { getAuthProfile } from "../lib/supabase/auth";
 import { createClient } from "../lib/supabase/server";
 type UserRow = {
   id: string;
@@ -26,12 +27,14 @@ export default async function UsersPage() {
   const [
     { data: usersData },
     { data: ownershipData },
+    authProfile,
   ] = await Promise.all([
     supabase
       .from("users")
       .select("id, user_id, nickname, created_at")
       .order("created_at", { ascending: false }),
     supabase.from("ownership").select("user_id, count"),
+    getAuthProfile(supabase),
   ]);
 
   const ownershipMap = new Map<string, number>();
@@ -52,9 +55,18 @@ export default async function UsersPage() {
     };
   });
 
+  const currentUser =
+    authProfile &&
+    (users.find((user) => user.id === authProfile.id) ?? {
+      id: authProfile.id,
+      name: authProfile.nickname || authProfile.user_id || "未設定",
+      pokefutaCount: ownershipMap.get(authProfile.id) ?? 0,
+      registeredAt: "",
+    });
+
   return (
     <main className="max-w-3xl mx-auto p-6">
-      <UsersListClient users={users} isReady />
+      <UsersListClient users={users} isReady currentUser={currentUser} />
     </main>
   );
 }
