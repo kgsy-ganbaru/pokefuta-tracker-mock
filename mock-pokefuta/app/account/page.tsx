@@ -11,7 +11,21 @@ export default async function AccountPage() {
   if (user) {
     return (
       <main className="max-w-md mx-auto p-6">
-        <h2 className="text-lg font-semibold mb-4">アカウント</h2>
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <img
+            src="/status-any-owned-pokeball.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-5 h-5"
+          />
+          <span>アカウント</span>
+          <img
+            src="/status-any-owned-pokeball.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-5 h-5"
+          />
+        </h2>
 
         <AccountProfileEditor user={user} />
 

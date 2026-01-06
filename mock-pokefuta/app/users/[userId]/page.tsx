@@ -67,8 +67,20 @@ export default async function UserDetailPage({
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
           <section className="mt-6">
-            <h1 className="text-xl font-semibold mb-2">
-              ユーザのポケフタ状況
+            <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
+              <span>ユーザのポケフタ状況</span>
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
             </h1>
             <p className="text-sm text-gray-500">
               Supabaseの接続設定が未完了のため、詳細情報を取得できませんでした。
@@ -92,8 +104,20 @@ export default async function UserDetailPage({
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
           <section className="mt-6">
-            <h1 className="text-xl font-semibold mb-2">
-              ユーザのポケフタ状況
+            <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
+              <span>ユーザのポケフタ状況</span>
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
             </h1>
             <p className="text-sm text-gray-500">
               指定されたユーザが見つかりませんでした。
@@ -135,8 +159,20 @@ export default async function UserDetailPage({
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
           <section className="mt-6">
-            <h1 className="text-xl font-semibold mb-2">
-              ユーザのポケフタ状況
+            <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
+              <span>ユーザのポケフタ状況</span>
+              <img
+                src="/status-any-owned-pokeball.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-5 h-5"
+              />
             </h1>
             <p className="text-sm text-gray-500">
               指定されたユーザが見つかりませんでした。
@@ -165,8 +201,20 @@ export default async function UserDetailPage({
     <>
       <main className="max-w-7xl mx-auto px-4 pb-32">
         <section className="mt-6">
-          <h1 className="text-xl font-semibold mb-2">
-            {userName}さんのポケフタ状況
+          <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
+            <span>{userName}さんのポケフタ状況</span>
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
           </h1>
           <div className="mt-3">
             <p className="text-sm font-medium text-gray-700">コメント</p>

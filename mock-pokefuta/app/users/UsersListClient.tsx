@@ -122,8 +122,20 @@ export default function UsersListClient({
       ) : null}
       <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            ユーザ一覧
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
+            <span>ユーザ一覧</span>
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
           </h2>
           <p className="text-sm text-gray-500">
             ユーザを選択すると、所持しているポケフタの状況を確認できます。
