@@ -97,7 +97,7 @@ export default function AccountProfileEditor({
       <button
         type="button"
         onClick={() => setIsEditingNickname((prev) => !prev)}
-        className="w-full rounded border px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+        className="w-full rounded border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
       >
         {isEditingNickname ? "ニックネーム変更をやめる" : "ニックネーム変更する"}
       </button>
