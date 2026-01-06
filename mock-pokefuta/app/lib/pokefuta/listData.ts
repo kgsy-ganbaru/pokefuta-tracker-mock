@@ -82,7 +82,7 @@ export async function fetchRecentRows(
       "updated_at, pokefuta:pokefuta_id (id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
     )
     .order("updated_at", { ascending: false })
-    .limit(5);
+    .limit(10);
 
   return (recentData ?? [])
     .map((row: RecentOwnership) => {

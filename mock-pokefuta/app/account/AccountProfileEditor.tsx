@@ -94,14 +94,6 @@ export default function AccountProfileEditor({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setIsEditingNickname((prev) => !prev)}
-        className="mt-6 w-full py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-70"
-      >
-        {isEditingNickname ? "ニックネーム変更をやめる" : "ニックネーム変更する"}
-      </button>
-
       <div>
         <label className="text-sm font-medium text-gray-700">
           コメント
@@ -135,6 +127,14 @@ export default function AccountProfileEditor({
           更新
         </button>
       ) : null}
+
+      <button
+        type="button"
+        onClick={() => setIsEditingNickname((prev) => !prev)}
+        className="w-full py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-70"
+      >
+        {isEditingNickname ? "ニックネーム変更をやめる" : "ニックネーム変更する"}
+      </button>
     </form>
   );
 }
