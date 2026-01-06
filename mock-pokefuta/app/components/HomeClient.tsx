@@ -71,29 +71,29 @@ export default function HomeClient({
             最近ゲット
         ===================== */}
         <section className="mt-4">
-          <h2 className="text-lg font-semibold mb-3 pft-section-title flex items-center gap-2">
+          <h2 className="text-base font-semibold mb-3 pft-section-title flex items-center gap-2">
             <img
               src="/status-any-owned-pokeball.svg"
               alt=""
               aria-hidden="true"
-              className="w-5 h-5"
+              className="w-4 h-4"
             />
             <span>最近ゲット</span>
             <img
               src="/status-any-owned-pokeball.svg"
               alt=""
               aria-hidden="true"
-              className="w-5 h-5"
+              className="w-4 h-4"
             />
           </h2>
 
-          <div className="flex gap-4 overflow-x-auto pb-2">
+          <div className="flex gap-3 overflow-x-auto pb-2">
             {recentRows.map((r) => (
               <button
                 key={r.id}
                 type="button"
                 onClick={() => router.push(`/pokefuta/${r.id}`)}
-                className="min-w-[220px] rounded-xl p-4 text-left cursor-pointer pft-card"
+                className="min-w-[176px] rounded-xl p-3 text-left cursor-pointer pft-card"
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <img
@@ -102,11 +102,11 @@ export default function HomeClient({
                       ((e.currentTarget as HTMLImageElement).src =
                         "/no-image.png")
                     }
-                    className="w-20 h-20 rounded-xl object-cover"
+                    className="w-16 h-16 rounded-xl object-cover"
                     alt=""
                   />
 
-                  <div className="font-medium">
+                  <div className="text-sm font-medium">
                     {r.pokemon_names}
                   </div>
 
@@ -193,12 +193,12 @@ export default function HomeClient({
                               ((e.currentTarget as HTMLImageElement).src =
                                 "/no-image.png")
                             }
-                            className="w-14 h-14 rounded-full object-cover"
+                            className="w-12 h-12 rounded-full object-cover"
                             alt=""
                           />
 
                           <div className="flex-1">
-                            <div className="font-medium">
+                            <div className="text-sm font-medium">
                               {p.pokemon_names}
                             </div>
                             <div className="text-xs text-gray-500">
