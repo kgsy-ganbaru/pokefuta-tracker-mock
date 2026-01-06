@@ -10,19 +10,19 @@ export default function RecentGets({
 }) {
   return (
     <div className="p-3">
-      <div className="font-semibold mb-2 pft-section-title flex items-center justify-center gap-2">
+      <div className="text-sm font-semibold mb-2 pft-section-title flex items-center justify-center gap-2">
         <img
           src="/status-any-owned-pokeball.svg"
           alt=""
           aria-hidden="true"
-          className="w-4 h-4"
+          className="w-3 h-3"
         />
         <span>最近ゲット</span>
         <img
           src="/status-any-owned-pokeball.svg"
           alt=""
           aria-hidden="true"
-          className="w-4 h-4"
+          className="w-3 h-3"
         />
       </div>
 
@@ -30,10 +30,10 @@ export default function RecentGets({
         {items.map((item) => (
           <div
             key={item.id}
-            className="min-w-[120px] rounded-lg p-2 text-center text-xs pft-card"
+            className="min-w-[96px] rounded-lg p-1.5 text-center text-[0.7rem] pft-card"
           >
             <div
-              className="w-12 h-12 rounded-full pft-placeholder mx-auto mb-1 flex items-center justify-center text-xs"
+              className="w-10 h-10 rounded-full pft-placeholder mx-auto mb-1 flex items-center justify-center text-[0.65rem]"
             >
               No Image
             </div>
