@@ -10,8 +10,20 @@ export default function RecentGets({
 }) {
   return (
     <div className="p-3">
-      <div className="font-semibold mb-2 pft-section-title">
-        最近ゲット
+      <div className="font-semibold mb-2 pft-section-title flex items-center justify-center gap-2">
+        <img
+          src="/status-any-owned-pokeball.svg"
+          alt=""
+          aria-hidden="true"
+          className="w-4 h-4"
+        />
+        <span>最近ゲット</span>
+        <img
+          src="/status-any-owned-pokeball.svg"
+          alt=""
+          aria-hidden="true"
+          className="w-4 h-4"
+        />
       </div>
 
       <div className="flex gap-3 overflow-x-auto">

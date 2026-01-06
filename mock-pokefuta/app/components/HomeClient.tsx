@@ -71,8 +71,20 @@ export default function HomeClient({
             最近ゲット
         ===================== */}
         <section className="mt-4">
-          <h2 className="text-lg font-semibold mb-3 pft-section-title">
-            最近ゲット
+          <h2 className="text-lg font-semibold mb-3 pft-section-title flex items-center gap-2">
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
+            <span>最近ゲット</span>
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-5 h-5"
+            />
           </h2>
 
           <div className="flex gap-4 overflow-x-auto pb-2">
