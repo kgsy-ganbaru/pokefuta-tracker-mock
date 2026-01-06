@@ -89,9 +89,11 @@ export default function HomeClient({
 
           <div className="flex gap-4 overflow-x-auto pb-2">
             {recentRows.map((r) => (
-              <div
+              <button
                 key={r.id}
-                className="min-w-[220px] rounded-xl p-4 pft-card"
+                type="button"
+                onClick={() => router.push(`/pokefuta/${r.id}`)}
+                className="min-w-[220px] rounded-xl p-4 text-left cursor-pointer pft-card"
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <img
@@ -116,7 +118,7 @@ export default function HomeClient({
                     {r.user_names}
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </section>
