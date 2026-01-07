@@ -27,6 +27,14 @@ export default function HomeClient({
   pokefutaRows: PokefutaRow[];
 }) {
   const router = useRouter();
+  const formatRecentDate = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}/${month}/${day}`;
+  };
 
   const [activeRegionId, setActiveRegionId] = useState<
     number | null
@@ -95,7 +103,7 @@ export default function HomeClient({
                 onClick={() => router.push(`/pokefuta/${r.id}`)}
                 className="min-w-[176px] rounded-xl p-3 text-left cursor-pointer pft-card"
               >
-                <div className="flex flex-col items-center text-center gap-2">
+                <div className="flex flex-col items-center text-center">
                   <img
                     src={r.image_url || "/no-image.png"}
                     onError={(e) =>
@@ -106,16 +114,20 @@ export default function HomeClient({
                     alt=""
                   />
 
-                  <div className="text-sm font-medium">
+                  <div className="mt-2 min-h-[2.6rem] text-[0.7rem] font-medium leading-snug flex items-center justify-center">
                     {r.pokemon_names}
                   </div>
 
-                  <div className="text-xs text-gray-500">
+                  <div className="min-h-[1rem] text-xs text-gray-500">
                     {r.city_name}
                   </div>
 
-                  <div className="text-xs text-gray-600">
+                  <div className="min-h-[1rem] text-xs text-gray-600">
                     {r.user_names}
+                  </div>
+
+                  <div className="min-h-[0.9rem] text-[0.65rem] text-gray-400">
+                    {formatRecentDate(r.last_get_at)}
                   </div>
                 </div>
               </button>
