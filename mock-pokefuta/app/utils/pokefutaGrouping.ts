@@ -100,6 +100,13 @@ export function buildRegionSections(
       },
       new Map<number, PokefutaRow[]>()
     );
+    rowsByPrefectureId.forEach((prefectureRows) => {
+      prefectureRows.sort(
+        (a, b) =>
+          (a.prefecture_order ?? Number.MAX_SAFE_INTEGER) -
+          (b.prefecture_order ?? Number.MAX_SAFE_INTEGER)
+      );
+    });
     const orderedPrefectureIds =
       PREFECTURE_IDS_BY_REGION_ID[regionId] ?? [];
     const extraPrefectureIds = Array.from(
