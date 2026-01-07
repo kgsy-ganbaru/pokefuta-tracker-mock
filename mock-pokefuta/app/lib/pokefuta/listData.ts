@@ -12,6 +12,7 @@ export type PokefutaRow = {
   id: number;
   region_id: number;
   prefecture_id: number | null;
+  prefecture_order: number | null;
   city_name: string;
   difficulty_code: string;
   image_url: string | null;
@@ -29,6 +30,7 @@ type PokefutaRecord = {
   id: number;
   region_id: number;
   prefecture_id: number | null;
+  prefecture_order: number | null;
   city_name: string;
   difficulty_code: string;
   image_url: string | null;
@@ -112,10 +114,11 @@ export async function fetchPokefutaRows(
   const { data: pokefutaData } = await supabase
     .from("pokefuta")
     .select(
-      "id, region_id, prefecture_id, city_name, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
+      "id, region_id, prefecture_id, prefecture_order, city_name, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
     .order("region_id", { ascending: true })
-    .order("prefecture_id", { ascending: true });
+    .order("prefecture_id", { ascending: true })
+    .order("prefecture_order", { ascending: true });
 
   const { data: ownershipData } = userId
     ? await supabase
@@ -156,6 +159,7 @@ export async function fetchPokefutaRows(
     id: row.id,
     region_id: row.region_id,
     prefecture_id: row.prefecture_id,
+    prefecture_order: row.prefecture_order,
     city_name: row.city_name,
     difficulty_code: row.difficulty_code,
     image_url: row.image_url,
