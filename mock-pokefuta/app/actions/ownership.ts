@@ -19,6 +19,11 @@ export type BulkOwnershipSelection = {
   count: number;
 };
 
+type OwnershipRow = {
+  count: number | string | null;
+  last_get_at: string | null;
+};
+
 export async function updateOwnershipAction(
   _prevState: OwnershipState,
   formData: FormData
@@ -56,12 +61,30 @@ export async function updateOwnershipAction(
     return { success: true };
   }
 
+  const { data: existingRow } = await supabase
+    .from("ownership")
+    .select("count, last_get_at")
+    .eq("user_id", user.id)
+    .eq("pokefuta_id", pokefutaId)
+    .maybeSingle();
+
+  const previousCount = Number(
+    (existingRow as OwnershipRow | null)?.count ?? 0
+  );
+  const shouldUpdateLastGetAt =
+    !Number.isFinite(previousCount) || count > previousCount;
+  const lastGetAt =
+    shouldUpdateLastGetAt
+      ? new Date().toISOString()
+      : (existingRow as OwnershipRow | null)?.last_get_at ?? null;
+
   const { error } = await supabase.from("ownership").upsert(
     {
       user_id: user.id,
       pokefuta_id: pokefutaId,
       count,
       updated_at: new Date().toISOString(),
+      last_get_at: lastGetAt,
     },
     { onConflict: "user_id,pokefuta_id" }
   );
@@ -110,12 +133,29 @@ export async function bulkUpdateOwnershipAction(
         return { error: "更新に失敗しました" };
       }
     } else {
+      const { data: existingRow } = await supabase
+        .from("ownership")
+        .select("count, last_get_at")
+        .eq("user_id", user.id)
+        .eq("pokefuta_id", pokefutaId)
+        .maybeSingle();
+      const previousCount = Number(
+        (existingRow as OwnershipRow | null)?.count ?? 0
+      );
+      const shouldUpdateLastGetAt =
+        !Number.isFinite(previousCount) || count > previousCount;
+      const lastGetAt =
+        shouldUpdateLastGetAt
+          ? new Date().toISOString()
+          : (existingRow as OwnershipRow | null)?.last_get_at ?? null;
+
       const { error } = await supabase.from("ownership").upsert(
         {
           user_id: user.id,
           pokefuta_id: pokefutaId,
           count,
           updated_at: new Date().toISOString(),
+          last_get_at: lastGetAt,
         },
         { onConflict: "user_id,pokefuta_id" }
       );

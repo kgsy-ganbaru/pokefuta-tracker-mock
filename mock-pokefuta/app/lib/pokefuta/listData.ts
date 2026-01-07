@@ -6,6 +6,7 @@ export type RecentRow = {
   image_url: string | null;
   pokemon_names: string;
   user_names: string;
+  last_get_at: string;
 };
 
 export type PokefutaRow = {
@@ -49,6 +50,7 @@ type RecentUser = {
 };
 
 type RecentOwnership = {
+  last_get_at: string | null;
   pokefuta: RecentPokefuta | RecentPokefuta[] | null;
   users: RecentUser | RecentUser[] | null;
 };
@@ -81,13 +83,16 @@ export async function fetchRecentRows(
   const { data: recentData } = await supabase
     .from("ownership")
     .select(
-      "updated_at, pokefuta:pokefuta_id (id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
+      "last_get_at, pokefuta:pokefuta_id (id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)), users (nickname)"
     )
-    .order("updated_at", { ascending: false })
+    .order("last_get_at", { ascending: false })
     .limit(10);
 
   return (recentData ?? [])
     .map((row: RecentOwnership) => {
+      if (!row.last_get_at) {
+        return null;
+      }
       const pokefuta = takeFirst(row.pokefuta);
       if (!pokefuta) {
         return null;
@@ -102,6 +107,7 @@ export async function fetchRecentRows(
           pokefuta.pokefuta_pokemon ?? []
         ),
         user_names: user?.nickname ?? "",
+        last_get_at: row.last_get_at,
       };
     })
     .filter((row): row is RecentRow => row !== null);
