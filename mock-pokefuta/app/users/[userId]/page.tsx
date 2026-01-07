@@ -42,6 +42,7 @@ const normalizePokefutaRows = (
       id: safeId,
       region_id: row.region_id ?? 1,
       prefecture_id: row.prefecture_id ?? null,
+      prefecture_order: row.prefecture_order ?? null,
       city_name: row.city_name ?? "",
       difficulty_code: row.difficulty_code ?? "",
       image_url: row.image_url ?? null,
