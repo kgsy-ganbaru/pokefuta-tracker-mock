@@ -41,7 +41,7 @@ export default async function UsersPage() {
   (ownershipData ?? []).forEach((row: OwnershipRow) => {
     ownershipMap.set(
       row.user_id,
-      (ownershipMap.get(row.user_id) ?? 0) + row.count
+      (ownershipMap.get(row.user_id) ?? 0) + 1
     );
   });
 

@@ -25,8 +25,8 @@ type UsersListClientProps = {
 };
 
 const sortLabels: Record<SortKey, string> = {
-  "pokefuta-desc": "ポケフタ所持数：多い順",
-  "pokefuta-asc": "ポケフタ所持数：少ない順",
+  "pokefuta-desc": "ポケフタ所持種類数：多い順",
+  "pokefuta-asc": "ポケフタ所持種類数：少ない順",
   "nickname-asc": "ユーザ名：昇順",
   "nickname-desc": "ユーザ名：降順",
   "registered-asc": "登録日：古い順",
@@ -88,39 +88,7 @@ export default function UsersListClient({
 
   return (
     <>
-      {currentUser ? (
-        <section className="mb-6 rounded-lg border border-blue-200 bg-white">
-          <div className="border-b border-blue-100 px-4 py-3">
-            <p className="text-sm font-semibold text-blue-700">自分のデータ</p>
-          </div>
-          <ul className="divide-y">
-            <li>
-              <Link
-                href={`/users/${currentUser.id}`}
-                className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-blue-50"
-              >
-                <div>
-                  <p className="text-sm font-medium text-gray-800">
-                    {currentUser.name}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    登録日：{formatDate(currentUser.registeredAt)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500">
-                    登録枚数：{currentUser.pokefutaCount}枚
-                  </p>
-                  <span className="text-xs text-blue-600">
-                    詳細を見る
-                  </span>
-                </div>
-              </Link>
-            </li>
-          </ul>
-        </section>
-      ) : null}
-      <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
+      <header className="mb-4">
         <div>
           <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
             <img
@@ -147,8 +115,43 @@ export default function UsersListClient({
             </span>
           </div>
         </div>
+      </header>
 
-        <div className="relative flex w-full justify-end sm:w-auto">
+      {currentUser ? (
+        <section className="mb-4 rounded-lg border border-blue-200 bg-white">
+          <div className="border-b border-blue-100 px-4 py-3">
+            <p className="text-sm font-semibold text-blue-700">自分のデータ</p>
+          </div>
+          <ul className="divide-y">
+            <li>
+              <Link
+                href={`/users/${currentUser.id}`}
+                className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-blue-50"
+              >
+                <div>
+                  <p className="text-sm font-medium text-gray-800">
+                    {currentUser.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    登録日：{formatDate(currentUser.registeredAt)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">
+                    所持種類数：{currentUser.pokefutaCount}種
+                  </p>
+                  <span className="text-xs text-blue-600">
+                    詳細を見る
+                  </span>
+                </div>
+              </Link>
+            </li>
+          </ul>
+        </section>
+      ) : null}
+
+      <div className="relative mb-6 flex w-full justify-end sm:w-auto">
+        <div className="relative">
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -184,7 +187,7 @@ export default function UsersListClient({
             </div>
           )}
         </div>
-      </header>
+      </div>
 
       <section className="rounded-lg border bg-white">
         {!isReady ? (
@@ -213,7 +216,7 @@ export default function UsersListClient({
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-500">
-                      登録枚数：{user.pokefutaCount}枚
+                      所持種類数：{user.pokefutaCount}種
                     </p>
                     <span className="text-xs text-blue-600">詳細を見る</span>
                   </div>
