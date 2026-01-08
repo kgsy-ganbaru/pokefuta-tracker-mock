@@ -69,9 +69,21 @@ export default function HomeClient({
         <div className="mt-6 flex justify-end">
           <button
             onClick={() => router.push("/bulk")}
-            className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold"
+            className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold flex items-center gap-2"
           >
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-4 h-4"
+            />
             一括登録
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-4 h-4"
+            />
           </button>
         </div>
 
@@ -257,18 +269,18 @@ export default function HomeClient({
       </main>
 
       {activeRegionId !== null && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24">
-          <div className="w-full max-w-md rounded-2xl p-4 pft-modal">
-            <div className="flex items-center justify-between mb-3">
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24"
+          onClick={() => setActiveRegionId(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-4 pft-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mb-3">
               <div className="text-sm font-semibold">
                 {REGION_LABELS[activeRegionId]}の都道府県
               </div>
-              <button
-                onClick={() => setActiveRegionId(null)}
-                className="text-sm text-gray-500"
-              >
-                閉じる
-              </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {activePrefectureIds.map((prefectureId) => {

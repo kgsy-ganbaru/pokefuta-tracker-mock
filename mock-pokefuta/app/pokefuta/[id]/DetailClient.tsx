@@ -60,10 +60,10 @@ export default function DetailClient({
           <img
             src={pokefuta.image_url ?? "/no-image.png"}
             alt="ポケふた"
-            className="w-48 h-48 object-cover rounded-lg"
+            className="w-40 h-40 object-cover rounded-lg"
           />
 
-          <h1 className="text-lg font-semibold">
+          <h1 className="text-base font-semibold">
             {pokefuta.pokemon_names.join(" / ")}
           </h1>
 
