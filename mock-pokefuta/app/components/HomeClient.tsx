@@ -43,6 +43,12 @@ export default function HomeClient({
   const sectionRefs = useRef<
     Record<string, HTMLDivElement | null>
   >({});
+  const saveScrollPosition = () => {
+    sessionStorage.setItem(
+      "pokefuta-scroll-y",
+      String(window.scrollY)
+    );
+  };
 
   const regionSections = buildRegionSections(pokefutaRows);
   const activePrefectureIds =
@@ -58,6 +64,16 @@ export default function HomeClient({
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  useEffect(() => {
+    const savedScroll =
+      sessionStorage.getItem("pokefuta-scroll-y");
+    if (!savedScroll) return;
+    const scrollY = Number(savedScroll);
+    if (!Number.isNaN(scrollY)) {
+      window.scrollTo({ top: scrollY });
+    }
+    sessionStorage.removeItem("pokefuta-scroll-y");
   }, []);
 
   return (
@@ -100,7 +116,10 @@ export default function HomeClient({
               <button
                 key={r.id}
                 type="button"
-                onClick={() => router.push(`/pokefuta/${r.id}`)}
+                onClick={() => {
+                  saveScrollPosition();
+                  router.push(`/pokefuta/${r.id}`);
+                }}
                 className="min-w-[176px] rounded-xl p-3 text-left cursor-pointer pft-card"
               >
                 <div className="flex flex-col items-center text-center">
@@ -194,9 +213,10 @@ export default function HomeClient({
                       {prefectureRows.map((p) => (
                         <div
                           key={p.id}
-                          onClick={() =>
-                            router.push(`/pokefuta/${p.id}`)
-                          }
+                          onClick={() => {
+                            saveScrollPosition();
+                            router.push(`/pokefuta/${p.id}`);
+                          }}
                           className="flex items-center gap-4 py-4 cursor-pointer pft-row"
                         >
                           <img

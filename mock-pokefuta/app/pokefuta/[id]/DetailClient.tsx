@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { updateOwnershipAction } from "@/app/actions/ownership";
 
@@ -45,15 +46,50 @@ export default function DetailClient({
   isLoggedIn,
   initialCount,
 }: Props) {
+  const router = useRouter();
   const [count, setCount] = useState(initialCount);
   const [guestWarning, setGuestWarning] = useState(false);
+  const touchStartRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const hasSwipedRef = useRef(false);
   const [state, formAction] = useFormState(updateOwnershipAction, {
     error: "",
     success: false,
   });
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-6 pb-16">
+    <main
+      className="max-w-3xl mx-auto px-4 py-6 pb-16"
+      onTouchStart={(event) => {
+        const touch = event.touches[0];
+        touchStartRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+        };
+        hasSwipedRef.current = false;
+      }}
+      onTouchMove={(event) => {
+        if (!touchStartRef.current || hasSwipedRef.current) {
+          return;
+        }
+        const touch = event.touches[0];
+        const deltaX = touch.clientX - touchStartRef.current.x;
+        const deltaY = touch.clientY - touchStartRef.current.y;
+        if (
+          deltaX > 70 &&
+          Math.abs(deltaX) > Math.abs(deltaY) * 1.2
+        ) {
+          hasSwipedRef.current = true;
+          router.back();
+        }
+      }}
+      onTouchEnd={() => {
+        touchStartRef.current = null;
+        hasSwipedRef.current = false;
+      }}
+    >
       {/* 基本情報 */}
       <section className="bg-white border rounded-xl p-5 mb-6">
         <div className="flex flex-col items-center gap-3 text-center">
