@@ -39,6 +39,10 @@ export default function HomeClient({
   const [activeRegionId, setActiveRegionId] = useState<
     number | null
   >(null);
+  const [activeFilterId, setActiveFilterId] = useState<
+    "owned" | "other-owned" | "unowned" | null
+  >(null);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const sectionRefs = useRef<
     Record<string, HTMLDivElement | null>
@@ -50,7 +54,32 @@ export default function HomeClient({
     );
   };
 
-  const regionSections = buildRegionSections(pokefutaRows);
+  const filterOptions = [
+    {
+      id: "owned" as const,
+      label: "自分が所持しているポケフタ",
+      matches: (row: PokefutaRow) => row.owned_count > 0,
+    },
+    {
+      id: "other-owned" as const,
+      label: "誰かが所持しているポケフタ",
+      matches: (row: PokefutaRow) =>
+        row.any_owned_count > 0 && row.owned_count === 0,
+    },
+    {
+      id: "unowned" as const,
+      label: "誰も所持していないポケフタ",
+      matches: (row: PokefutaRow) =>
+        row.any_owned_count === 0,
+    },
+  ];
+  const activeFilter = filterOptions.find(
+    (option) => option.id === activeFilterId
+  );
+  const filteredRows = activeFilter
+    ? pokefutaRows.filter(activeFilter.matches)
+    : pokefutaRows;
+  const regionSections = buildRegionSections(filteredRows);
   const activePrefectureIds =
     activeRegionId !== null
       ? regionSections.find(
@@ -82,12 +111,31 @@ export default function HomeClient({
         id="scroll-root"
         className="max-w-3xl mx-auto px-4 pb-24"
       >
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex items-center justify-between">
           <button
             onClick={() => router.push("/bulk")}
             className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold"
           >
             一括登録
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowFilterModal(true)}
+            aria-label="フィルターを開く"
+            className="h-9 w-9 rounded-lg border border-gray-200 bg-white/80 text-gray-600 shadow-sm transition hover:bg-white pft-card"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="mx-auto h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 4h18l-7 8v6l-4 2v-8z" />
+            </svg>
           </button>
         </div>
 
@@ -310,6 +358,36 @@ export default function HomeClient({
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFilterModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24"
+          onClick={() => setShowFilterModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-4 pft-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="grid gap-2">
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveFilterId((current) =>
+                      current === option.id ? null : option.id
+                    );
+                    setShowFilterModal(false);
+                  }}
+                  className="px-3 py-2 rounded-lg text-sm text-left pft-chip"
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
