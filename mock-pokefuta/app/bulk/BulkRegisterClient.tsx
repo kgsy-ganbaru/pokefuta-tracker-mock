@@ -182,7 +182,21 @@ export default function BulkRegisterClient({
     <>
       <main className="max-w-7xl mx-auto px-4 pb-32">
         <section className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">一括登録</h2>
+          <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-4 h-4"
+            />
+            <span>一括登録</span>
+            <img
+              src="/status-any-owned-pokeball.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-4 h-4"
+            />
+          </h2>
           <p className="text-sm text-gray-500">
             クリックで2枚に設定。既に登録済みのデータは黄色で表示されます。
           </p>
