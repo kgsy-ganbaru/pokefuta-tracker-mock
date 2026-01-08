@@ -69,21 +69,9 @@ export default function HomeClient({
         <div className="mt-6 flex justify-end">
           <button
             onClick={() => router.push("/bulk")}
-            className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold flex items-center gap-2"
+            className="px-3 py-2 rounded-lg pft-primary-button text-sm font-semibold"
           >
-            <img
-              src="/status-any-owned-pokeball.svg"
-              alt=""
-              aria-hidden="true"
-              className="w-4 h-4"
-            />
             一括登録
-            <img
-              src="/status-any-owned-pokeball.svg"
-              alt=""
-              aria-hidden="true"
-              className="w-4 h-4"
-            />
           </button>
         </div>
 
