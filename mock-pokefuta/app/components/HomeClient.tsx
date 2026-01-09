@@ -171,7 +171,7 @@ export default function HomeClient({
                 className="min-w-[176px] rounded-xl p-3 text-left cursor-pointer pft-card"
               >
                 <div className="flex flex-col items-center text-center">
-                  <img
+                  <Image
                     src={r.image_url || "/no-image.png"}
                     onError={(e) =>
                       ((e.currentTarget as HTMLImageElement).src =
@@ -179,6 +179,12 @@ export default function HomeClient({
                     }
                     className="w-16 h-16 rounded-xl object-cover"
                     alt=""
+                    width={64}
+                    height={64}
+                    sizes="64px"
+                    loading="lazy"
+                    decoding="async"
+                    placeholder="empty"
                   />
 
                   <div className="mt-2 min-h-[2.6rem] text-[0.7rem] font-medium leading-snug flex items-center justify-center">
@@ -267,7 +273,7 @@ export default function HomeClient({
                           }}
                           className="flex items-center gap-4 py-4 cursor-pointer pft-row"
                         >
-                          <img
+                          <Image
                             src={p.image_url || "/no-image.png"}
                             onError={(e) =>
                               ((e.currentTarget as HTMLImageElement).src =
@@ -275,6 +281,12 @@ export default function HomeClient({
                             }
                             className="w-12 h-12 rounded-full object-cover"
                             alt=""
+                            width={48}
+                            height={48}
+                            sizes="48px"
+                            loading="lazy"
+                            decoding="async"
+                            placeholder="empty"
                           />
 
                           <div className="flex-1">
