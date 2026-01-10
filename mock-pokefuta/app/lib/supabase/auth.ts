@@ -5,6 +5,7 @@ export type AuthProfile = {
   user_id: string;
   nickname: string;
   comment: string | null;
+  friend_code: string | null;
 };
 
 function deriveUserIdFromEmail(email?: string | null) {
@@ -27,7 +28,7 @@ export async function getAuthProfile(
 
   const { data: profile } = await supabase
     .from("users")
-    .select("id, user_id, nickname, comment")
+    .select("id, user_id, nickname, comment, friend_code")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -42,6 +43,7 @@ export async function getAuthProfile(
       fallbackUserId ??
       "",
     comment: profile?.comment ?? null,
+    friend_code: profile?.friend_code ?? null,
   } satisfies AuthProfile;
 }
 

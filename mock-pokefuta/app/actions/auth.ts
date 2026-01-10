@@ -21,10 +21,12 @@ export type UpdateProfileState = {
   success?: boolean;
   nickname?: string;
   comment?: string;
+  friendCode?: string;
 };
 
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_COMMENT_LENGTH = 200;
+const FRIEND_CODE_LENGTH = 12;
 
 export async function loginAction(
   _prevState: LoginState,
@@ -156,6 +158,8 @@ export async function updateProfileAction(
 ): Promise<UpdateProfileState> {
   const nickname = String(formData.get("nickname") ?? "").trim();
   const comment = String(formData.get("comment") ?? "");
+  const friendCodeRaw = String(formData.get("friendCode") ?? "").trim();
+  const friendCode = friendCodeRaw.replace(/\s+/g, "").toUpperCase();
 
   if (!nickname) {
     return { error: "ニックネームを入力してください" };
@@ -165,6 +169,16 @@ export async function updateProfileAction(
     return {
       error: `コメントは${MAX_COMMENT_LENGTH}文字以内で入力してください`,
     };
+  }
+
+  if (friendCode && friendCode.length !== FRIEND_CODE_LENGTH) {
+    return {
+      error: `フレンドコードは${FRIEND_CODE_LENGTH}文字で入力してください`,
+    };
+  }
+
+  if (friendCode && !/^[A-Z0-9]+$/.test(friendCode)) {
+    return { error: "フレンドコードは英数字で入力してください" };
   }
 
   const supabase = await createClient({ cookieMode: "read-write" });
@@ -182,12 +196,21 @@ export async function updateProfileAction(
 
   const { error } = await supabase
     .from("users")
-    .update({ nickname, comment })
+    .update({
+      nickname,
+      comment,
+      friend_code: friendCode ? friendCode : null,
+    })
     .eq("id", user.id);
 
   if (error) {
     return { error: "プロフィールの更新に失敗しました" };
   }
 
-  return { success: true, nickname, comment };
+  return {
+    success: true,
+    nickname,
+    comment,
+    friendCode: friendCode ? friendCode : null,
+  };
 }
