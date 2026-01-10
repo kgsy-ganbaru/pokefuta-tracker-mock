@@ -75,7 +75,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケフタ状況</span>
+              <span>ユーザのポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -84,7 +84,7 @@ export default async function UserDetailPage({
               />
             </h1>
             <p className="text-sm text-gray-500">
-              Supabaseの接続設定が未完了のため、詳細情報を取得できませんでした。
+              詳細情報を取得できませんでした。
             </p>
           </section>
         </main>
@@ -112,7 +112,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケフタ状況</span>
+              <span>ユーザのポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -167,7 +167,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケフタ状況</span>
+              <span>ユーザのポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -209,7 +209,7 @@ export default async function UserDetailPage({
               aria-hidden="true"
               className="w-5 h-5"
             />
-            <span>{userName}さんのポケフタ状況</span>
+            <span>{userName}さん</span>
             <img
               src="/status-any-owned-pokeball.svg"
               alt=""
@@ -224,14 +224,14 @@ export default async function UserDetailPage({
             </div>
           </div>
           <p className="text-sm font-semibold text-gray-700 mt-2">
-            所持ポケフタ {ownedRows.length} 件
+            所持ポケふた {ownedRows.length} 種
           </p>
         </section>
 
         <section className="mt-8">
           {ownedRows.length === 0 ? (
             <div className="rounded-2xl border bg-white p-8 text-center text-sm text-gray-500">
-              所持しているポケフタがありません。
+              所持しているポケふたがありません。
             </div>
           ) : (
             <div className="space-y-6">

@@ -138,7 +138,7 @@ export default function UsersListClient({
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">
-                    所持種類数：{currentUser.pokefutaCount}種
+                    所持種類：{currentUser.pokefutaCount}種
                   </p>
                   <span className="text-xs text-blue-600">
                     詳細を見る
