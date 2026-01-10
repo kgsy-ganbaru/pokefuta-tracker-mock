@@ -211,6 +211,6 @@ export async function updateProfileAction(
     success: true,
     nickname,
     comment,
-    friendCode: friendCode ? friendCode : null,
+    friendCode: friendCode ? friendCode : undefined,
   };
 }
