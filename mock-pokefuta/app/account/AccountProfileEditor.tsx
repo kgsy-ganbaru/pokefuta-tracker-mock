@@ -17,6 +17,7 @@ const initialState: UpdateProfileState = {
   success: false,
   nickname: undefined,
   comment: undefined,
+  friendCode: undefined,
 };
 
 export default function AccountProfileEditor({
@@ -25,9 +26,15 @@ export default function AccountProfileEditor({
   const router = useRouter();
   const [nickname, setNickname] = useState(user.nickname);
   const [comment, setComment] = useState(user.comment ?? "");
+  const [friendCode, setFriendCode] = useState(
+    user.friend_code ?? ""
+  );
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [baseNickname, setBaseNickname] = useState(user.nickname);
   const [baseComment, setBaseComment] = useState(user.comment ?? "");
+  const [baseFriendCode, setBaseFriendCode] = useState(
+    user.friend_code ?? ""
+  );
 
   const [state, formAction, isPending] = useActionState(
     updateProfileAction,
@@ -37,33 +44,51 @@ export default function AccountProfileEditor({
   useEffect(() => {
     setNickname(user.nickname);
     setComment(user.comment ?? "");
+    setFriendCode(user.friend_code ?? "");
     setBaseNickname(user.nickname);
     setBaseComment(user.comment ?? "");
-  }, [user.comment, user.nickname]);
+    setBaseFriendCode(user.friend_code ?? "");
+  }, [user.comment, user.friend_code, user.nickname]);
 
   useEffect(() => {
     if (state.success) {
       const nextNickname = state.nickname ?? nickname;
       const nextComment = state.comment ?? comment;
+      const nextFriendCode = state.friendCode ?? friendCode;
       setNickname(nextNickname);
       setComment(nextComment);
+      setFriendCode(nextFriendCode);
       setBaseNickname(nextNickname);
       setBaseComment(nextComment);
+      setBaseFriendCode(nextFriendCode);
       setIsEditingNickname(false);
       router.refresh();
     }
   }, [
     comment,
+    friendCode,
     nickname,
     router,
     state.comment,
+    state.friendCode,
     state.nickname,
     state.success,
   ]);
 
   const isDirty = useMemo(() => {
-    return nickname !== baseNickname || comment !== baseComment;
-  }, [baseComment, baseNickname, comment, nickname]);
+    return (
+      nickname !== baseNickname ||
+      comment !== baseComment ||
+      friendCode !== baseFriendCode
+    );
+  }, [
+    baseComment,
+    baseFriendCode,
+    baseNickname,
+    comment,
+    friendCode,
+    nickname,
+  ]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -92,6 +117,26 @@ export default function AccountProfileEditor({
             {user.user_id}
           </p>
         </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700">
+          フレンドコード
+          <input
+            type="text"
+            name="friendCode"
+            value={friendCode}
+            onChange={(event) => setFriendCode(event.target.value)}
+            maxLength={12}
+            placeholder="例: ZETMBEMUBRKW"
+            className="mt-2 w-full rounded border px-3 py-2 text-sm uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
+            inputMode="text"
+            autoComplete="off"
+          />
+        </label>
+        <p className="mt-1 text-right text-xs text-gray-500">
+          {friendCode.replace(/\s+/g, "").length}/12
+        </p>
       </div>
 
       <div>

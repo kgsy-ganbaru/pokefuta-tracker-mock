@@ -10,6 +10,7 @@ import {
   REGION_LABELS,
 } from "@/app/utils/pokefutaGrouping";
 import ImageWithFallback from "@/app/components/ImageWithFallback";
+import FriendCodeCard from "./FriendCodeCard";
 
 type UserDetailPageProps = {
   params: Promise<{ userId: string }>;
@@ -20,6 +21,7 @@ type UserRow = {
   user_id: string | null;
   nickname: string | null;
   comment: string | null;
+  friend_code: string | null;
 };
 
 const uuidPattern =
@@ -142,7 +144,7 @@ export default async function UserDetailPage({
     : "user_id";
   const { data: userRows } = await supabase
     .from("users")
-    .select("id, user_id, nickname, comment")
+    .select("id, user_id, nickname, comment, friend_code")
     .eq(lookupColumn, userIdParam)
     .limit(1);
 
@@ -154,6 +156,7 @@ export default async function UserDetailPage({
     user?.comment && user.comment.trim().length > 0
       ? user.comment
       : "コメントはまだありません";
+  const friendCode = user?.friend_code ?? null;
 
   if (!user) {
     return (
@@ -223,6 +226,7 @@ export default async function UserDetailPage({
               {comment}
             </div>
           </div>
+          <FriendCodeCard friendCode={friendCode} />
           <p className="text-sm font-semibold text-gray-700 mt-2">
             所持ポケふた {ownedRows.length} 種
           </p>
