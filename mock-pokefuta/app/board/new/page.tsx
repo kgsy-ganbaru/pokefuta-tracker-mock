@@ -1,146 +1,41 @@
-"use client";
+import BoardPostFormClient from "./BoardPostFormClient";
+import { fetchPokefutaRows, PokefutaRow } from "../../lib/pokefuta/listData";
+import { getAuthProfile } from "../../lib/supabase/auth";
+import { createClient } from "../../lib/supabase/server";
 
-import Link from "next/link";
-import { FormEvent, useState } from "react";
+export const dynamic = "force-dynamic";
 
-const TITLE_MAX_LENGTH = 50;
-const BODY_MAX_LENGTH = 500;
+const demoRows: PokefutaRow[] = [
+  { id: 1, region_id: 1, prefecture_id: 1, prefecture_order: 1, city_name: "札幌", difficulty_code: "B", image_url: null, pokemon_names: "アローラロコン", owned_count: 8, any_owned_count: 12 },
+  { id: 2, region_id: 1, prefecture_id: 1, prefecture_order: 2, city_name: "小樽", difficulty_code: "B", image_url: null, pokemon_names: "ロコン", owned_count: 4, any_owned_count: 9 },
+  { id: 3, region_id: 2, prefecture_id: 4, prefecture_order: 1, city_name: "仙台", difficulty_code: "A", image_url: null, pokemon_names: "ラプラス", owned_count: 2, any_owned_count: 7 },
+  { id: 4, region_id: 3, prefecture_id: 14, prefecture_order: 1, city_name: "横浜", difficulty_code: "B", image_url: null, pokemon_names: "ピカチュウ", owned_count: 6, any_owned_count: 15 },
+  { id: 5, region_id: 4, prefecture_id: 17, prefecture_order: 1, city_name: "金沢", difficulty_code: "A", image_url: null, pokemon_names: "ミロカロス", owned_count: 1, any_owned_count: 5 },
+  { id: 6, region_id: 7, prefecture_id: 43, prefecture_order: 1, city_name: "熊本", difficulty_code: "A", image_url: null, pokemon_names: "ダダリン", owned_count: 3, any_owned_count: 8 },
+];
 
-export default function NewBoardThreadPage() {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-  };
+export default async function NewBoardThreadPage() {
+  const supabase = await createClient();
+  const user = await getAuthProfile(supabase);
+  const rows = supabase
+    ? await fetchPokefutaRows(supabase, user?.id ?? null)
+    : [];
+  const isDemo = !user;
+  const demoOwnedCounts = [8, 4, 2, 6, 1, 3];
+  const displayRows = rows.length > 0
+    ? isDemo
+      ? rows.map((row, index) => ({
+          ...row,
+          owned_count: demoOwnedCounts[index] ?? 0,
+        }))
+      : rows
+    : demoRows;
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <header className="space-y-2">
-        <Link
-          href="/board"
-          className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 transition hover:text-emerald-800"
-        >
-          <span aria-hidden="true">←</span>
-          掲示板に戻る
-        </Link>
-        <h2 className="text-xl font-semibold text-gray-800">
-          新しいスレッドを作成
-        </h2>
-        <p className="text-sm text-gray-500">
-          交換したいポケふたや条件を入力してください。
-        </p>
-      </header>
-
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 rounded-xl border bg-white p-5 shadow-sm"
-      >
-        <div className="space-y-2">
-          <label htmlFor="thread-title" className="text-sm font-semibold text-gray-800">
-            タイトル <span className="text-red-600">必須</span>
-          </label>
-          <input
-            id="thread-title"
-            name="title"
-            type="text"
-            required
-            maxLength={TITLE_MAX_LENGTH}
-            value={title}
-            onChange={(event) => {
-              setTitle(event.target.value);
-              setSubmitted(false);
-            }}
-            placeholder="例：札幌のポケふたと交換希望"
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
-          <p className="text-right text-xs text-gray-500">
-            {title.length} / {TITLE_MAX_LENGTH}
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="offer" className="text-sm font-semibold text-gray-800">
-            提供できるポケふた
-          </label>
-          <input
-            id="offer"
-            name="offer"
-            type="text"
-            placeholder="例：横浜・ピカチュウ"
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
-          <p className="text-xs text-gray-500">
-            複数ある場合は、投稿内容に詳しく記入してください。
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="wanted" className="text-sm font-semibold text-gray-800">
-            求めているポケふた
-          </label>
-          <input
-            id="wanted"
-            name="wanted"
-            type="text"
-            placeholder="例：札幌・アローラロコン"
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="thread-body" className="text-sm font-semibold text-gray-800">
-            投稿内容 <span className="text-red-600">必須</span>
-          </label>
-          <textarea
-            id="thread-body"
-            name="body"
-            required
-            rows={8}
-            maxLength={BODY_MAX_LENGTH}
-            value={body}
-            onChange={(event) => {
-              setBody(event.target.value);
-              setSubmitted(false);
-            }}
-            placeholder="交換条件や受け渡し方法などを入力してください。"
-            className="w-full resize-y rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm leading-6 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
-          <p className="text-right text-xs text-gray-500">
-            {body.length} / {BODY_MAX_LENGTH}
-          </p>
-        </div>
-
-        {submitted && (
-          <div
-            role="status"
-            className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-          >
-            入力内容を受け付けました。現在はモックのため、投稿は保存されません。
-          </div>
-        )}
-
-        <div className="rounded-lg bg-gray-50 px-4 py-3 text-xs leading-5 text-gray-500">
-          個人情報や交換に不要な連絡先は投稿しないでください。
-        </div>
-
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Link
-            href="/board"
-            className="rounded-lg border border-gray-300 px-5 py-3 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-          >
-            キャンセル
-          </Link>
-          <button
-            type="submit"
-            className="rounded-lg bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2"
-          >
-            投稿内容を確認する
-          </button>
-        </div>
-      </form>
-    </main>
+    <BoardPostFormClient
+      pokefutaRows={displayRows}
+      poster={user ?? { user_id: "demo-user", nickname: "デモユーザー" }}
+      isDemo={isDemo}
+    />
   );
 }
