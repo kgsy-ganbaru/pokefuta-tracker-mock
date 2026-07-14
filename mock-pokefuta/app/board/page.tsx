@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const threads = [
   {
@@ -82,12 +83,12 @@ export default function BoardPage() {
       </header>
 
       <section className="rounded-xl border bg-white p-4 space-y-4 shadow-sm">
-        <button
-          type="button"
+        <Link
+          href="/board/new"
           className="w-full rounded-lg bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-600"
         >
           スレッドを作成する
-        </button>
+        </Link>
 
         <ul className="divide-y divide-gray-200">
           {threads.map((thread) => (
