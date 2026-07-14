@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const threads = [
   {
     id: "thread-1",
@@ -56,17 +58,21 @@ export default function BoardPage() {
     <main className="max-w-3xl mx-auto p-6 space-y-6">
       <header className="space-y-3">
         <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-          <img
+          <Image
             src="/status-any-owned-pokeball.svg"
             alt=""
             aria-hidden="true"
+            width={20}
+            height={20}
             className="w-5 h-5"
           />
           <span>掲示板</span>
-          <img
+          <Image
             src="/status-any-owned-pokeball.svg"
             alt=""
             aria-hidden="true"
+            width={20}
+            height={20}
             className="w-5 h-5"
           />
         </h2>
@@ -88,10 +94,12 @@ export default function BoardPage() {
             <li key={thread.id} className="py-4 space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-16 shrink-0 rounded-lg border border-emerald-100 bg-emerald-50 p-2 text-center">
-                  <img
+                  <Image
                     src={thread.offer.image}
                     alt=""
                     aria-hidden="true"
+                    width={32}
+                    height={32}
                     className="mx-auto h-8 w-8"
                   />
                   <p className="mt-2 text-xs font-semibold text-emerald-700">
