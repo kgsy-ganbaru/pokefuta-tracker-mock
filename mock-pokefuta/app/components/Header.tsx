@@ -78,7 +78,7 @@ export default function Header({ user }: { user: HeaderUser }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isUsers = pathname?.startsWith("/users");
-  const isBoard = pathname === "/board";
+  const isBoard = pathname?.startsWith("/board");
   return (
     <header className="border-b bg-white">
       <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
