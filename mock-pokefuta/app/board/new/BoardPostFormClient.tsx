@@ -28,7 +28,7 @@ export default function BoardPostFormClient({
   const router = useRouter();
   const [offers, setOffers] = useState<number[]>([]);
   const [wants, setWants] = useState<number[]>([]);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState("交換お願いします！");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -48,8 +48,12 @@ export default function BoardPostFormClient({
   }, []);
 
   const handleConfirm = () => {
-    if (offers.length === 0 || wants.length === 0) {
-      setError("出せるポケふたと欲しいポケふたを、それぞれ1種類以上選択してください。");
+    if (offers.length === 0) {
+      setError("出せるポケふたを1種類以上選んでください。");
+      return;
+    }
+    if (wants.length === 0) {
+      setError("欲しいポケふたを1種類以上選んでください。");
       return;
     }
     const selectedIds = new Set([...offers, ...wants]);
