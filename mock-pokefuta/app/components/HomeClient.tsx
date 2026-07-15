@@ -10,7 +10,23 @@ import {
   REGION_LABELS,
   REGION_ORDER,
 } from "../utils/pokefutaGrouping";
-import { getRankClass } from "../utils/rankColor";
+
+const BOARD_CHANCE_IDS = new Set([1, 3, 5]);
+
+const BoardChanceIcon = () => (
+  <span
+    className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-700"
+    title="掲示板で交換募集中"
+    aria-label="掲示板で交換募集中"
+  >
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 7h11l-3-3" />
+      <path d="m18 7-3 3" />
+      <path d="M17 17H6l3 3" />
+      <path d="m6 17 3-3" />
+    </svg>
+  </span>
+);
 
 /* =====================
    型定義
@@ -40,7 +56,7 @@ export default function HomeClient({
     number | null
   >(null);
   const [activeFilterId, setActiveFilterId] = useState<
-    "owned" | "other-owned" | "unowned" | null
+    "owned" | "other-owned" | "any-owned" | "unowned" | null
   >(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -62,9 +78,14 @@ export default function HomeClient({
     },
     {
       id: "other-owned" as const,
-      label: "誰かが所持しているポケフタ",
+      label: "自分以外が所持しているポケフタ",
       matches: (row: PokefutaRow) =>
-        row.any_owned_count > 0 && row.owned_count === 0,
+        Math.max(0, row.any_owned_count - row.owned_count) > 0,
+    },
+    {
+      id: "any-owned" as const,
+      label: "自分か誰かが所持しているポケフタ",
+      matches: (row: PokefutaRow) => row.any_owned_count > 0,
     },
     {
       id: "unowned" as const,
@@ -223,6 +244,10 @@ export default function HomeClient({
             一覧
         ===================== */}
         <section>
+          <div className="mb-4 flex items-center justify-end gap-2 text-xs text-gray-500">
+            <BoardChanceIcon />
+            <span>掲示板で交換募集中</span>
+          </div>
           {regionSections.map(
             ({ regionId, rows, rowsByPrefectureId, prefectureIdsToRender }) => (
               <div
@@ -285,13 +310,11 @@ export default function HomeClient({
                               {p.city_name}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 min-w-[72px] justify-end">
-                            {p.owned_count > 0 && (
-                              <span className="text-xs font-semibold text-gray-700">
-                                {p.owned_count}枚
-                              </span>
-                            )}
-                            <span className="inline-flex w-4 justify-center">
+                          <div className="flex min-w-[116px] items-center justify-end gap-2">
+                            <span className="inline-flex w-6 justify-center">
+                              {BOARD_CHANCE_IDS.has(p.id) && <BoardChanceIcon />}
+                            </span>
+                            <span className="inline-flex w-5 justify-center">
                               {Math.max(
                                 0,
                                 p.any_owned_count - p.owned_count
@@ -300,19 +323,15 @@ export default function HomeClient({
                                   src="/status-any-owned-pokeball.svg"
                                   alt="他のユーザが取得済み"
                                   title="他のユーザが取得済み"
-                                  width={16}
-                                  height={16}
+                                  width={20}
+                                  height={20}
                                 />
                               )}
                             </span>
+                            <span className="inline-flex min-w-10 justify-end text-xs font-semibold text-gray-700">
+                              {p.owned_count > 0 ? `${p.owned_count}枚` : ""}
+                            </span>
                           </div>
-                          <span
-                            className={`px-2 py-0.5 rounded-md text-xs font-semibold ${getRankClass(
-                              p.difficulty_code
-                            )}`}
-                          >
-                            {p.difficulty_code}
-                          </span>
                         </div>
                       ))}
                     </div>

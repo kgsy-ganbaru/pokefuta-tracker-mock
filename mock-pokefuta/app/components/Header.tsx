@@ -81,25 +81,26 @@ export default function Header({ user }: { user: HeaderUser }) {
   const isBoard = pathname?.startsWith("/board");
   return (
     <header className="border-b bg-white">
-      <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div className="max-w-3xl mx-auto px-2 py-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-4">
         {/* =====================
             タイトル
         ===================== */}
         <h1
           onClick={() => router.push("/")}
-          className="text-lg font-semibold text-gray-800 cursor-pointer"
+          className="shrink-0 text-sm font-semibold text-gray-800 cursor-pointer sm:text-lg"
         >
-          Pokefuta Tracker
+          <span className="sm:hidden">PT</span>
+          <span className="hidden sm:inline">Pokefuta Tracker</span>
         </h1>
 
         {/* =====================
             右側メニュー
         ===================== */}
-        <div className="flex items-center gap-4">
+        <nav aria-label="メインメニュー" className="flex items-start gap-2 sm:gap-4">
           {/* ホーム */}
           <button
             onClick={() => router.push("/")}
-            className={`flex flex-col items-center text-[10px] font-medium transition ${
+            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isHome ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
           >
@@ -112,20 +113,20 @@ export default function Header({ user }: { user: HeaderUser }) {
           {/* ユーザ一覧 */}
           <button
             onClick={() => router.push("/users")}
-            className={`flex flex-col items-center text-[10px] font-medium transition ${
+            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isUsers ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
           >
             <span className="text-current">
               <UsersIcon />
             </span>
-            <span>ユーザ一覧</span>
+            <span className="leading-tight"><span className="block">ユーザ</span><span className="block">一覧</span></span>
           </button>
 
           {/* 掲示板 */}
           <button
             onClick={() => router.push("/board")}
-            className={`flex flex-col items-center text-[10px] font-medium transition ${
+            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isBoard ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
           >
@@ -140,14 +141,14 @@ export default function Header({ user }: { user: HeaderUser }) {
           ===================== */}
           <button
             onClick={() => router.push("/account")}
-            className="flex flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
+            className="flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 text-current">
               <UserIcon />
             </span>
-            <span>{user ? user.nickname : "ゲスト"}</span>
+            <span className="w-full truncate text-center">{user ? user.nickname : "ゲスト"}</span>
           </button>
-        </div>
+        </nav>
       </div>
     </header>
   );
