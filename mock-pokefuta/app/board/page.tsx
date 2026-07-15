@@ -1,127 +1,93 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BoardItem, boardThreads, totalSheets } from "./mockThreads";
 
-const threads = [
-  {
-    id: "thread-1",
-    offer: {
-      image: "/status-any-owned-pokeball.svg",
-      city: "札幌",
-    },
-    want: "GO産色ダークライの提案を募集しています。",
-    updatedAt: "2026/01/11 02:02",
-    replies: 21,
-  },
-  {
-    id: "thread-2",
-    offer: {
-      image: "/status-any-owned-pokeball.svg",
-      city: "仙台",
-    },
-    want: "未移動ゼラオラ他、色伝の提案を希望します。",
-    updatedAt: "2026/01/11 02:02",
-    replies: 127,
-  },
-  {
-    id: "thread-3",
-    offer: {
-      image: "/status-any-owned-pokeball.svg",
-      city: "横浜",
-    },
-    want: "ホゲータ or クワッスと交換希望です。",
-    updatedAt: "2026/01/11 02:01",
-    replies: 1,
-  },
-  {
-    id: "thread-4",
-    offer: {
-      image: "/status-any-owned-pokeball.svg",
-      city: "金沢",
-    },
-    want: "提案内容をコメントでお願いします。",
-    updatedAt: "2026/01/11 02:01",
-    replies: 6,
-  },
-  {
-    id: "thread-5",
-    offer: {
-      image: "/status-any-owned-pokeball.svg",
-      city: "熊本",
-    },
-    want: "親名指定可能色ダダリン希望の提案募集。",
-    updatedAt: "2026/01/11 02:00",
-    replies: 17,
-  },
-];
+const PREVIEW_ITEM_LIMIT = 4;
+
+function ItemPreview({ items, tone }: { items: BoardItem[]; tone: "offer" | "want" }) {
+  const hiddenCount = Math.max(0, items.length - PREVIEW_ITEM_LIMIT);
+  return (
+    <div>
+      <div className="grid grid-cols-4 gap-2">
+        {items.slice(0, PREVIEW_ITEM_LIMIT).map((item) => (
+          <div
+            key={item.id}
+            className={`rounded-xl border p-1.5 text-center ${
+              tone === "offer"
+                ? "border-emerald-100 bg-emerald-50"
+                : "border-amber-100 bg-amber-50"
+            }`}
+          >
+            <div className="relative mx-auto aspect-square w-full max-w-16">
+              <Image src={item.image} alt="" fill className="object-contain p-1" />
+              <span className="absolute -bottom-1 -right-1 rounded-full bg-gray-800 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                {item.count}枚
+              </span>
+            </div>
+            <p className="mt-2 truncate text-[11px] font-semibold text-gray-700">{item.city}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+        <span>{hiddenCount > 0 ? `ほか${hiddenCount}種類` : `${items.length}種類`}</span>
+        <span className="font-semibold">合計 {totalSheets(items)}枚</span>
+      </div>
+    </div>
+  );
+}
 
 export default function BoardPage() {
   return (
-    <main className="max-w-3xl mx-auto p-6 space-y-6">
+    <main className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
       <header className="space-y-3">
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-          <Image
-            src="/status-any-owned-pokeball.svg"
-            alt=""
-            aria-hidden="true"
-            width={20}
-            height={20}
-            className="w-5 h-5"
-          />
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+          <Image src="/status-any-owned-pokeball.svg" alt="" width={20} height={20} />
           <span>掲示板</span>
-          <Image
-            src="/status-any-owned-pokeball.svg"
-            alt=""
-            aria-hidden="true"
-            width={20}
-            height={20}
-            className="w-5 h-5"
-          />
         </h2>
-        <p className="text-sm text-gray-500">
-          掲示板で交換希望のスレッドを作成・閲覧できます。
-        </p>
+        <p className="text-sm text-gray-500">出せるポケふたと欲しいポケふたを確認して、交換相手を探せます。</p>
       </header>
 
-      <section className="rounded-xl border bg-white p-4 space-y-4 shadow-sm">
-        <Link
-          href="/board/new"
-          className="w-full rounded-lg bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-600"
-        >
-          スレッドを作成する
-        </Link>
+      <Link href="/board/new" className="block w-full rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600">
+        新しく投稿する
+      </Link>
 
-        <ul className="divide-y divide-gray-200">
-          {threads.map((thread) => (
-            <li key={thread.id} className="py-4 space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-16 shrink-0 rounded-lg border border-emerald-100 bg-emerald-50 p-2 text-center">
-                  <Image
-                    src={thread.offer.image}
-                    alt=""
-                    aria-hidden="true"
-                    width={32}
-                    height={32}
-                    className="mx-auto h-8 w-8"
-                  />
-                  <p className="mt-2 text-xs font-semibold text-emerald-700">
-                    {thread.offer.city}
-                  </p>
+      <section aria-label="投稿一覧" className="space-y-4">
+        {boardThreads.map((thread) => (
+          <article key={thread.id} className="overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
+            <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                  {thread.user.nickname.slice(0, 1)}
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-gray-800">モトム</p>
-                  <p className="text-sm text-gray-600">{thread.want}</p>
+                <div className="min-w-0">
+                  <Link href={`/users/${thread.user.id}`} className="block truncate text-sm font-semibold text-emerald-700 hover:underline">
+                    {thread.user.nickname}
+                  </Link>
+                  <p className="text-[11px] text-gray-500">更新 {thread.updatedAt}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>最終投稿日: {thread.updatedAt}</span>
-                <span className="flex items-center gap-1">
-                  <span aria-hidden="true">💬</span>
-                  {thread.replies}
-                </span>
+              <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${thread.status === "募集中" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                {thread.status}
+              </span>
+            </div>
+
+            <Link href={`/board/${thread.id}`} className="block space-y-5 p-4">
+              <section className="space-y-2">
+                <h3 className="text-sm font-bold text-emerald-700">出せるポケふた</h3>
+                <ItemPreview items={thread.offers} tone="offer" />
+              </section>
+              <section className="space-y-2">
+                <h3 className="text-sm font-bold text-amber-700">欲しいポケふた</h3>
+                <ItemPreview items={thread.wants} tone="want" />
+              </section>
+              <p className="line-clamp-2 text-sm leading-6 text-gray-600">{thread.comment}</p>
+              <div className="flex items-center justify-between border-t pt-3 text-xs text-gray-500">
+                <span className="font-medium text-emerald-700">投稿の詳細を見る →</span>
+                <span className="flex items-center gap-1"><span aria-hidden="true">💬</span>{thread.replies}</span>
               </div>
-            </li>
-          ))}
-        </ul>
+            </Link>
+          </article>
+        ))}
       </section>
     </main>
   );
