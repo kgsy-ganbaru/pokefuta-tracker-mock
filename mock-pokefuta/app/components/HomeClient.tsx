@@ -244,9 +244,10 @@ export default function HomeClient({
             一覧
         ===================== */}
         <section>
-          <div className="mb-4 flex items-center justify-end gap-2 text-xs text-gray-500">
-            <BoardChanceIcon />
-            <span>掲示板で交換募集中</span>
+          <div className="mb-4 ml-auto grid w-fit gap-2 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">
+            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center"><BoardChanceIcon /></span><span>掲示板で交換募集中</span></div>
+            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center"><Image src="/status-any-owned-pokeball.svg" alt="" width={20} height={20} /></span><span>自分以外のユーザーが所持</span></div>
+            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center font-semibold text-gray-700">2枚</span><span>自分の所持枚数</span></div>
           </div>
           {regionSections.map(
             ({ regionId, rows, rowsByPrefectureId, prefectureIdsToRender }) => (
@@ -310,11 +311,11 @@ export default function HomeClient({
                               {p.city_name}
                             </div>
                           </div>
-                          <div className="flex min-w-[116px] items-center justify-end gap-2">
-                            <span className="inline-flex w-6 justify-center">
+                          <div className="grid w-24 shrink-0 grid-cols-3 items-center justify-items-center">
+                            <span className="inline-flex w-8 justify-center">
                               {BOARD_CHANCE_IDS.has(p.id) && <BoardChanceIcon />}
                             </span>
-                            <span className="inline-flex w-5 justify-center">
+                            <span className="inline-flex w-8 justify-center">
                               {Math.max(
                                 0,
                                 p.any_owned_count - p.owned_count
@@ -328,7 +329,7 @@ export default function HomeClient({
                                 />
                               )}
                             </span>
-                            <span className="inline-flex min-w-10 justify-end text-xs font-semibold text-gray-700">
+                            <span className="inline-flex w-8 justify-center text-xs font-semibold text-gray-700">
                               {p.owned_count > 0 ? `${p.owned_count}枚` : ""}
                             </span>
                           </div>
