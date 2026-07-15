@@ -1,5 +1,5 @@
 export type BoardItem = { id: string; city: string; pokemon: string; image: string };
-export type BoardComment = { id: string; user: { id: string; nickname: string }; body: string; postedAt: string };
+export type BoardComment = { id: string; user: { id: string; nickname: string }; body: string; postedAt: string; isMine?: boolean };
 
 export type BoardThread = {
   id: string;
