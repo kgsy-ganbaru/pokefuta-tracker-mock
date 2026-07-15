@@ -8,7 +8,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="mt-6 w-full py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-70"
+      className="mt-6 w-full rounded bg-gray-200 py-3 font-semibold hover:bg-gray-300 disabled:opacity-70"
       disabled={pending}
     >
       {pending ? "ログアウト中..." : "ログアウト"}
@@ -29,7 +29,7 @@ export default function LogoutForm({
     <form action={formAction}>
       <SubmitButton />
       {state.error && (
-        <p className="mt-2 text-sm text-red-600">{state.error}</p>
+        <p role="alert" className="mt-2 text-sm text-red-600">{state.error}</p>
       )}
     </form>
   );

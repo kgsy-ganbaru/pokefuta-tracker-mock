@@ -8,7 +8,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="w-full py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70"
+      className="pft-primary-button w-full rounded py-3 font-semibold disabled:opacity-70"
       disabled={pending}
     >
       {pending ? "ログイン中..." : "ログイン"}
@@ -46,7 +46,7 @@ export default function LoginForm({
       />
 
       {state.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
+        <p role="alert" className="text-sm text-red-600">{state.error}</p>
       )}
 
       <SubmitButton />

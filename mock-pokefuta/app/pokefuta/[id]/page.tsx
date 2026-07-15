@@ -9,14 +9,6 @@ type PokemonRow = {
   display_order: number | null;
 };
 
-type PokefutaDetail = {
-  id: number;
-  address: string;
-  difficulty_code: string;
-  image_url: string | null;
-  pokefuta_pokemon: PokemonRow[] | null;
-};
-
 type OwnerRow = {
   users: {
     nickname: string | null;

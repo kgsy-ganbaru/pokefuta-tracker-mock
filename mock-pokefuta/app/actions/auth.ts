@@ -64,6 +64,8 @@ export async function logoutAction(
   _prevState: LogoutState,
   _formData: FormData
 ): Promise<LogoutState> {
+  void _prevState;
+  void _formData;
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
