@@ -47,7 +47,7 @@ export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId:
     return row ? { id: String(row.id), city: row.city_name, pokemon: formatPokemonNames(row.pokefuta_pokemon), image: row.image_url || "/no-image.png" } : null;
   };
   const itemsFor = (rows: SelectionRow[], postId: string) => rows.filter((row) => row.post_id === postId).map(toItem).filter((item): item is BoardItem => item !== null);
-  const commentsFor = (postId: string): BoardComment[] => comments.filter((row) => row.post_id === postId).map((row) => { const user = users.get(row.user_id); return { id: row.id, user: { id: user?.user_id ?? row.user_id, nickname: user?.nickname ?? "ユーザー" }, body: row.body, postedAt: displayDate(row.created_at) }; });
+  const commentsFor = (postId: string): BoardComment[] => comments.filter((row) => row.post_id === postId).map((row) => { const user = users.get(row.user_id); return { id: row.id, user: { id: user?.user_id ?? row.user_id, nickname: user?.nickname ?? "ユーザー" }, body: row.body, postedAt: displayDate(row.created_at), isMine: currentUserId === row.user_id }; });
 
   return posts.map((post) => {
     const user = users.get(post.user_id);

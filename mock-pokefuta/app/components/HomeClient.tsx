@@ -11,8 +11,6 @@ import {
   REGION_ORDER,
 } from "../utils/pokefutaGrouping";
 
-const BOARD_CHANCE_IDS = new Set([1, 3, 5]);
-
 const BoardChanceIcon = () => (
   <span
     className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-700"
@@ -46,10 +44,13 @@ const StatusFilterIcon = ({ id }: { id: StatusFilterId }) => {
 export default function HomeClient({
   recentRows,
   pokefutaRows,
+  boardChanceIds,
 }: {
   recentRows: RecentRow[];
   pokefutaRows: PokefutaRow[];
+  boardChanceIds: number[];
 }) {
+  const boardChanceIdSet = new Set(boardChanceIds);
   const router = useRouter();
   const formatRecentDate = (value: string) => {
     const date = new Date(value);
@@ -82,7 +83,7 @@ export default function HomeClient({
     {
       id: "board-chance" as const,
       label: "掲示板で交換募集中",
-      matches: (row: PokefutaRow) => BOARD_CHANCE_IDS.has(row.id),
+      matches: (row: PokefutaRow) => boardChanceIdSet.has(row.id),
     },
     {
       id: "other-owned" as const,
@@ -310,7 +311,7 @@ export default function HomeClient({
                           </div>
                           <div className="grid w-24 shrink-0 grid-cols-3 items-center justify-items-center">
                             <span className="inline-flex w-8 justify-center">
-                              {BOARD_CHANCE_IDS.has(p.id) && <BoardChanceIcon />}
+                              {boardChanceIdSet.has(p.id) && <BoardChanceIcon />}
                             </span>
                             <span className="inline-flex w-8 justify-center">
                               {Math.max(

@@ -174,3 +174,9 @@ export async function fetchPokefutaRows(
     any_owned_count: anyOwnershipMap.get(row.id) ?? 0,
   }));
 }
+
+export async function fetchBoardChanceIds(supabase: SupabaseClient): Promise<number[]> {
+  const { data, error } = await supabase.from("board_post_offers").select("pokefuta_id, board_posts!inner(closed_at, expires_at)").is("board_posts.closed_at", null).gt("board_posts.expires_at", new Date().toISOString());
+  if (error) return [];
+  return [...new Set((data ?? []).map((row) => Number(row.pokefuta_id)).filter(Number.isFinite))];
+}
