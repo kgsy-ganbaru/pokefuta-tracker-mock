@@ -28,6 +28,14 @@ const BoardChanceIcon = () => (
   </span>
 );
 
+type StatusFilterId = "board-chance" | "other-owned" | "owned";
+
+const StatusFilterIcon = ({ id }: { id: StatusFilterId }) => {
+  if (id === "board-chance") return <BoardChanceIcon />;
+  if (id === "other-owned") return <Image src="/status-any-owned-pokeball.svg" alt="" width={20} height={20} />;
+  return <span className="inline-flex w-8 justify-center text-xs font-semibold text-gray-700">2枚</span>;
+};
+
 /* =====================
    型定義
 ===================== */
@@ -56,7 +64,7 @@ export default function HomeClient({
     number | null
   >(null);
   const [activeFilterId, setActiveFilterId] = useState<
-    "owned" | "other-owned" | "any-owned" | "unowned" | null
+    StatusFilterId | null
   >(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -72,26 +80,20 @@ export default function HomeClient({
 
   const filterOptions = [
     {
-      id: "owned" as const,
-      label: "自分が所持しているポケフタ",
-      matches: (row: PokefutaRow) => row.owned_count > 0,
+      id: "board-chance" as const,
+      label: "掲示板で交換募集中",
+      matches: (row: PokefutaRow) => BOARD_CHANCE_IDS.has(row.id),
     },
     {
       id: "other-owned" as const,
-      label: "自分以外が所持しているポケフタ",
+      label: "自分以外のユーザーが所持",
       matches: (row: PokefutaRow) =>
         Math.max(0, row.any_owned_count - row.owned_count) > 0,
     },
     {
-      id: "any-owned" as const,
-      label: "自分か誰かが所持しているポケフタ",
-      matches: (row: PokefutaRow) => row.any_owned_count > 0,
-    },
-    {
-      id: "unowned" as const,
-      label: "誰も所持していないポケフタ",
-      matches: (row: PokefutaRow) =>
-        row.any_owned_count === 0,
+      id: "owned" as const,
+      label: "自分の所持枚数",
+      matches: (row: PokefutaRow) => row.owned_count > 0,
     },
   ];
   const activeFilter = filterOptions.find(
@@ -244,11 +246,6 @@ export default function HomeClient({
             一覧
         ===================== */}
         <section>
-          <div className="mb-4 ml-auto grid w-fit gap-2 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">
-            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center"><BoardChanceIcon /></span><span>掲示板で交換募集中</span></div>
-            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center"><Image src="/status-any-owned-pokeball.svg" alt="" width={20} height={20} /></span><span>自分以外のユーザーが所持</span></div>
-            <div className="flex items-center gap-2"><span className="inline-flex w-8 justify-center font-semibold text-gray-700">2枚</span><span>自分の所持枚数</span></div>
-          </div>
           {regionSections.map(
             ({ regionId, rows, rowsByPrefectureId, prefectureIdsToRender }) => (
               <div
@@ -403,9 +400,10 @@ export default function HomeClient({
                     );
                     setShowFilterModal(false);
                   }}
-                  className="px-3 py-2 rounded-lg text-sm text-left pft-chip"
+                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-left pft-chip ${activeFilterId === option.id ? "ring-2 ring-emerald-400" : ""}`}
                 >
-                  {option.label}
+                  <span className="inline-flex w-8 shrink-0 justify-center"><StatusFilterIcon id={option.id} /></span>
+                  <span>{option.label}</span>
                 </button>
               ))}
             </div>
