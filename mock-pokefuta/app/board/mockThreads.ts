@@ -1,4 +1,5 @@
 export type BoardItem = { id: string; city: string; pokemon: string; image: string };
+export type BoardComment = { id: string; user: { id: string; nickname: string }; body: string; postedAt: string };
 
 export type BoardThread = {
   id: string;
@@ -9,7 +10,7 @@ export type BoardThread = {
   updatedAt: string;
   expiresAt: string;
   closedAt: string | null;
-  replies: number;
+  comments: BoardComment[];
   isMine: boolean;
 };
 
@@ -32,7 +33,11 @@ export const boardThreads: BoardThread[] = [
       { id: "kagoshima", city: "指宿", pokemon: "イーブイ", image: images[1] },
     ],
     comment: "郵送交換を希望しています。交換条件はコメントで相談させてください。",
-    updatedAt: "2026/07/15 01:25", expiresAt: future(5), closedAt: null, replies: 6, isMine: true,
+    updatedAt: "2026/07/15 01:25", expiresAt: future(5), closedAt: null, isMine: true,
+    comments: [
+      { id: "comment-1", user: { id: "satoshi", nickname: "サトシ" }, body: "仙台のラプラスを持っています。札幌との交換は可能ですか？", postedAt: "2026/07/15 09:20" },
+      { id: "comment-2", user: { id: "demo-user", nickname: "デモユーザー" }, body: "ありがとうございます。ぜひ交換をお願いします！", postedAt: "2026/07/15 09:35" },
+    ],
   },
   {
     id: "thread-2", user: { id: "satoshi", nickname: "サトシ", friendCode: "SW-9876-5432-1098" },
@@ -49,7 +54,8 @@ export const boardThreads: BoardThread[] = [
       { id: "nara", city: "斑鳩", pokemon: "エンテイ", image: images[2] },
     ],
     comment: "状態を確認してから交換内容を決めたいです。お気軽にコメントください。",
-    updatedAt: "2026/07/14 22:40", expiresAt: future(1), closedAt: null, replies: 12, isMine: false,
+    updatedAt: "2026/07/14 22:40", expiresAt: future(1), closedAt: null, isMine: false,
+    comments: [{ id: "comment-3", user: { id: "kasumi", nickname: "カスミ" }, body: "小樽のロコンを希望しています。", postedAt: "2026/07/15 08:10" }],
   },
   {
     id: "thread-3", user: { id: "demo-user", nickname: "デモユーザー", friendCode: "SW-1234-5678-9012" },
@@ -59,7 +65,8 @@ export const boardThreads: BoardThread[] = [
       { id: "sendai", city: "仙台", pokemon: "ラプラス", image: images[2] },
     ],
     comment: "交換相手が見つかったため募集を終了しました。",
-    updatedAt: "2026/07/10 18:10", expiresAt: future(-1), closedAt: "2026/07/12 10:00", replies: 2, isMine: true,
+    updatedAt: "2026/07/10 18:10", expiresAt: future(-1), closedAt: "2026/07/12 10:00", isMine: true,
+    comments: [],
   },
 ];
 
