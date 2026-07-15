@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ImageWithFallback from "../components/ImageWithFallback";
 import { getAuthProfile } from "../lib/supabase/auth";
 import { createClient } from "../lib/supabase/server";
 import { fetchBoardThreads } from "./boardData";
@@ -10,7 +11,7 @@ const PREVIEW_ITEM_LIMIT = 4;
 
 function ItemPreview({ items, tone }: { items: BoardItem[]; tone: "offer" | "want" }) {
   const hiddenCount = Math.max(0, items.length - PREVIEW_ITEM_LIMIT);
-  return <div><div className="grid grid-cols-4 gap-2">{items.slice(0, PREVIEW_ITEM_LIMIT).map((item) => <div key={item.id} className={`rounded-xl border p-1.5 text-center ${tone === "offer" ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}`}><div className="relative mx-auto aspect-square w-full max-w-16"><Image src={item.image} alt="" fill className="object-contain p-1" /></div><p className="mt-2 truncate text-[11px] font-semibold text-gray-700">{item.city}</p></div>)}</div><p className="mt-2 text-right text-xs font-semibold text-gray-500">{hiddenCount > 0 ? `ほか${hiddenCount}種類` : `${items.length}種類`}</p></div>;
+  return <div><div className="grid grid-cols-4 gap-2">{items.slice(0, PREVIEW_ITEM_LIMIT).map((item) => <div key={item.id} className={`rounded-xl border p-1.5 text-center ${tone === "offer" ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}`}><div className="relative mx-auto aspect-square w-full max-w-16"><ImageWithFallback src={item.image} alt="" className="h-full w-full object-contain p-1" /></div><p className="mt-2 truncate text-[11px] font-semibold text-gray-700">{item.city}</p></div>)}</div><p className="mt-2 text-right text-xs font-semibold text-gray-500">{hiddenCount > 0 ? `ほか${hiddenCount}種類` : `${items.length}種類`}</p></div>;
 }
 
 export default async function BoardPage() {
