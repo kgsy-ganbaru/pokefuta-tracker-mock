@@ -31,7 +31,7 @@ export default async function AccountPage() {
 
         <Link
           href="/board/mine?from=account"
-          className="mt-6 block w-full rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+          className="pft-primary-button mt-6 block w-full rounded-lg px-4 py-3 text-center text-sm font-semibold"
         >
           自分の投稿を見る
         </Link>
