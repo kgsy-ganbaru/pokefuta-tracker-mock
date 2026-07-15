@@ -30,18 +30,15 @@ export default function BulkConfirmClient() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const stored =
-      window.localStorage.getItem("bulkUpdateSelections");
-    if (!stored) {
-      setRows([]);
-      return;
-    }
-    try {
-      const parsed = JSON.parse(stored) as BulkSelection[];
-      setRows(Array.isArray(parsed) ? parsed : []);
-    } catch {
-      setRows([]);
-    }
+    const frame = window.requestAnimationFrame(() => {
+      const stored = window.localStorage.getItem("bulkUpdateSelections");
+      if (!stored) { setRows([]); return; }
+      try {
+        const parsed = JSON.parse(stored) as BulkSelection[];
+        setRows(Array.isArray(parsed) ? parsed : []);
+      } catch { setRows([]); }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   const groupedRows = useMemo(() => {

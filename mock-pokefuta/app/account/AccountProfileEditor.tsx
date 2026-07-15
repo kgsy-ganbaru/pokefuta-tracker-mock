@@ -30,11 +30,6 @@ export default function AccountProfileEditor({
     user.friend_code ?? ""
   );
   const [isEditingNickname, setIsEditingNickname] = useState(false);
-  const [baseNickname, setBaseNickname] = useState(user.nickname);
-  const [baseComment, setBaseComment] = useState(user.comment ?? "");
-  const [baseFriendCode, setBaseFriendCode] = useState(
-    user.friend_code ?? ""
-  );
 
   const [state, formAction, isPending] = useActionState(
     updateProfileAction,
@@ -42,38 +37,14 @@ export default function AccountProfileEditor({
   );
 
   useEffect(() => {
-    setNickname(user.nickname);
-    setComment(user.comment ?? "");
-    setFriendCode(user.friend_code ?? "");
-    setBaseNickname(user.nickname);
-    setBaseComment(user.comment ?? "");
-    setBaseFriendCode(user.friend_code ?? "");
-  }, [user.comment, user.friend_code, user.nickname]);
-
-  useEffect(() => {
     if (state.success) {
-      const nextNickname = state.nickname ?? nickname;
-      const nextComment = state.comment ?? comment;
-      const nextFriendCode = state.friendCode ?? friendCode;
-      setNickname(nextNickname);
-      setComment(nextComment);
-      setFriendCode(nextFriendCode);
-      setBaseNickname(nextNickname);
-      setBaseComment(nextComment);
-      setBaseFriendCode(nextFriendCode);
-      setIsEditingNickname(false);
       router.refresh();
     }
-  }, [
-    comment,
-    friendCode,
-    nickname,
-    router,
-    state.comment,
-    state.friendCode,
-    state.nickname,
-    state.success,
-  ]);
+  }, [router, state.success]);
+
+  const baseNickname = state.success ? state.nickname ?? nickname : user.nickname;
+  const baseComment = state.success ? state.comment ?? comment : user.comment ?? "";
+  const baseFriendCode = state.success ? state.friendCode ?? friendCode : user.friend_code ?? "";
 
   const isDirty = useMemo(() => {
     return (
@@ -157,10 +128,10 @@ export default function AccountProfileEditor({
       </div>
 
       {state.error ? (
-        <p className="text-sm text-red-600">{state.error}</p>
+        <p role="alert" className="text-sm text-red-600">{state.error}</p>
       ) : null}
       {state.success ? (
-        <p className="text-sm text-green-600">更新しました。</p>
+        <p role="status" className="text-sm text-green-600">更新しました。</p>
       ) : null}
 
       {isDirty ? (

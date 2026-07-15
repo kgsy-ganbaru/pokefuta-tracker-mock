@@ -55,37 +55,20 @@ export default function BulkRegisterClient({
   );
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      setCounts(initialCounts);
-      setTouchedIds(new Set());
-      return;
-    }
-
-    const stored = window.localStorage.getItem(
-      "bulkUpdateSelections"
-    );
-    if (!stored) {
-      setCounts(initialCounts);
-      setTouchedIds(new Set());
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(stored) as BulkSelection[];
-      const storedCounts: Record<number, number> = {};
-      const storedTouched = new Set<number>();
-      if (Array.isArray(parsed)) {
-        parsed.forEach((row) => {
-          storedCounts[row.id] = row.count;
-          storedTouched.add(row.id);
-        });
-      }
-      setCounts({ ...initialCounts, ...storedCounts });
-      setTouchedIds(storedTouched);
-    } catch {
-      setCounts(initialCounts);
-      setTouchedIds(new Set());
-    }
+    if (typeof window === "undefined") return;
+    const frame = window.requestAnimationFrame(() => {
+      const stored = window.localStorage.getItem("bulkUpdateSelections");
+      if (!stored) { setCounts(initialCounts); setTouchedIds(new Set()); return; }
+      try {
+        const parsed = JSON.parse(stored) as BulkSelection[];
+        const storedCounts: Record<number, number> = {};
+        const storedTouched = new Set<number>();
+        if (Array.isArray(parsed)) parsed.forEach((row) => { storedCounts[row.id] = row.count; storedTouched.add(row.id); });
+        setCounts({ ...initialCounts, ...storedCounts });
+        setTouchedIds(storedTouched);
+      } catch { setCounts(initialCounts); setTouchedIds(new Set()); }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [initialCounts]);
 
   useEffect(() => {
