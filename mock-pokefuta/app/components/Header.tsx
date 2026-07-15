@@ -89,7 +89,7 @@ export default function Header({ user }: { user: HeaderUser }) {
           onClick={() => router.push("/")}
           className="shrink-0 cursor-pointer whitespace-nowrap text-[13px] font-semibold text-gray-800 sm:text-lg"
         >
-          Pokefuta Tracker
+          ポケフタトラッカー
         </h1>
 
         {/* =====================
@@ -98,7 +98,9 @@ export default function Header({ user }: { user: HeaderUser }) {
         <nav aria-label="メインメニュー" className="flex items-start gap-3 sm:gap-4">
           {/* ホーム */}
           <button
+            type="button"
             onClick={() => router.push("/")}
+            aria-current={isHome ? "page" : undefined}
             className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isHome ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
@@ -111,7 +113,9 @@ export default function Header({ user }: { user: HeaderUser }) {
 
           {/* ユーザ一覧 */}
           <button
+            type="button"
             onClick={() => router.push("/users")}
+            aria-current={isUsers ? "page" : undefined}
             className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isUsers ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
@@ -124,7 +128,9 @@ export default function Header({ user }: { user: HeaderUser }) {
 
           {/* 掲示板 */}
           <button
+            type="button"
             onClick={() => router.push("/board")}
+            aria-current={isBoard ? "page" : undefined}
             className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
               isBoard ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
             }`}
@@ -139,7 +145,9 @@ export default function Header({ user }: { user: HeaderUser }) {
               アカウントボタン
           ===================== */}
           <button
+            type="button"
             onClick={() => router.push("/account")}
+            aria-current={pathname?.startsWith("/account") ? "page" : undefined}
             className="flex w-[6em] shrink-0 flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-current">

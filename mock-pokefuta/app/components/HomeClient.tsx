@@ -183,7 +183,11 @@ export default function HomeClient({
             />
           </h2>
 
-          <div className="flex gap-3 overflow-x-auto pb-2">
+          {recentRows.length === 0 ? (
+            <p className="rounded-xl border border-dashed bg-white px-4 py-6 text-center text-sm text-gray-500">
+              最近登録されたポケふたはありません。
+            </p>
+          ) : <div className="flex gap-3 overflow-x-auto pb-2">
             {recentRows.map((r) => (
               <button
                 key={r.id}
@@ -223,7 +227,7 @@ export default function HomeClient({
                 </div>
               </button>
             ))}
-          </div>
+          </div>}
         </section>
 
         {/* =====================

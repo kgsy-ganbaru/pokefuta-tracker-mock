@@ -27,7 +27,7 @@ export default async function AccountPage() {
           />
         </h2>
 
-        <AccountProfileEditor user={user} />
+        <AccountProfileEditor key={`${user.nickname}:${user.comment}:${user.friend_code}`} user={user} />
 
         <Link
           href="/board/mine?from=account"
