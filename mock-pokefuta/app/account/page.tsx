@@ -29,6 +29,13 @@ export default async function AccountPage() {
 
         <AccountProfileEditor user={user} />
 
+        <Link
+          href="/board/mine?from=account"
+          className="mt-6 block w-full rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+        >
+          自分の投稿を見る
+        </Link>
+
         <LogoutForm action={logoutAction} />
       </main>
     );

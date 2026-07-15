@@ -21,11 +21,9 @@ export type BoardPostDraft = {
 export default function BoardPostFormClient({
   pokefutaRows,
   poster,
-  isDemo,
 }: {
   pokefutaRows: PokefutaRow[];
   poster: { user_id: string; nickname: string };
-  isDemo: boolean;
 }) {
   const router = useRouter();
   const [offers, setOffers] = useState<number[]>([]);
@@ -48,19 +46,6 @@ export default function BoardPostFormClient({
       window.localStorage.removeItem(BOARD_DRAFT_KEY);
     }
   }, []);
-
-  const hasDraft = offers.length > 0 || wants.length > 0 || comment.length > 0;
-
-  const visitProfile = () => {
-    if (
-      hasDraft &&
-      !window.confirm(
-        "ユーザー画面に移動すると、現在の入力内容は破棄されます。移動してもよろしいですか？"
-      )
-    ) return;
-    window.localStorage.removeItem(BOARD_DRAFT_KEY);
-    router.push(`/users/${poster.user_id}`);
-  };
 
   const handleConfirm = () => {
     if (offers.length === 0 || wants.length === 0) {
@@ -87,17 +72,6 @@ export default function BoardPostFormClient({
         </Link>
         <p className="mt-3 text-sm text-gray-500">画像をタップして、交換したいポケふたを選んでください。</p>
       </header>
-
-      <section className="flex items-center justify-between gap-3 rounded-xl border bg-white p-4 shadow-sm">
-        <div>
-          <p className="text-xs text-gray-500">投稿者</p>
-          <p className="font-semibold text-gray-800">{poster.nickname}</p>
-          {isDemo && <p className="mt-1 text-xs text-amber-700">未ログイン時のモック表示です</p>}
-        </div>
-        <button type="button" onClick={visitProfile} className="rounded-full border px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-gray-50">
-          ユーザーを見る
-        </button>
-      </section>
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
