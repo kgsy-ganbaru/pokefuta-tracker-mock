@@ -87,16 +87,15 @@ export default function Header({ user }: { user: HeaderUser }) {
         ===================== */}
         <h1
           onClick={() => router.push("/")}
-          className="shrink-0 text-sm font-semibold text-gray-800 cursor-pointer sm:text-lg"
+          className="shrink-0 cursor-pointer whitespace-nowrap text-[13px] font-semibold text-gray-800 sm:text-lg"
         >
-          <span className="sm:hidden">PT</span>
-          <span className="hidden sm:inline">Pokefuta Tracker</span>
+          Pokefuta Tracker
         </h1>
 
         {/* =====================
             右側メニュー
         ===================== */}
-        <nav aria-label="メインメニュー" className="flex items-start gap-2 sm:gap-4">
+        <nav aria-label="メインメニュー" className="flex items-start gap-3 sm:gap-4">
           {/* ホーム */}
           <button
             onClick={() => router.push("/")}
@@ -107,7 +106,7 @@ export default function Header({ user }: { user: HeaderUser }) {
             <span className="text-current">
               <HomeIcon />
             </span>
-            <span>ホーム</span>
+            <span className="mt-1 h-6 leading-3">ホーム</span>
           </button>
 
           {/* ユーザ一覧 */}
@@ -120,7 +119,7 @@ export default function Header({ user }: { user: HeaderUser }) {
             <span className="text-current">
               <UsersIcon />
             </span>
-            <span className="leading-tight"><span className="block">ユーザ</span><span className="block">一覧</span></span>
+            <span className="mt-1 h-6 leading-3"><span className="block">ユーザ</span><span className="block">一覧</span></span>
           </button>
 
           {/* 掲示板 */}
@@ -133,7 +132,7 @@ export default function Header({ user }: { user: HeaderUser }) {
             <span className="text-current">
               <BoardIcon />
             </span>
-            <span>掲示板</span>
+            <span className="mt-1 h-6 leading-3">掲示板</span>
           </button>
 
           {/* =====================
@@ -141,12 +140,12 @@ export default function Header({ user }: { user: HeaderUser }) {
           ===================== */}
           <button
             onClick={() => router.push("/account")}
-            className="flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
+            className="flex w-[6em] shrink-0 flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 text-current">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-current">
               <UserIcon />
             </span>
-            <span className="w-full truncate text-center">{user ? user.nickname : "ゲスト"}</span>
+            <span className="mt-1 h-6 w-full truncate text-center leading-3">{user ? user.nickname : "ゲスト"}</span>
           </button>
         </nav>
       </div>
