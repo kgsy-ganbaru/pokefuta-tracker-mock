@@ -1,4 +1,5 @@
 import BoardPostFormClient from "./BoardPostFormClient";
+import Link from "next/link";
 import { fetchPokefutaRows, PokefutaRow } from "../../lib/pokefuta/listData";
 import { getAuthProfile } from "../../lib/supabase/auth";
 import { createClient } from "../../lib/supabase/server";
@@ -17,10 +18,13 @@ const demoRows: PokefutaRow[] = [
 export default async function NewBoardThreadPage() {
   const supabase = await createClient();
   const user = await getAuthProfile(supabase);
+  if (supabase && !user) {
+    return <main className="mx-auto max-w-xl p-6 text-center"><h1 className="text-xl font-semibold text-gray-800">投稿するにはログインが必要です</h1><p className="mt-3 text-sm text-gray-500">ログイン後、持っているポケふたから交換に出すものを選べます。</p><Link href="/account" className="mt-6 inline-block rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white">ログインへ</Link></main>;
+  }
   const rows = supabase
     ? await fetchPokefutaRows(supabase, user?.id ?? null)
     : [];
-  const isDemo = !user;
+  const isDemo = !supabase;
   const demoOwnedCounts = [8, 4, 2, 6, 1, 3];
   const displayRows = rows.length > 0
     ? isDemo
