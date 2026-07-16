@@ -29,13 +29,6 @@ export default async function AccountPage() {
 
         <AccountProfileEditor key={`${user.nickname}:${user.comment}:${user.friend_code}`} user={user} />
 
-        <Link
-          href="/board/mine?from=account"
-          className="pft-primary-button mt-6 block w-full rounded-lg px-4 py-3 text-center text-sm font-semibold"
-        >
-          自分の投稿を見る
-        </Link>
-
         <LogoutForm action={logoutAction} />
       </main>
     );

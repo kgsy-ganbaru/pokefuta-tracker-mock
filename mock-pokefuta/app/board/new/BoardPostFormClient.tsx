@@ -31,7 +31,7 @@ export default function BoardPostFormClient({
   const [offers, setOffers] = useState<number[]>([]);
   const [wants, setWants] = useState<number[]>([]);
   const [comment, setComment] = useState("交換お願いします！");
-  const [error, setError] = useState("");
+  const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
     const stored = window.localStorage.getItem(BOARD_DRAFT_KEY);
@@ -51,11 +51,11 @@ export default function BoardPostFormClient({
 
   const handleConfirm = () => {
     if (offers.length === 0) {
-      setError("出せるポケふたを1種類以上選んでください。");
+      setValidationMessage("「出」のポケふたを1種類以上選んでください。");
       return;
     }
     if (wants.length === 0) {
-      setError("欲しいポケふたを1種類以上選んでください。");
+      setValidationMessage("「求」のポケふたを1種類以上選んでください。");
       return;
     }
     const selectedIds = new Set([...offers, ...wants]);
@@ -79,18 +79,18 @@ export default function BoardPostFormClient({
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
-          <h2 className="font-semibold text-gray-800">出せるポケふた</h2>
+          <h2 className="font-semibold text-gray-800">出</h2>
           <p className="mt-1 text-sm text-gray-500">所持登録しているものから、最大10種類まで選択できます。</p>
         </div>
-        <PokefutaSelector rows={pokefutaRows} selectedIds={offers} onChange={(next) => { setOffers(next); setError(""); }} ownedOnly selectionLabel="出せる" limit={BOARD_MAX_TYPES} />
+        <PokefutaSelector rows={pokefutaRows} selectedIds={offers} onChange={setOffers} ownedOnly selectionLabel="出" limit={BOARD_MAX_TYPES} />
       </section>
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
-          <h2 className="font-semibold text-gray-800">欲しいポケふた</h2>
+          <h2 className="font-semibold text-gray-800">求</h2>
           <p className="mt-1 text-sm text-gray-500">すべてのポケふたから、最大10種類まで選択できます。</p>
         </div>
-        <PokefutaSelector rows={pokefutaRows} selectedIds={wants} onChange={(next) => { setWants(next); setError(""); }} ownedOnly={false} selectionLabel="欲しい" limit={BOARD_MAX_TYPES} />
+        <PokefutaSelector rows={pokefutaRows} selectedIds={wants} onChange={setWants} ownedOnly={false} selectionLabel="求" limit={BOARD_MAX_TYPES} />
       </section>
 
       <section className="space-y-2 rounded-xl border bg-white p-4 shadow-sm">
@@ -99,7 +99,15 @@ export default function BoardPostFormClient({
         <p className="text-right text-xs text-gray-500">{comment.length} / {BOARD_COMMENT_MAX}</p>
       </section>
 
-      {error && <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+      {validationMessage && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4" role="presentation" onClick={() => setValidationMessage("")}>
+          <div role="alertdialog" aria-modal="true" aria-labelledby="board-validation-title" className="w-full max-w-sm rounded-2xl border bg-white p-5 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <h2 id="board-validation-title" className="text-base font-semibold text-gray-800">入力内容を確認してください</h2>
+            <p className="mt-3 text-sm leading-6 text-gray-600">{validationMessage}</p>
+            <button type="button" autoFocus onClick={() => setValidationMessage("")} className="pft-primary-button mt-5 w-full rounded-full px-5 py-3 text-sm font-semibold">閉じる</button>
+          </div>
+        </div>
+      )}
 
       <MobileActionBar>
         <Link href="/board" className="rounded-full border bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-sm">キャンセル</Link>
