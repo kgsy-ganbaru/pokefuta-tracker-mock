@@ -48,6 +48,13 @@ body {
   min-width: 320px;
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  body {
+    padding-bottom: 0;
+  }
 }
 
 button,
