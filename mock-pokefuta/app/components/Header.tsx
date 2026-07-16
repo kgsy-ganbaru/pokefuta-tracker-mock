@@ -50,7 +50,7 @@ type MainNavigationProps = {
 function MainNavigation({ isHome, isUsers, isBoard, mobile = false }: MainNavigationProps) {
   const itemClass = (active: boolean) =>
     `flex flex-1 flex-col items-center justify-center rounded-xl font-medium transition ${
-      mobile ? "min-h-14 py-1 text-[11px]" : "w-[3em] shrink-0 py-1 text-[10px]"
+      mobile ? "min-h-16 -translate-y-1 pb-2 pt-0.5 text-[11px]" : "w-[3em] shrink-0 py-1 text-[10px]"
     } ${active ? "bg-emerald-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"}`;
 
   const homeItem = (
@@ -73,7 +73,7 @@ function MainNavigation({ isHome, isUsers, isBoard, mobile = false }: MainNaviga
   );
 
   return (
-    <nav aria-label="メインメニュー" className={mobile ? "mx-auto flex max-w-md items-stretch gap-2 px-3 py-1.5" : "hidden items-start gap-4 sm:flex"}>
+    <nav aria-label="メインメニュー" className={mobile ? "mx-auto flex max-w-md items-stretch gap-2 px-3 pb-1 pt-3" : "hidden items-start gap-4 sm:flex"}>
       {mobile ? [usersItem, homeItem, boardItem] : [homeItem, usersItem, boardItem]}
     </nav>
   );
