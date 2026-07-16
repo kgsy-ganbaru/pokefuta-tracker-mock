@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/server";
 import {
   fetchPokefutaRows,
@@ -10,6 +9,7 @@ import {
   REGION_LABELS,
 } from "@/app/utils/pokefutaGrouping";
 import ImageWithFallback from "@/app/components/ImageWithFallback";
+import PageBackLink from "@/app/components/PageBackLink";
 import FriendCodeCard from "./FriendCodeCard";
 
 type UserDetailPageProps = {
@@ -69,6 +69,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
+          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -90,14 +91,6 @@ export default async function UserDetailPage({
             </p>
           </section>
         </main>
-        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-          <Link
-            href="/users"
-            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
-          >
-            ユーザ一覧に戻る
-          </Link>
-        </div>
       </>
     );
   }
@@ -106,6 +99,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
+          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -127,14 +121,6 @@ export default async function UserDetailPage({
             </p>
           </section>
         </main>
-        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-          <Link
-            href="/users"
-            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
-          >
-            ユーザ一覧に戻る
-          </Link>
-        </div>
       </>
     );
   }
@@ -162,6 +148,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
+          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -183,14 +170,6 @@ export default async function UserDetailPage({
             </p>
           </section>
         </main>
-        <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-          <Link
-            href="/users"
-            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
-          >
-            ユーザ一覧に戻る
-          </Link>
-        </div>
       </>
     );
   }
@@ -204,6 +183,7 @@ export default async function UserDetailPage({
   return (
     <>
       <main className="max-w-7xl mx-auto px-4 pb-32">
+        <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
         <section className="mt-6">
           <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
             <img
@@ -302,14 +282,6 @@ export default async function UserDetailPage({
         </section>
       </main>
 
-      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-        <Link
-          href="/users"
-          className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
-        >
-          ユーザ一覧に戻る
-        </Link>
-      </div>
     </>
   );
 }

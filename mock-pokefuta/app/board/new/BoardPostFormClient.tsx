@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PokefutaRow } from "../../lib/pokefuta/listData";
 import PokefutaSelector from "./PokefutaSelector";
+import MobileActionBar from "../../components/MobileActionBar";
+import PageBackLink from "../../components/PageBackLink";
 
 export const BOARD_DRAFT_KEY = "boardPostDraft";
 export const BOARD_MAX_TYPES = 10;
@@ -69,11 +71,9 @@ export default function BoardPostFormClient({
   };
 
   return (
-    <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 pb-28">
+    <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 pb-40">
       <header>
-        <Link href="/board" className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700">
-          ← 掲示板に戻る
-        </Link>
+        <PageBackLink href="/board" label="掲示板に戻る" />
         <p className="mt-3 text-sm text-gray-500">画像をタップして、交換したいポケふたを選んでください。</p>
       </header>
 
@@ -101,10 +101,10 @@ export default function BoardPostFormClient({
 
       {error && <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
-      <div className="pft-safe-bottom fixed bottom-0 left-0 right-0 z-40 flex justify-center gap-3 bg-white/90 px-4 pt-3 backdrop-blur-sm">
-        <Link href="/board" className="rounded-full border bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg">キャンセル</Link>
+      <MobileActionBar>
+        <Link href="/board" className="rounded-full border bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-sm">キャンセル</Link>
         <button type="button" onClick={handleConfirm} className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-emerald-600">内容を確認する</button>
-      </div>
+      </MobileActionBar>
     </main>
   );
 }

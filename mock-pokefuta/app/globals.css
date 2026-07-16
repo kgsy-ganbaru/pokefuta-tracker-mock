@@ -2,6 +2,7 @@
 
 :root {
   --pft-mobile-nav-height: 5rem;
+  --pft-mobile-action-bar-height: 4.75rem;
   --background: #ffffff;
   --foreground: #2d3a2f;
   --pf-surface: #ffffff;
@@ -56,6 +57,14 @@ body {
   bottom: calc(var(--pft-mobile-nav-height) + env(safe-area-inset-bottom) + 0.75rem);
 }
 
+.pft-mobile-action-bar {
+  bottom: calc(var(--pft-mobile-nav-height) + env(safe-area-inset-bottom));
+}
+
+.pft-above-mobile-action-bar {
+  bottom: calc(var(--pft-mobile-nav-height) + var(--pft-mobile-action-bar-height) + env(safe-area-inset-bottom) + 0.75rem);
+}
+
 @media (min-width: 640px) {
   body {
     padding-bottom: 0;
@@ -63,6 +72,14 @@ body {
 
   .pft-above-mobile-nav {
     bottom: 1.5rem;
+  }
+
+  .pft-mobile-action-bar {
+    bottom: 0;
+  }
+
+  .pft-above-mobile-action-bar {
+    bottom: calc(var(--pft-mobile-action-bar-height) + 0.75rem);
   }
 }
 
