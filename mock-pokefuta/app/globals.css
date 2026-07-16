@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  --pft-mobile-nav-height: 5rem;
   --background: #ffffff;
   --foreground: #2d3a2f;
   --pf-surface: #ffffff;
@@ -48,12 +49,20 @@ body {
   min-width: 320px;
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
-  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--pft-mobile-nav-height) + env(safe-area-inset-bottom));
+}
+
+.pft-above-mobile-nav {
+  bottom: calc(var(--pft-mobile-nav-height) + env(safe-area-inset-bottom) + 0.75rem);
 }
 
 @media (min-width: 640px) {
   body {
     padding-bottom: 0;
+  }
+
+  .pft-above-mobile-nav {
+    bottom: 1.5rem;
   }
 }
 

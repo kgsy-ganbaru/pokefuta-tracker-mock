@@ -401,7 +401,7 @@ export default function BulkRegisterClient({
           onClick={() =>
             window.scrollTo({ top: 0, behavior: "smooth" })
           }
-          className="fixed bottom-20 right-6 w-12 h-12 rounded-full bg-blue-600 text-white text-xl shadow-lg z-50"
+          className="pft-above-mobile-nav fixed right-6 z-40 h-12 w-12 rounded-full bg-blue-600 text-xl text-white shadow-lg"
           aria-label="ページの先頭へ戻る"
         >
           ↑

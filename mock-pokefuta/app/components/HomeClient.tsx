@@ -443,7 +443,7 @@ export default function HomeClient({
           onClick={() =>
             window.scrollTo({ top: 0, behavior: "smooth" })
           }
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full text-white text-xl shadow-lg z-50 pft-primary-button"
+          className="pft-above-mobile-nav fixed right-6 z-40 h-12 w-12 rounded-full text-xl text-white shadow-lg pft-primary-button"
           aria-label="ページの先頭へ戻る"
         >
           ↑
