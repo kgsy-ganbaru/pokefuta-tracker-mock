@@ -101,7 +101,7 @@ export default function BoardPostFormClient({
 
       {error && <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
-      <div className="fixed bottom-4 left-0 right-0 z-40 flex justify-center gap-3 px-4">
+      <div className="pft-safe-bottom fixed bottom-0 left-0 right-0 z-40 flex justify-center gap-3 bg-white/90 px-4 pt-3 backdrop-blur-sm">
         <Link href="/board" className="rounded-full border bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg">キャンセル</Link>
         <button type="button" onClick={handleConfirm} className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-emerald-600">内容を確認する</button>
       </div>

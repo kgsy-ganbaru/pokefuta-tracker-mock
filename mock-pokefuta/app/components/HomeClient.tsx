@@ -145,8 +145,8 @@ export default function HomeClient({
           <button
             type="button"
             onClick={() => setShowFilterModal(true)}
-            aria-label="フィルターを開く"
-            className="h-9 w-9 rounded-lg border border-gray-200 bg-white/80 text-gray-600 shadow-sm transition hover:bg-white pft-card"
+            aria-label={activeFilter ? `フィルターを開く。現在: ${activeFilter.label}` : "フィルターを開く"}
+            className="relative h-11 w-11 rounded-lg border border-gray-200 bg-white/80 text-gray-600 shadow-sm transition hover:bg-white pft-card"
           >
             <svg
               viewBox="0 0 24 24"
@@ -160,8 +160,16 @@ export default function HomeClient({
             >
               <path d="M3 4h18l-7 8v6l-4 2v-8z" />
             </svg>
+            {activeFilter && <span aria-hidden="true" className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />}
           </button>
         </div>
+
+        {activeFilter && (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+            <span className="truncate">絞り込み中：{activeFilter.label}</span>
+            <button type="button" onClick={() => setActiveFilterId(null)} className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm">解除</button>
+          </div>
+        )}
 
         {/* =====================
             最近ゲット
@@ -350,15 +358,19 @@ export default function HomeClient({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24"
           onClick={() => setActiveRegionId(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="region-dialog-title"
         >
           <div
             className="w-full max-w-md rounded-2xl p-4 pft-modal"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-3">
-              <div className="text-sm font-semibold">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div id="region-dialog-title" className="text-sm font-semibold">
                 {REGION_LABELS[activeRegionId]}の都道府県
               </div>
+              <button type="button" onClick={() => setActiveRegionId(null)} aria-label="閉じる" className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-xl text-gray-600">×</button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {activePrefectureIds.map((prefectureId) => {
@@ -389,11 +401,18 @@ export default function HomeClient({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-24"
           onClick={() => setShowFilterModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="filter-dialog-title"
         >
           <div
             className="w-full max-w-md rounded-2xl p-4 pft-modal"
             onClick={(event) => event.stopPropagation()}
           >
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 id="filter-dialog-title" className="text-sm font-semibold">表示を絞り込む</h2>
+              <button type="button" onClick={() => setShowFilterModal(false)} aria-label="閉じる" className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-xl text-gray-600">×</button>
+            </div>
             <div className="grid gap-2">
               {filterOptions.map((option) => (
                 <button

@@ -377,7 +377,7 @@ export default function BulkRegisterClient({
         </section>
       </main>
 
-      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
+      <div className="pft-safe-bottom fixed bottom-0 left-0 right-0 z-50 flex justify-center bg-white/90 px-4 pt-3 backdrop-blur-sm">
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/"

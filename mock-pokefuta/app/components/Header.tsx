@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const iconClassName = "h-6 w-6";
 const iconStrokeWidth = 1.5;
@@ -74,87 +75,79 @@ type HeaderUser = {
 } | null;
 
 export default function Header({ user }: { user: HeaderUser }) {
-  const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isUsers = pathname?.startsWith("/users");
   const isBoard = pathname?.startsWith("/board");
   return (
-    <header className="border-b bg-white">
-      <div className="max-w-3xl mx-auto px-2 py-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="sticky top-0 z-40 border-b bg-white/95 shadow-sm backdrop-blur-md">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-2 py-2.5 sm:gap-4 sm:px-4">
         {/* =====================
             タイトル
         ===================== */}
-        <h1
-          onClick={() => router.push("/")}
-          className="shrink-0 cursor-pointer whitespace-nowrap text-[13px] font-semibold text-gray-800 sm:text-lg"
-        >
+        <Link href="/" className="shrink-0 whitespace-nowrap rounded-md px-1 py-2 text-[13px] font-semibold text-gray-800 sm:text-lg">
           ポケフタトラッカー
-        </h1>
+        </Link>
 
         {/* =====================
             右側メニュー
         ===================== */}
         <nav aria-label="メインメニュー" className="flex items-start gap-3 sm:gap-4">
           {/* ホーム */}
-          <button
-            type="button"
-            onClick={() => router.push("/")}
+          <Link
+            href="/"
             aria-current={isHome ? "page" : undefined}
-            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
-              isHome ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+            className={`flex w-[3em] shrink-0 flex-col items-center rounded-lg py-1 text-[10px] font-medium transition ${
+              isHome ? "bg-emerald-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
             }`}
           >
             <span className="text-current">
               <HomeIcon />
             </span>
             <span className="mt-1 h-6 leading-3">ホーム</span>
-          </button>
+          </Link>
 
           {/* ユーザ一覧 */}
-          <button
-            type="button"
-            onClick={() => router.push("/users")}
+          <Link
+            href="/users"
             aria-current={isUsers ? "page" : undefined}
-            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
-              isUsers ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+            className={`flex w-[3em] shrink-0 flex-col items-center rounded-lg py-1 text-[10px] font-medium transition ${
+              isUsers ? "bg-emerald-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
             }`}
           >
             <span className="text-current">
               <UsersIcon />
             </span>
             <span className="mt-1 h-6 leading-3"><span className="block">ユーザ</span><span className="block">一覧</span></span>
-          </button>
+          </Link>
 
           {/* 掲示板 */}
-          <button
-            type="button"
-            onClick={() => router.push("/board")}
+          <Link
+            href="/board"
             aria-current={isBoard ? "page" : undefined}
-            className={`flex w-[3em] shrink-0 flex-col items-center text-[10px] font-medium transition ${
-              isBoard ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+            className={`flex w-[3em] shrink-0 flex-col items-center rounded-lg py-1 text-[10px] font-medium transition ${
+              isBoard ? "bg-emerald-50 text-blue-600" : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
             }`}
           >
             <span className="text-current">
               <BoardIcon />
             </span>
             <span className="mt-1 h-6 leading-3">掲示板</span>
-          </button>
+          </Link>
 
           {/* =====================
               アカウントボタン
           ===================== */}
-          <button
-            type="button"
-            onClick={() => router.push("/account")}
+          <Link
+            href="/account"
             aria-current={pathname?.startsWith("/account") ? "page" : undefined}
-            className="flex w-[6em] shrink-0 flex-col items-center text-[10px] font-medium text-gray-700 hover:text-blue-600"
+            className={`flex w-[6em] shrink-0 flex-col items-center rounded-lg py-1 text-[10px] font-medium transition ${pathname?.startsWith("/account") ? "bg-emerald-50 text-blue-600" : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"}`}
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-current">
               <UserIcon />
             </span>
             <span className="mt-1 h-6 w-full truncate text-center leading-3">{user ? user.nickname : "ゲスト"}</span>
-          </button>
+          </Link>
         </nav>
       </div>
     </header>
