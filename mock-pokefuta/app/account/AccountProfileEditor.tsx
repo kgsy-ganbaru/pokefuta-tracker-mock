@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import type { AuthProfile } from "../lib/supabase/auth";
 import {
@@ -63,6 +64,22 @@ export default function AccountProfileEditor({
 
   return (
     <form action={formAction} className="space-y-4">
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setIsEditingNickname((prev) => !prev)}
+          className="pft-primary-button flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg px-2 py-2.5 text-[12px] font-semibold sm:text-sm"
+        >
+          {isEditingNickname ? "変更をやめる" : "ニックネーム変更"}
+        </button>
+        <Link
+          href="/board/mine?from=account"
+          className="pft-primary-button flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg px-2 py-2.5 text-[12px] font-semibold sm:text-sm"
+        >
+          自分の投稿を確認
+        </Link>
+      </div>
+
       <div>
         <p className="text-sm text-gray-500">ニックネーム</p>
         {isEditingNickname ? (
@@ -144,13 +161,6 @@ export default function AccountProfileEditor({
         </button>
       ) : null}
 
-      <button
-        type="button"
-        onClick={() => setIsEditingNickname((prev) => !prev)}
-        className="w-full py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-70"
-      >
-        {isEditingNickname ? "ニックネーム変更をやめる" : "ニックネーム変更する"}
-      </button>
     </form>
   );
 }
