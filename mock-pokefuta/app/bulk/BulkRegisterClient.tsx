@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -9,6 +8,8 @@ import {
   REGION_LABELS,
 } from "../utils/pokefutaGrouping";
 import { PokefutaRow } from "../lib/pokefuta/listData";
+import MobileActionBar from "../components/MobileActionBar";
+import PageBackLink from "../components/PageBackLink";
 
 export default function BulkRegisterClient({
   pokefutaRows,
@@ -163,7 +164,10 @@ export default function BulkRegisterClient({
 
   return (
     <>
-      <main className="max-w-7xl mx-auto px-4 pb-32">
+      <main className="max-w-7xl mx-auto px-4 pb-40">
+        <div className="pt-3">
+          <PageBackLink href="/" label="一覧に戻る" />
+        </div>
         <section className="mt-6">
           <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
             <img
@@ -377,14 +381,7 @@ export default function BulkRegisterClient({
         </section>
       </main>
 
-      <div className="pft-safe-bottom fixed bottom-0 left-0 right-0 z-50 flex justify-center bg-white/90 px-4 pt-3 backdrop-blur-sm">
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="w-48 rounded-full border border-gray-300 bg-white px-6 py-3 text-center text-sm font-semibold text-gray-700 shadow-lg hover:bg-gray-50"
-          >
-            一覧へ戻る
-          </Link>
+      <MobileActionBar>
           <button
             type="button"
             onClick={handleConfirm}
@@ -393,15 +390,14 @@ export default function BulkRegisterClient({
           >
             更新
           </button>
-        </div>
-      </div>
+      </MobileActionBar>
 
       {showBackToTop && (
         <button
           onClick={() =>
             window.scrollTo({ top: 0, behavior: "smooth" })
           }
-          className="pft-above-mobile-nav fixed right-6 z-40 h-12 w-12 rounded-full bg-blue-600 text-xl text-white shadow-lg"
+          className="pft-above-mobile-action-bar fixed right-6 z-40 h-12 w-12 rounded-full bg-blue-600 text-xl text-white shadow-lg"
           aria-label="ページの先頭へ戻る"
         >
           ↑

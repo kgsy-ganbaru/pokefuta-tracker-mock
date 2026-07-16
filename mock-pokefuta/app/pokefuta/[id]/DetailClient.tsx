@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { updateOwnershipAction } from "@/app/actions/ownership";
+import PageBackLink from "@/app/components/PageBackLink";
 
 type Pokefuta = {
   id: number;
@@ -35,6 +35,9 @@ function SubmitButton({ isLoggedIn }: { isLoggedIn: boolean }) {
       className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-70"
       disabled={pending}
     >
+      <div className="mb-3">
+        <PageBackLink href="/" label="一覧に戻る" />
+      </div>
       {pending ? "更新中..." : "更新する"}
     </button>
   );
@@ -187,14 +190,6 @@ export default function DetailClient({
         )}
       </section>
 
-      <div className="mt-8 flex justify-center">
-        <Link
-          href="/"
-          className="w-48 rounded-full border border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50"
-        >
-          一覧に戻る
-        </Link>
-      </div>
     </main>
   );
 }
