@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import type { RegisterState } from "../../actions/auth";
+import PasswordInput from "../../components/PasswordInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -44,13 +45,26 @@ export default function RegisterForm({
       />
 
       <input
-        type="password"
-        name="password"
-        placeholder="パスワード"
-        className="w-full border px-3 py-2 rounded"
-        autoComplete="new-password"
-        minLength={6}
+        type="email"
+        name="email"
+        placeholder="メールアドレス"
+        className="w-full rounded border px-3 py-3"
+        autoComplete="email"
         required
+      />
+
+      <PasswordInput
+        name="password"
+        placeholder="パスワード（8文字以上）"
+        autoComplete="new-password"
+        minLength={8}
+      />
+
+      <PasswordInput
+        name="passwordConfirmation"
+        placeholder="パスワード（確認）"
+        autoComplete="new-password"
+        minLength={8}
       />
 
       {state.error && (
