@@ -31,6 +31,30 @@ const MIN_PASSWORD_LENGTH = 8;
 const MAX_COMMENT_LENGTH = 200;
 const FRIEND_CODE_LENGTH = 12;
 
+async function resolveEmailForLogin(loginId: string) {
+  if (loginId.includes("@")) return loginId.toLowerCase();
+  const admin = createAdminClient();
+  if (admin) {
+    const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (!error) {
+      const matchedUser = data.users.find((user) => user.user_metadata?.user_id === loginId);
+      if (matchedUser?.email) return matchedUser.email;
+    }
+  }
+  return userIdToEmail(loginId);
+}
+
+function emailErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+  if (normalized.includes("already") || normalized.includes("exists") || normalized.includes("registered")) {
+    return "このメールアドレスは既に使用されています。パスワード再設定をお試しください。";
+  }
+  if (normalized.includes("rate") || normalized.includes("limit")) {
+    return "短時間に操作が集中しています。少し時間をおいてからお試しください。";
+  }
+  return "メールアドレスを更新できませんでした。入力内容を確認して、もう一度お試しください。";
+}
+
 export async function loginAction(
   _prevState: LoginState,
   formData: FormData
@@ -45,18 +69,7 @@ export async function loginAction(
   if (!supabase) {
     return { error: "Supabase環境変数が設定されていません" };
   }
-  let email = userId.includes("@") ? userId.toLowerCase() : userIdToEmail(userId);
-  if (!userId.includes("@")) {
-    const adminSupabase = createAdminClient();
-    if (adminSupabase) {
-      const { data: identity } = await adminSupabase
-        .from("login_identities")
-        .select("email")
-        .eq("login_id", userId)
-        .maybeSingle();
-      if (identity?.email) email = identity.email;
-    }
-  }
+  const email = await resolveEmailForLogin(userId);
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -137,15 +150,19 @@ export async function registerAction(
     },
   });
 
-  if (error || !data.user || data.user.identities?.length === 0) {
+  if (data.user?.identities?.length === 0) {
+    return { error: "このメールアドレスは既に使用されています。ログインまたはパスワード再設定をお試しください。" };
+  }
+  if (error || !data.user) {
     const message = error?.message ?? "";
     if (
       error?.code === "23505" ||
       message.includes("already registered") ||
       message.includes("duplicate key")
     ) {
-      return { error: "このユーザIDは既に使用されています" };
+      return { error: "このユーザIDまたはメールアドレスは既に使用されています" };
     }
+    console.error("Email signup failed", { code: error?.code, message });
     return { error: "新規登録に失敗しました" };
   }
 
@@ -161,18 +178,12 @@ export async function registerAction(
   });
 
   if (insertError) {
+    await adminSupabase.auth.admin.deleteUser(data.user.id);
     if (insertError.code === "23505") {
       return { error: "このユーザIDは既に使用されています" };
     }
     return { error: "新規登録に失敗しました" };
   }
-
-  const { error: identityError } = await adminSupabase.from("login_identities").insert({
-    user_id: data.user.id,
-    login_id: userId,
-    email,
-  });
-  if (identityError) return { error: "ログイン情報の保存に失敗しました" };
 
   redirect("/account/register/check-email");
 }
@@ -220,28 +231,14 @@ export async function requestEmailChangeAction(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "ログイン情報を確認できませんでした" };
 
-  if (user.email?.endsWith("@pokefuta.local")) {
-    const admin = createAdminClient();
-    if (!admin) return { error: "メールアドレスを更新できませんでした" };
-    const { error: updateError } = await admin.auth.admin.updateUserById(user.id, {
-      email,
-      email_confirm: false,
-    });
-    if (updateError) return { error: "このメールアドレスは登録できません" };
-    const { error: resendError } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: `${origin}/auth/callback?next=/account` },
-    });
-    if (resendError) return { error: "確認メールを送信できませんでした" };
-    return { success: "確認メールを送信しました。メール内のリンクを開いて登録を完了してください。" };
-  }
-
   const { error } = await supabase.auth.updateUser(
     { email },
     { emailRedirectTo: `${origin}/auth/callback?next=/account` }
   );
-  if (error) return { error: "確認メールを送信できませんでした" };
+  if (error) {
+    console.error("Email update failed", { code: error.code, message: error.message });
+    return { error: emailErrorMessage(error.message) };
+  }
   return { success: "確認メールを送信しました。メール内のリンクを開いて変更を完了してください。" };
 }
 
