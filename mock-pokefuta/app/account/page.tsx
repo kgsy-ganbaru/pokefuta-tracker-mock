@@ -4,13 +4,20 @@ import Link from "next/link";
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
 import AccountProfileEditor from "./AccountProfileEditor";
+import NotificationList from "./NotificationList";
+import { getNotifications, markNotificationsAsRead } from "../lib/notifications";
+import { createClient } from "../lib/supabase/server";
 
 export default async function AccountPage() {
-  const user = await getAuthProfile();
+  const supabase = await createClient();
+  const user = await getAuthProfile(supabase);
 
   if (user) {
+    const notifications = supabase ? await getNotifications(supabase, user.id) : [];
+    if (supabase) await markNotificationsAsRead(supabase, user.id);
+
     return (
-      <main className="max-w-md mx-auto p-6">
+      <main className="mx-auto max-w-md space-y-6 p-6">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <img
             src="/status-any-owned-pokeball.svg"
@@ -26,6 +33,8 @@ export default async function AccountPage() {
             className="w-5 h-5"
           />
         </h2>
+
+        <NotificationList notifications={notifications} />
 
         <AccountProfileEditor key={`${user.nickname}:${user.comment}:${user.friend_code}`} user={user} />
 

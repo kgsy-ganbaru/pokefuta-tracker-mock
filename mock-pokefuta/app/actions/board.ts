@@ -70,6 +70,7 @@ export async function createBoardCommentAction(input: { postId: string; body: st
   const { data, error } = await auth.supabase.from("board_comments").insert({ post_id: input.postId, user_id: auth.user.id, body }).select("id").single();
   if (error || !data) return { error: "コメントを送信できませんでした。" };
   revalidatePath(`/board/${input.postId}`); revalidatePath("/board");
+  revalidatePath("/account");
   return { comment: { id: data.id, user: { id: auth.user.user_id, nickname: auth.user.nickname }, body, postedAt: "たった今", isMine: true } };
 }
 
