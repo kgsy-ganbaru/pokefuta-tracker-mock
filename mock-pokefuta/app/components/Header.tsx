@@ -91,7 +91,7 @@ export default function Header({ user }: { user: HeaderUser }) {
       <header className="sticky top-0 z-40 border-b bg-white/95 shadow-sm backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-4">
           <Link href="/" className="shrink-0 whitespace-nowrap rounded-md px-1 py-2 text-[13px] font-semibold text-gray-800 sm:text-lg">
-            ポケフタトラッカー
+            Pokefuta-Tracker
           </Link>
 
           <div className="flex items-start gap-3 sm:gap-4">
