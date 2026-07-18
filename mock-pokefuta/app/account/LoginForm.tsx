@@ -2,6 +2,8 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import type { LoginState } from "../actions/auth";
+import Link from "next/link";
+import PasswordInput from "../components/PasswordInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -29,21 +31,21 @@ export default function LoginForm({
     <form action={formAction} className="space-y-2">
       <input
         name="userId"
-        placeholder="ユーザID"
+        placeholder="ユーザID または メールアドレス"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
         required
       />
 
-      <input
-        type="password"
+      <PasswordInput
         name="password"
         placeholder="パスワード"
-        className="w-full border px-3 py-2 rounded"
         autoComplete="current-password"
-        minLength={6}
-        required
       />
+
+      <div className="text-right">
+        <Link href="/account/forgot-password" className="text-sm font-semibold text-emerald-700 hover:underline">パスワードを忘れた方</Link>
+      </div>
 
       {state.error && (
         <p role="alert" className="text-sm text-red-600">{state.error}</p>
