@@ -16,7 +16,7 @@ export default function EmailSettings({ currentEmail, verified }: { currentEmail
         </div>
         <button type="button" onClick={() => setEditing((value) => !value)} className="rounded-lg border border-emerald-600 px-3 py-2 text-xs font-semibold text-emerald-700">{editing ? "閉じる" : currentEmail ? "変更" : "登録"}</button>
       </div>
-      {editing && <div className="mt-4 border-t pt-4"><AuthEmailForm action={requestEmailChangeAction} label={currentEmail ? "確認メールを送る" : "メールを登録する"} pendingLabel="送信中…" /></div>}
+      {editing && <div className="mt-4 border-t pt-4"><p className="mb-3 text-xs leading-5 text-gray-500">確認メール内のリンクを開くまで変更は完了しません。</p><AuthEmailForm action={requestEmailChangeAction} label={currentEmail ? "確認メールを送る" : "メールを登録する"} pendingLabel="送信中…" /></div>}
     </section>
   );
 }
