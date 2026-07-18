@@ -79,7 +79,7 @@ export default function BoardPostFormClient({
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
-          <h2 className="font-semibold text-gray-800">出</h2>
+          <h2 className="text-2xl font-bold text-emerald-700">出</h2>
           <p className="mt-1 text-sm text-gray-500">所持登録しているものから、最大10種類まで選択できます。</p>
         </div>
         <PokefutaSelector rows={pokefutaRows} selectedIds={offers} onChange={setOffers} ownedOnly selectionLabel="出" limit={BOARD_MAX_TYPES} />
@@ -87,7 +87,7 @@ export default function BoardPostFormClient({
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
-          <h2 className="font-semibold text-gray-800">求</h2>
+          <h2 className="text-2xl font-bold text-amber-700">求</h2>
           <p className="mt-1 text-sm text-gray-500">すべてのポケふたから、最大10種類まで選択できます。</p>
         </div>
         <PokefutaSelector rows={pokefutaRows} selectedIds={wants} onChange={setWants} ownedOnly={false} selectionLabel="求" limit={BOARD_MAX_TYPES} />

@@ -35,9 +35,6 @@ function SubmitButton({ isLoggedIn }: { isLoggedIn: boolean }) {
       className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-70"
       disabled={pending}
     >
-      <div className="mb-3">
-        <PageBackLink href="/" label="一覧に戻る" />
-      </div>
       {pending ? "更新中..." : "更新する"}
     </button>
   );
@@ -93,6 +90,10 @@ export default function DetailClient({
         hasSwipedRef.current = false;
       }}
     >
+      <div className="mb-4">
+        <PageBackLink href="/" label="一覧に戻る" />
+      </div>
+
       {/* 基本情報 */}
       <section className="bg-white border rounded-xl p-5 mb-6">
         <div className="flex flex-col items-center gap-3 text-center">
