@@ -386,7 +386,7 @@ export default function BulkRegisterClient({
             type="button"
             onClick={handleConfirm}
             disabled={!isLoggedIn}
-            className="w-36 rounded-full bg-green-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-green-700 disabled:bg-gray-300"
+            className="min-w-48 whitespace-nowrap rounded-full bg-green-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-green-700 disabled:bg-gray-300"
           >
             更新内容の確認
           </button>
