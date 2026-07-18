@@ -79,7 +79,7 @@ function MainNavigation({ isHome, isUsers, isBoard, mobile = false }: MainNaviga
   );
 }
 
-export default function Header({ user }: { user: HeaderUser }) {
+export default function Header({ user, unreadNotificationCount = 0 }: { user: HeaderUser; unreadNotificationCount?: number }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isUsers = pathname?.startsWith("/users");
@@ -104,8 +104,16 @@ export default function Header({ user }: { user: HeaderUser }) {
                 isAccount ? "bg-emerald-50 text-blue-600" : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
               }`}
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 text-current">
+              <span className="relative flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 text-current">
                 <UserIcon />
+                {!isAccount && unreadNotificationCount > 0 && (
+                  <span
+                    className="absolute -right-2 -top-2 flex min-h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[10px] font-bold leading-none text-white"
+                    aria-label={`未読通知${unreadNotificationCount}件`}
+                  >
+                    {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
+                  </span>
+                )}
               </span>
               <span className="mt-1 w-full truncate text-center leading-3">{user ? user.nickname : "ゲスト"}</span>
             </Link>

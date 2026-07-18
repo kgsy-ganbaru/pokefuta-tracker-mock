@@ -1,18 +1,24 @@
 import "./globals.css";
 import Header from "./components/Header";
 import { getAuthProfile } from "./lib/supabase/auth";
+import { createClient } from "./lib/supabase/server";
+import { getUnreadNotificationCount } from "./lib/notifications";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getAuthProfile();
+  const supabase = await createClient();
+  const user = await getAuthProfile(supabase);
+  const unreadNotificationCount = supabase && user
+    ? await getUnreadNotificationCount(supabase, user.id)
+    : 0;
 
   return (
     <html lang="ja">
       <body>
-        <Header user={user} />
+        <Header user={user} unreadNotificationCount={unreadNotificationCount} />
         {children}
       </body>
     </html>
