@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createBoardPostAction } from "../../../actions/board";
-import { BOARD_DRAFT_KEY, BoardPostDraft } from "../BoardPostFormClient";
+import { BOARD_DRAFT_KEY, BOARD_DRAFT_RESUME_KEY, BoardPostDraft } from "../BoardPostFormClient";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function BoardPostConfirmClient() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function BoardPostConfirmClient() {
         return;
       }
       window.localStorage.removeItem(BOARD_DRAFT_KEY);
+      window.sessionStorage.removeItem(BOARD_DRAFT_RESUME_KEY);
       router.push(`/board/${result.postId}`);
     });
   };
@@ -57,7 +59,8 @@ export default function BoardPostConfirmClient() {
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm"><div className="flex items-center justify-between"><h2 className="text-2xl font-bold text-amber-700">求</h2><span className="text-sm text-gray-500">{draft.wants.length}種類</span></div>{renderSelections(draft.wants)}</section>
       <section className="rounded-xl border bg-white p-4 shadow-sm"><h2 className="font-semibold text-gray-800">任意コメント</h2><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">{draft.comment || "コメントはありません。"}</p></section>
       {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-center"><button type="button" disabled={isPending} onClick={() => router.push("/board/new")} className="rounded-full border bg-white px-6 py-3 text-sm font-semibold text-gray-700 disabled:opacity-50">入力内容を修正する</button><button type="button" disabled={isPending} onClick={handleSubmit} className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-600 disabled:opacity-50">{isPending ? "投稿中…" : "この内容で投稿する"}</button></div>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-center"><button type="button" disabled={isPending} onClick={() => { window.sessionStorage.setItem(BOARD_DRAFT_RESUME_KEY, "true"); router.push("/board/new"); }} className="rounded-full border bg-white px-6 py-3 text-sm font-semibold text-gray-700 disabled:opacity-50">入力内容を修正する</button><button type="button" disabled={isPending} onClick={handleSubmit} className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-600 disabled:opacity-50">この内容で投稿する</button></div>
+      {isPending && <LoadingOverlay />}
     </main>
   );
 }

@@ -11,6 +11,7 @@ import {
   bulkUpdateOwnershipAction,
   BulkOwnershipSelection,
 } from "@/app/actions/ownership";
+import LoadingOverlay from "../../components/LoadingOverlay";
 
 type BulkSelection = {
   id: number;
@@ -194,7 +195,7 @@ export default function BulkConfirmClient() {
           disabled={rows.length === 0 || isPending}
           className="w-48 rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
-          {isPending ? "更新中..." : "更新する"}
+          更新する
         </button>
       </div>
       {submitError && (
@@ -202,6 +203,7 @@ export default function BulkConfirmClient() {
           {submitError}
         </p>
       )}
+      {isPending && <LoadingOverlay />}
     </main>
   );
 }
