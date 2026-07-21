@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { getSupabaseConfig } from "./config";
 
 type CookieOptions = {
   domain?: string;
@@ -12,21 +13,6 @@ type CookieOptions = {
 };
 
 export type SupabaseServerClient = ReturnType<typeof createServerClient>;
-
-function getSupabaseConfig() {
-  const supabaseUrl =
-    process.env.SUPABASE_URL ??
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey =
-    process.env.SUPABASE_ANON_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-
-  return { supabaseUrl, supabaseAnonKey };
-}
 
 type CookieMode = "read-only" | "read-write";
 
@@ -69,9 +55,7 @@ export function createAdminClient(): SupabaseServerClient | null {
   const config = getSupabaseConfig();
   const serviceRoleKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
-    process.env.SUPABASE_SERVICE_ROLE ??
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE;
+    process.env.SUPABASE_SERVICE_ROLE;
 
   if (!config || !serviceRoleKey) {
     return null;
