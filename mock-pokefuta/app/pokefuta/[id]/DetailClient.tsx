@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { updateOwnershipAction } from "@/app/actions/ownership";
 import PageBackLink from "@/app/components/PageBackLink";
+import LoadingOverlay from "@/app/components/LoadingOverlay";
 
 type Pokefuta = {
   id: number;
@@ -29,15 +30,7 @@ type Props = {
 function SubmitButton({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { pending } = useFormStatus();
 
-  return (
-    <button
-      type={isLoggedIn ? "submit" : "button"}
-      className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-70"
-      disabled={pending}
-    >
-      {pending ? "更新中..." : "更新する"}
-    </button>
-  );
+  return <><button type={isLoggedIn ? "submit" : "button"} className="px-8 py-3 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-70" disabled={pending}>更新する</button>{pending && <LoadingOverlay />}</>;
 }
 
 export default function DetailClient({

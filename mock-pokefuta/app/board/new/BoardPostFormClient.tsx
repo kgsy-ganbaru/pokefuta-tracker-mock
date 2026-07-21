@@ -9,6 +9,7 @@ import MobileActionBar from "../../components/MobileActionBar";
 import PageBackLink from "../../components/PageBackLink";
 
 export const BOARD_DRAFT_KEY = "boardPostDraft";
+export const BOARD_DRAFT_RESUME_KEY = "boardPostDraftResume";
 export const BOARD_MAX_TYPES = 10;
 export const BOARD_COMMENT_MAX = 200;
 
@@ -34,6 +35,12 @@ export default function BoardPostFormClient({
   const [validationMessage, setValidationMessage] = useState("");
 
   useEffect(() => {
+    const shouldResume = window.sessionStorage.getItem(BOARD_DRAFT_RESUME_KEY) === "true";
+    window.sessionStorage.removeItem(BOARD_DRAFT_RESUME_KEY);
+    if (!shouldResume) {
+      window.localStorage.removeItem(BOARD_DRAFT_KEY);
+      return;
+    }
     const stored = window.localStorage.getItem(BOARD_DRAFT_KEY);
     if (!stored) return;
     try {

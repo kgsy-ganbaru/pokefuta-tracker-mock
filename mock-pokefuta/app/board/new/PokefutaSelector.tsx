@@ -4,12 +4,12 @@ import { useMemo, useState } from "react";
 import { PokefutaRow } from "../../lib/pokefuta/listData";
 import { buildRegionSections, getPrefectureName, REGION_LABELS } from "../../utils/pokefutaGrouping";
 
-export default function PokefutaSelector({ rows, selectedIds, onChange, ownedOnly, selectionLabel, limit }: { rows: PokefutaRow[]; selectedIds: number[]; onChange: (next: number[]) => void; ownedOnly: boolean; selectionLabel: string; limit: number }) {
+export default function PokefutaSelector({ rows, selectedIds, onChange, ownedOnly, selectionLabel, limit, initiallyRevealSelected = false }: { rows: PokefutaRow[]; selectedIds: number[]; onChange: (next: number[]) => void; ownedOnly: boolean; selectionLabel: string; limit: number; initiallyRevealSelected?: boolean }) {
   const selectableRows = useMemo(() => ownedOnly ? rows.filter((row) => row.owned_count > 0) : rows, [ownedOnly, rows]);
   const sections = useMemo(() => buildRegionSections(selectableRows), [selectableRows]);
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const [expandedRegions, setExpandedRegions] = useState<Set<number>>(new Set());
-  const [expandedPrefectures, setExpandedPrefectures] = useState<Set<number>>(new Set());
+  const [expandedRegions, setExpandedRegions] = useState<Set<number>>(() => initiallyRevealSelected ? new Set(rows.filter((row) => selectedSet.has(row.id)).map((row) => row.region_id)) : new Set());
+  const [expandedPrefectures, setExpandedPrefectures] = useState<Set<number>>(() => initiallyRevealSelected ? new Set(rows.filter((row) => selectedSet.has(row.id)).map((row) => row.prefecture_id ?? 0)) : new Set());
   const toggleItem = (id: number) => selectedSet.has(id) ? onChange(selectedIds.filter((value) => value !== id)) : selectedIds.length < limit && onChange([...selectedIds, id]);
 
   if (!selectableRows.length) return <p className="rounded-lg bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">{ownedOnly ? "所持登録されているポケふたがありません。" : "選択できるポケふたがありません。"}</p>;
