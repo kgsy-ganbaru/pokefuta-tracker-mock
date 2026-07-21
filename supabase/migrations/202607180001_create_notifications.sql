@@ -41,7 +41,8 @@ on public.notifications for delete
 to authenticated
 using (user_id = auth.uid());
 
-grant select, update, delete on public.notifications to authenticated;
+grant select, delete on public.notifications to authenticated;
+grant update (read_at) on public.notifications to authenticated;
 
 create or replace function public.notify_board_post_owner_of_comment()
 returns trigger

@@ -35,11 +35,12 @@ async function resolveEmailForLogin(loginId: string) {
   if (loginId.includes("@")) return loginId.toLowerCase();
   const admin = createAdminClient();
   if (admin) {
-    const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    if (!error) {
-      const matchedUser = data.users.find((user) => user.user_metadata?.user_id === loginId);
-      if (matchedUser?.email) return matchedUser.email;
-    }
+    const { data } = await admin
+      .from("login_identities")
+      .select("email")
+      .eq("login_id", loginId)
+      .maybeSingle();
+    if (data?.email) return String(data.email);
   }
   return userIdToEmail(loginId);
 }
@@ -182,6 +183,24 @@ export async function registerAction(
     if (insertError.code === "23505") {
       return { error: "このユーザIDは既に使用されています" };
     }
+    return { error: "新規登録に失敗しました" };
+  }
+
+  const { error: identityError } = await adminSupabase
+    .from("login_identities")
+    .insert({
+      user_id: data.user.id,
+      login_id: userId,
+      email,
+    });
+
+  if (identityError) {
+    await adminSupabase.from("users").delete().eq("id", data.user.id);
+    await adminSupabase.auth.admin.deleteUser(data.user.id);
+    console.error("Login identity creation failed", {
+      code: identityError.code,
+      message: identityError.message,
+    });
     return { error: "新規登録に失敗しました" };
   }
 
