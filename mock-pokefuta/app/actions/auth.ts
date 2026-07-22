@@ -25,7 +25,8 @@ export type UpdateProfileState = {
 };
 
 const MIN_PASSWORD_LENGTH = 8;
-const MAX_USER_ID_LENGTH = 50;
+const MIN_USER_ID_LENGTH = 3;
+const MAX_USER_ID_LENGTH = 20;
 const MAX_NICKNAME_LENGTH = 50;
 const MAX_COMMENT_LENGTH = 200;
 const FRIEND_CODE_LENGTH = 12;
@@ -109,8 +110,10 @@ export async function registerAction(
   if (userId.length > MAX_USER_ID_LENGTH) {
     return { error: `ユーザIDは${MAX_USER_ID_LENGTH}文字以内で入力してください` };
   }
-  if (userId.includes("@") || /\s/.test(userId)) {
-    return { error: "ユーザIDに空白や@は使用できません" };
+  if (!new RegExp(`^[a-z0-9_-]{${MIN_USER_ID_LENGTH},${MAX_USER_ID_LENGTH}}$`).test(userId)) {
+    return {
+      error: `ユーザIDは${MIN_USER_ID_LENGTH}〜${MAX_USER_ID_LENGTH}文字の半角英小文字・数字・「-」「_」で入力してください`,
+    };
   }
   if (nickname.length > MAX_NICKNAME_LENGTH) {
     return { error: `ニックネームは${MAX_NICKNAME_LENGTH}文字以内で入力してください` };
@@ -127,30 +130,34 @@ export async function registerAction(
     return { error: "Supabase環境変数が設定されていません" };
   }
 
-  const { data: existingUser, error: existingError } = await supabase
-    .from("users")
-    .select("id")
-    .eq("user_id", userId)
+  const admin = createAdminClient();
+  if (!admin) {
+    return { error: "現在、新規登録を受け付けていません。管理者へ連絡してください" };
+  }
+
+  const { data: existingIdentity, error: existingError } = await admin
+    .from("login_identities")
+    .select("user_id")
+    .eq("login_id", userId)
     .maybeSingle();
 
   if (existingError) {
     return { error: "ユーザIDの確認に失敗しました" };
   }
 
-  if (existingUser) {
+  if (existingIdentity) {
     return { error: "このユーザIDは既に使用されています" };
   }
 
   const email = userIdToEmail(userId);
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
-    options: {
-      data: {
-        nickname,
-        user_id: userId,
-        profile_managed_by_db: true,
-      },
+    email_confirm: true,
+    user_metadata: {
+      nickname,
+      user_id: userId,
+      profile_managed_by_db: true,
     },
   });
 
@@ -171,12 +178,18 @@ export async function registerAction(
     });
     return { error: "新規登録に失敗しました。管理者へ連絡してください" };
   }
-  if (data.user.identities?.length === 0) {
-    return { error: "このユーザIDは既に使用されています" };
-  }
-
-  if (!data.session) {
-    return { error: "登録を完了できませんでした。管理者へ連絡してください" };
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (signInError) {
+    await admin.auth.admin.deleteUser(data.user.id);
+    console.error("Sign in after invite signup failed", {
+      code: signInError.code,
+      status: signInError.status,
+      message: signInError.message,
+    });
+    return { error: "登録を完了できませんでした。もう一度お試しください" };
   }
 
   redirect("/account");
