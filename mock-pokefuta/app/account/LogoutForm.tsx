@@ -2,18 +2,20 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import type { LogoutState } from "../actions/auth";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-  return (
+  return <>
     <button
       type="submit"
       className="mt-6 w-full rounded bg-gray-200 py-3 font-semibold hover:bg-gray-300 disabled:opacity-70"
       disabled={pending}
     >
-      {pending ? "ログアウト中..." : "ログアウト"}
+      ログアウト
     </button>
-  );
+    {pending && <LoadingOverlay />}
+  </>;
 }
 
 export default function LogoutForm({
