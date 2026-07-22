@@ -35,7 +35,7 @@ export default function RegisterForm({
         <input
           id="register-user-id"
           name="userId"
-          placeholder="例：seiya1205"
+          placeholder="例：pikachu25"
           className="w-full rounded border px-3 py-2"
           autoComplete="username"
           minLength={3}
