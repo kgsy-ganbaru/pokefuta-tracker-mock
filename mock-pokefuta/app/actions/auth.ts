@@ -102,6 +102,9 @@ export async function registerAction(
   }
   const configuredInviteCode = process.env.REGISTRATION_INVITE_CODE?.trim();
   if (!configuredInviteCode) {
+    console.error("Invite signup configuration is missing", {
+      missing: "REGISTRATION_INVITE_CODE",
+    });
     return { error: "現在、新規登録を受け付けていません。管理者へ連絡してください" };
   }
   if (inviteCode !== configuredInviteCode) {
@@ -132,6 +135,9 @@ export async function registerAction(
 
   const admin = createAdminClient();
   if (!admin) {
+    console.error("Invite signup configuration is missing", {
+      missing: "SUPABASE_SERVICE_ROLE_KEY",
+    });
     return { error: "現在、新規登録を受け付けていません。管理者へ連絡してください" };
   }
 
