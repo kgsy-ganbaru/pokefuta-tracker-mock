@@ -2,19 +2,21 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import type { RegisterState } from "../../actions/auth";
+import LoadingOverlay from "../../components/LoadingOverlay";
 import PasswordInput from "../../components/PasswordInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-  return (
+  return <>
     <button
       type="submit"
       className="pft-primary-button w-full rounded py-3 font-semibold disabled:opacity-70"
       disabled={pending}
     >
-      {pending ? "登録中..." : "新規登録"}
+      新規登録
     </button>
-  );
+    {pending && <LoadingOverlay />}
+  </>;
 }
 
 export default function RegisterForm({

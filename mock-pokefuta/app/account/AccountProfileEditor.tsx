@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import type { AuthProfile } from "../lib/supabase/auth";
+import LoadingOverlay from "../components/LoadingOverlay";
 import {
   updateProfileAction,
   type UpdateProfileState,
@@ -160,6 +161,8 @@ export default function AccountProfileEditor({
           更新
         </button>
       ) : null}
+
+      {isPending && <LoadingOverlay />}
 
     </form>
   );
