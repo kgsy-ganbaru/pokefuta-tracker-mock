@@ -14,7 +14,6 @@ export async function requireAdmin() {
   if (!admin) redirect("/account?authError=admin-config");
   return { admin, user };
 }
-
 export async function writeAdminAuditLog(
   adminUserId: string,
   action: string,
@@ -33,4 +32,3 @@ export async function writeAdminAuditLog(
   });
   if (error) console.error("Failed to write admin audit log", error);
 }
-

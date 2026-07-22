@@ -31,4 +31,3 @@ set is_admin = true,
     is_active = true,
     updated_at = now()
 where lower(user_id) = 'aka';
-
