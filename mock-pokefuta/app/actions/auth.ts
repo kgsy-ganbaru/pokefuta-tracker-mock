@@ -28,8 +28,33 @@ export type UpdateProfileState = {
 };
 
 const MIN_PASSWORD_LENGTH = 8;
+const MAX_USER_ID_LENGTH = 50;
+const MAX_NICKNAME_LENGTH = 50;
 const MAX_COMMENT_LENGTH = 200;
 const FRIEND_CODE_LENGTH = 12;
+
+type AuthErrorLike = {
+  code?: string;
+  message: string;
+  status?: number;
+};
+
+async function getAuthRedirectOrigin() {
+  const requestOrigin = (await headers()).get("origin");
+  const candidates = [requestOrigin, process.env.NEXT_PUBLIC_SITE_URL];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      const url = new URL(candidate);
+      if (url.protocol === "https:" || url.protocol === "http:") return url.origin;
+    } catch {
+      // Try the configured fallback when the request header is malformed.
+    }
+  }
+
+  return null;
+}
 
 async function resolveEmailForLogin(loginId: string) {
   if (loginId.includes("@")) return loginId.toLowerCase();
@@ -45,13 +70,37 @@ async function resolveEmailForLogin(loginId: string) {
   return userIdToEmail(loginId);
 }
 
-function emailErrorMessage(message: string) {
-  const normalized = message.toLowerCase();
+function isEmailRateLimitError(error: AuthErrorLike) {
+  const normalized = `${error.code ?? ""} ${error.message}`.toLowerCase();
+  return (
+    error.status === 429 ||
+    normalized.includes("rate limit") ||
+    normalized.includes("over_email_send_rate_limit")
+  );
+}
+
+function emailDeliveryErrorMessage(error: AuthErrorLike) {
+  const normalized = `${error.code ?? ""} ${error.message}`.toLowerCase();
+  if (isEmailRateLimitError(error)) {
+    return "確認メールの送信上限に達しました。時間をおいてからもう一度お試しください。";
+  }
+  if (
+    normalized.includes("smtp") ||
+    normalized.includes("email") ||
+    normalized.includes("mail")
+  ) {
+    return "確認メールを送信できませんでした。時間をおいてからもう一度お試しください。";
+  }
+  return "新規登録に失敗しました。時間をおいてからもう一度お試しください。";
+}
+
+function emailChangeErrorMessage(error: AuthErrorLike) {
+  const normalized = `${error.code ?? ""} ${error.message}`.toLowerCase();
   if (normalized.includes("already") || normalized.includes("exists") || normalized.includes("registered")) {
     return "このメールアドレスは既に使用されています。パスワード再設定をお試しください。";
   }
-  if (normalized.includes("rate") || normalized.includes("limit")) {
-    return "短時間に操作が集中しています。少し時間をおいてからお試しください。";
+  if (isEmailRateLimitError(error)) {
+    return "確認メールの送信上限に達しました。時間をおいてからもう一度お試しください。";
   }
   return "メールアドレスを更新できませんでした。入力内容を確認して、もう一度お試しください。";
 }
@@ -111,6 +160,15 @@ export async function registerAction(
   if (!userId || !nickname || !email || !password || !passwordConfirmation) {
     return { error: "すべての項目を入力してください" };
   }
+  if (userId.length > MAX_USER_ID_LENGTH) {
+    return { error: `ユーザIDは${MAX_USER_ID_LENGTH}文字以内で入力してください` };
+  }
+  if (userId.includes("@") || /\s/.test(userId)) {
+    return { error: "ユーザIDに空白や@は使用できません" };
+  }
+  if (nickname.length > MAX_NICKNAME_LENGTH) {
+    return { error: `ニックネームは${MAX_NICKNAME_LENGTH}文字以内で入力してください` };
+  }
   if (password.length < MIN_PASSWORD_LENGTH) {
     return {
       error: `パスワードは${MIN_PASSWORD_LENGTH}文字以上で入力してください`,
@@ -138,7 +196,8 @@ export async function registerAction(
     return { error: "このユーザIDは既に使用されています" };
   }
 
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const origin = await getAuthRedirectOrigin();
+  if (!origin) return { error: "認証用URLが設定されていません" };
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -147,61 +206,31 @@ export async function registerAction(
       data: {
         nickname,
         user_id: userId,
+        profile_managed_by_db: true,
       },
     },
   });
 
-  if (data.user?.identities?.length === 0) {
-    return { error: "このメールアドレスは既に使用されています。ログインまたはパスワード再設定をお試しください。" };
-  }
   if (error || !data.user) {
-    const message = error?.message ?? "";
+    const authError: AuthErrorLike = error ?? { message: "Unknown signup error" };
+    const message = authError.message;
     if (
-      error?.code === "23505" ||
+      authError.code === "user_already_exists" ||
+      authError.code === "23505" ||
       message.includes("already registered") ||
       message.includes("duplicate key")
     ) {
       return { error: "このユーザIDまたはメールアドレスは既に使用されています" };
     }
-    console.error("Email signup failed", { code: error?.code, message });
-    return { error: "新規登録に失敗しました" };
-  }
-
-  const adminSupabase = createAdminClient();
-  if (!adminSupabase) {
-    return { error: "Supabase環境変数が設定されていません" };
-  }
-
-  const { error: insertError } = await adminSupabase.from("users").insert({
-    id: data.user.id,
-    user_id: userId,
-    nickname,
-  });
-
-  if (insertError) {
-    await adminSupabase.auth.admin.deleteUser(data.user.id);
-    if (insertError.code === "23505") {
-      return { error: "このユーザIDは既に使用されています" };
-    }
-    return { error: "新規登録に失敗しました" };
-  }
-
-  const { error: identityError } = await adminSupabase
-    .from("login_identities")
-    .insert({
-      user_id: data.user.id,
-      login_id: userId,
-      email,
+    console.error("Email signup failed", {
+      code: authError.code,
+      status: authError.status,
+      message,
     });
-
-  if (identityError) {
-    await adminSupabase.from("users").delete().eq("id", data.user.id);
-    await adminSupabase.auth.admin.deleteUser(data.user.id);
-    console.error("Login identity creation failed", {
-      code: identityError.code,
-      message: identityError.message,
-    });
-    return { error: "新規登録に失敗しました" };
+    return { error: emailDeliveryErrorMessage(authError) };
+  }
+  if (data.user.identities?.length === 0) {
+    return { error: "このメールアドレスは既に使用されています。ログインまたはパスワード再設定をお試しください。" };
   }
 
   redirect("/account/register/check-email");
@@ -215,10 +244,22 @@ export async function requestPasswordResetAction(
   if (!/^\S+@\S+\.\S+$/.test(email)) return { error: "正しいメールアドレスを入力してください" };
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) return { error: "Supabaseへ接続できません" };
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
-  await supabase.auth.resetPasswordForEmail(email, {
+  const origin = await getAuthRedirectOrigin();
+  if (!origin) return { error: "認証用URLが設定されていません" };
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/account/reset-password`,
   });
+  if (error && isEmailRateLimitError(error)) {
+    return { error: "再設定メールの送信上限に達しました。時間をおいてからもう一度お試しください。" };
+  }
+  if (error) {
+    console.error("Password reset email failed", {
+      code: error.code,
+      status: error.status,
+      message: error.message,
+    });
+    return { error: "再設定メールを送信できませんでした。時間をおいてからもう一度お試しください。" };
+  }
   return { success: "登録されている場合は、パスワード再設定メールを送信しました。" };
 }
 
@@ -245,7 +286,8 @@ export async function requestEmailChangeAction(
   if (!/^\S+@\S+\.\S+$/.test(email)) return { error: "正しいメールアドレスを入力してください" };
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) return { error: "Supabaseへ接続できません" };
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const origin = await getAuthRedirectOrigin();
+  if (!origin) return { error: "認証用URLが設定されていません" };
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "ログイン情報を確認できませんでした" };
@@ -256,7 +298,7 @@ export async function requestEmailChangeAction(
   );
   if (error) {
     console.error("Email update failed", { code: error.code, message: error.message });
-    return { error: emailErrorMessage(error.message) };
+    return { error: emailChangeErrorMessage(error) };
   }
   return { success: "確認メールを送信しました。メール内のリンクを開いて変更を完了してください。" };
 }

@@ -9,7 +9,7 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="w-full py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-70"
+      className="pft-primary-button w-full rounded py-3 font-semibold disabled:opacity-70"
       disabled={pending}
     >
       {pending ? "登録中..." : "新規登録"}
@@ -33,6 +33,7 @@ export default function RegisterForm({
         placeholder="ユーザID"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
+        maxLength={50}
         required
       />
 
@@ -41,6 +42,7 @@ export default function RegisterForm({
         placeholder="ニックネーム"
         className="w-full border px-3 py-2 rounded"
         autoComplete="nickname"
+        maxLength={50}
         required
       />
 
@@ -68,7 +70,7 @@ export default function RegisterForm({
       />
 
       {state.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
+        <p role="alert" className="text-sm text-red-600">{state.error}</p>
       )}
 
       <SubmitButton />
