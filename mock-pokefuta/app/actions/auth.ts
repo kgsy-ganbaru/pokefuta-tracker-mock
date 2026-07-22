@@ -16,6 +16,11 @@ export type LogoutState = {
   error?: string;
 };
 
+export type ChangePasswordState = {
+  error?: string;
+  success?: boolean;
+};
+
 export type UpdateProfileState = {
   error?: string;
   success?: boolean;
@@ -85,6 +90,26 @@ export async function logoutAction(
   }
   await supabase.auth.signOut();
   redirect("/account");
+}
+
+export async function changePasswordAction(
+  _prevState: ChangePasswordState,
+  formData: FormData
+): Promise<ChangePasswordState> {
+  const password = String(formData.get("password") ?? "");
+  const confirmation = String(formData.get("passwordConfirmation") ?? "");
+  if (password.length < MIN_PASSWORD_LENGTH) return { error: `パスワードは${MIN_PASSWORD_LENGTH}文字以上で入力してください` };
+  if (password !== confirmation) return { error: "確認用パスワードが一致しません" };
+
+  const supabase = await createClient({ cookieMode: "read-write" });
+  if (!supabase) return { error: "認証設定を確認してください" };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "ログインしてください" };
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: "パスワードを変更できませんでした" };
+  const admin = createAdminClient();
+  if (admin) await admin.from("users").update({ must_change_password: false, updated_at: new Date().toISOString() }).eq("id", user.id);
+  return { success: true };
 }
 
 export async function registerAction(

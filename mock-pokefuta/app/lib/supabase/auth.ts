@@ -1,4 +1,4 @@
-import { createClient, SupabaseServerClient } from "./server";
+import { createAdminClient, createClient, SupabaseServerClient } from "./server";
 
 export type AuthProfile = {
   id: string;
@@ -6,6 +6,9 @@ export type AuthProfile = {
   nickname: string;
   comment: string | null;
   friend_code: string | null;
+  is_admin: boolean;
+  is_active: boolean;
+  must_change_password: boolean;
 };
 
 function deriveUserIdFromEmail(email?: string | null) {
@@ -26,9 +29,11 @@ export async function getAuthProfile(
 
   if (!user) return null;
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient();
+  const profileClient = admin ?? supabase;
+  const { data: profile } = await profileClient
     .from("users")
-    .select("id, user_id, nickname, comment, friend_code")
+    .select("id, user_id, nickname, comment, friend_code, is_admin, is_active, must_change_password")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -44,6 +49,9 @@ export async function getAuthProfile(
       "",
     comment: profile?.comment ?? null,
     friend_code: profile?.friend_code ?? null,
+    is_admin: profile?.is_admin === true,
+    is_active: profile?.is_active !== false,
+    must_change_password: profile?.must_change_password === true,
   } satisfies AuthProfile;
 }
 
