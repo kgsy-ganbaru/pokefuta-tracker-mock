@@ -7,7 +7,6 @@ import AccountProfileEditor from "./AccountProfileEditor";
 import NotificationList from "./NotificationList";
 import { getNotifications, markNotificationsAsRead } from "../lib/notifications";
 import { createClient } from "../lib/supabase/server";
-import EmailSettings from "./EmailSettings";
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ authError?: string }> }) {
   const { authError } = await searchParams;
@@ -15,9 +14,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const user = await getAuthProfile(supabase);
 
   if (user) {
-    const { data: { user: authUser } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
-    const authEmail = authUser?.email ?? null;
-    const isLegacyPlaceholder = Boolean(authEmail?.endsWith("@pokefuta.local"));
     const notifications = supabase ? await getNotifications(supabase, user.id) : [];
     if (supabase) await markNotificationsAsRead(supabase, user.id);
 
@@ -40,11 +36,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </h2>
 
         <NotificationList notifications={notifications} />
-
-        <EmailSettings
-          currentEmail={isLegacyPlaceholder ? null : authEmail}
-          verified={Boolean(!isLegacyPlaceholder && authUser?.email_confirmed_at)}
-        />
 
         <AccountProfileEditor key={`${user.nickname}:${user.comment}:${user.friend_code}`} user={user} />
 

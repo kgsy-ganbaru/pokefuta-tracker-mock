@@ -46,13 +46,10 @@ export default function RegisterForm({
         required
       />
 
-      <input
-        type="email"
-        name="email"
-        placeholder="メールアドレス"
-        className="w-full rounded border px-3 py-3"
-        autoComplete="email"
-        required
+      <PasswordInput
+        name="inviteCode"
+        placeholder="招待コード"
+        autoComplete="off"
       />
 
       <PasswordInput
