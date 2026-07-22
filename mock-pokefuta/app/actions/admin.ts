@@ -98,6 +98,21 @@ export async function toggleUserAdminAction(formData: FormData) {
 
 export type AdminPokefutaState = { error?: string; success?: boolean };
 
+type DatabaseError = {
+  code?: string;
+  message?: string;
+};
+
+function pokefutaSaveErrorMessage(error: unknown) {
+  const databaseError = error as DatabaseError;
+  if (databaseError.code === "23505" && databaseError.message?.includes("pokefuta_pkey")) {
+    return "登録番号が重複しました。管理者にデータベースの採番確認を依頼してください";
+  }
+  if (error instanceof Error) return error.message;
+  if (databaseError.message) return `ポケふたを保存できませんでした: ${databaseError.message}`;
+  return "ポケふたを保存できませんでした";
+}
+
 export async function savePokefutaAction(_state: AdminPokefutaState, formData: FormData): Promise<AdminPokefutaState> {
   const { admin, user } = await requireAdmin();
   const idValue = String(formData.get("pokefutaId") ?? "");
@@ -127,7 +142,8 @@ export async function savePokefutaAction(_state: AdminPokefutaState, formData: F
 
     if (image instanceof File && image.size > 0) {
       const imageUrl = await uploadPokefutaImage(image, pokefutaId!, admin);
-      await admin.from("pokefuta").update({ image_url: imageUrl, updated_at: new Date().toISOString() }).eq("id", pokefutaId!);
+      const { error: imageUrlError } = await admin.from("pokefuta").update({ image_url: imageUrl, updated_at: new Date().toISOString() }).eq("id", pokefutaId!);
+      if (imageUrlError) throw imageUrlError;
     }
     await admin.from("pokefuta_pokemon").delete().eq("pokefuta_id", pokefutaId!);
     const { error: pokemonError } = await admin.from("pokefuta_pokemon").insert(pokemonNames.map((pokemonName, index) => ({ pokefuta_id: pokefutaId, pokemon_name: pokemonName, display_order: index + 1 })));
@@ -135,7 +151,7 @@ export async function savePokefutaAction(_state: AdminPokefutaState, formData: F
     await writeAdminAuditLog(user.id, existingId ? "pokefuta_updated" : "pokefuta_created", "pokefuta", pokefutaId, { city_name: cityName });
   } catch (error) {
     console.error("Admin pokefuta save failed", error);
-    return { error: error instanceof Error ? error.message : "ポケふたを保存できませんでした" };
+    return { error: pokefutaSaveErrorMessage(error) };
   }
 
   revalidatePath("/");
