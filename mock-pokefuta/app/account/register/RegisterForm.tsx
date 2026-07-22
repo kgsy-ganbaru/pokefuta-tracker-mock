@@ -28,14 +28,26 @@ export default function RegisterForm({
 
   return (
     <form action={formAction} className="space-y-2">
-      <input
-        name="userId"
-        placeholder="ユーザID"
-        className="w-full border px-3 py-2 rounded"
-        autoComplete="username"
-        maxLength={50}
-        required
-      />
+      <div className="space-y-1">
+        <label htmlFor="register-user-id" className="block text-sm font-semibold text-gray-800">
+          ユーザID
+        </label>
+        <input
+          id="register-user-id"
+          name="userId"
+          placeholder="例：seiya1205"
+          className="w-full rounded border px-3 py-2"
+          autoComplete="username"
+          minLength={3}
+          maxLength={20}
+          pattern="[a-z0-9_-]+"
+          required
+          aria-describedby="register-user-id-help"
+        />
+        <p id="register-user-id-help" className="text-xs leading-5 text-gray-500">
+          ログイン時に毎回使います。3〜20文字の半角英小文字・数字・「-」「_」で、覚えやすい名前を決めてください。
+        </p>
+      </div>
 
       <input
         name="nickname"
