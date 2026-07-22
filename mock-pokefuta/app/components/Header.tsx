@@ -38,7 +38,14 @@ const UserIcon = () => (
   </svg>
 );
 
-type HeaderUser = { nickname: string } | null;
+const AdminIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={iconStrokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 3 5 6v5c0 4.7 2.8 8.1 7 10 4.2-1.9 7-5.3 7-10V6l-7-3Z" />
+    <path d="m9.5 12 1.7 1.7 3.5-3.7" />
+  </svg>
+);
+
+type HeaderUser = { nickname: string; is_admin?: boolean } | null;
 
 type MainNavigationProps = {
   isHome: boolean;
@@ -85,6 +92,7 @@ export default function Header({ user, unreadNotificationCount = 0 }: { user: He
   const isUsers = pathname?.startsWith("/users");
   const isBoard = pathname?.startsWith("/board");
   const isAccount = pathname?.startsWith("/account");
+  const isAdmin = pathname?.startsWith("/admin");
 
   return (
     <>
@@ -96,6 +104,21 @@ export default function Header({ user, unreadNotificationCount = 0 }: { user: He
 
           <div className="flex items-start gap-3 sm:gap-4">
             <MainNavigation isHome={isHome} isUsers={isUsers} isBoard={isBoard} />
+            {user?.is_admin && (
+              <Link
+                href="/admin"
+                aria-current={isAdmin ? "page" : undefined}
+                aria-label="管理"
+                className={`flex min-w-12 shrink-0 flex-col items-center rounded-lg px-1 py-1 text-[10px] font-medium transition ${
+                  isAdmin ? "bg-emerald-50 text-emerald-700" : "text-gray-700 hover:bg-gray-50 hover:text-emerald-700"
+                }`}
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 text-current">
+                  <AdminIcon />
+                </span>
+                <span className="mt-1 whitespace-nowrap leading-3">管理</span>
+              </Link>
+            )}
             <Link
               href="/account"
               aria-current={isAccount ? "page" : undefined}

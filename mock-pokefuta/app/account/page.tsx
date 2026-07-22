@@ -7,6 +7,7 @@ import AccountProfileEditor from "./AccountProfileEditor";
 import NotificationList from "./NotificationList";
 import { getNotifications, markNotificationsAsRead } from "../lib/notifications";
 import { createClient } from "../lib/supabase/server";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ authError?: string }> }) {
   const { authError } = await searchParams;
@@ -36,6 +37,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </h2>
 
         <NotificationList notifications={notifications} />
+
+        {user.must_change_password && <ChangePasswordForm />}
 
         <AccountProfileEditor key={`${user.nickname}:${user.comment}:${user.friend_code}`} user={user} />
 

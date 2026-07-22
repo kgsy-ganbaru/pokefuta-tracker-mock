@@ -122,6 +122,7 @@ export async function fetchPokefutaRows(
     .select(
       "id, region_id, prefecture_id, prefecture_order, city_name, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
+    .eq("is_active", true)
     .order("region_id", { ascending: true })
     .order("prefecture_id", { ascending: true })
     .order("prefecture_order", { ascending: true });

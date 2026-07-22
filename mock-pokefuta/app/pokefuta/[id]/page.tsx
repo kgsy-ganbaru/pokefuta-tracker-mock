@@ -52,6 +52,7 @@ export default async function PokefutaDetailPage({
       "id, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
     )
     .eq("id", numericId)
+    .eq("is_active", true)
     .maybeSingle();
 
   if (!pokefuta) {
