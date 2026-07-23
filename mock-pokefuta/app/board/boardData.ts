@@ -34,11 +34,13 @@ export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId:
   const comments = (commentResult.data ?? []) as CommentRow[];
   const userIds = [...new Set([...posts.map((row) => row.user_id), ...comments.map((row) => row.user_id)])];
   const pokefutaIds = [...new Set([...offers, ...wants].map((row) => row.pokefuta_id))];
-  const userResult = await supabase.from("users").select("id, user_id, nickname, friend_code").in("id", userIds);
+  const [userResult, pokefutaResult] = await Promise.all([
+    supabase.from("users").select("id, user_id, nickname, friend_code").in("id", userIds),
+    pokefutaIds.length
+      ? supabase.from("pokefuta").select("id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)").in("id", pokefutaIds)
+      : Promise.resolve({ data: [] as PokefutaRecord[], error: null }),
+  ]);
   if (userResult.error) throw userResult.error;
-  const pokefutaResult = pokefutaIds.length
-    ? await supabase.from("pokefuta").select("id, city_name, image_url, pokefuta_pokemon (pokemon_name, display_order)").in("id", pokefutaIds)
-    : { data: [] as PokefutaRecord[], error: null };
   if (pokefutaResult.error) throw pokefutaResult.error;
   const users = new Map(((userResult.data ?? []) as UserRow[]).map((row) => [row.id, row]));
   const pokefuta = new Map(((pokefutaResult.data ?? []) as PokefutaRecord[]).map((row) => [Number(row.id), row]));

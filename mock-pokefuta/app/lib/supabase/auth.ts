@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createAdminClient, createClient, SupabaseServerClient } from "./server";
 
 export type AuthProfile = {
@@ -16,6 +17,15 @@ function deriveUserIdFromEmail(email?: string | null) {
   return email.split("@")[0] ?? email;
 }
 
+export const getCachedAuthUser = cache(async () => {
+  const supabase = await createClient();
+  if (!supabase) return null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+});
+
 export async function getAuthProfile(
   supabaseClient?: SupabaseServerClient | null
 ) {
@@ -23,9 +33,9 @@ export async function getAuthProfile(
   if (!supabase) {
     return null;
   }
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = supabaseClient
+    ? (await supabase.auth.getUser()).data.user
+    : await getCachedAuthUser();
 
   if (!user) return null;
 
@@ -54,6 +64,10 @@ export async function getAuthProfile(
     must_change_password: profile?.must_change_password === true,
   } satisfies AuthProfile;
 }
+
+// A single navigation renders the shared layout and page together. Reuse the
+// same authentication/profile lookup instead of requesting it once per segment.
+export const getCachedAuthProfile = cache(() => getAuthProfile());
 
 export function userIdToEmail(userId: string) {
   if (userId.includes("@")) {
