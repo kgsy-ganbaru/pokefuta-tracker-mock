@@ -75,7 +75,7 @@ export default function BulkConfirmClient() {
   const handleSubmit = () => {
     if (typeof window === "undefined") return;
     if (rows.length === 0 || isPending) return;
-    const confirmed = window.confirm("更新しますか？");
+    const confirmed = window.confirm("この内容で所持枚数を更新しますか？");
     if (!confirmed) return;
     const payload: BulkOwnershipSelection[] = rows.map((row) => ({
       id: row.id,
@@ -100,7 +100,7 @@ export default function BulkConfirmClient() {
           一括更新の確認
         </h1>
         <p className="text-sm text-gray-500">
-          これから登録するポケフタの一覧を確認してください。
+          これから登録するポケふたの一覧を確認してください。
         </p>
         <p className="text-sm font-semibold text-gray-700 mt-2">
           更新対象 {totalCount} 件

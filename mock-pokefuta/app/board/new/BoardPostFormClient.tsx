@@ -81,13 +81,13 @@ export default function BoardPostFormClient({
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 pb-40">
       <header>
         <PageBackLink href="/board" label="掲示板に戻る" />
-        <p className="mt-3 text-sm text-gray-500">画像をタップして、交換したいポケふたを選んでください。</p>
+        <p className="mt-3 text-sm text-gray-500">画像をタップして、「出」と「求」のポケふたを選んでください。</p>
       </header>
 
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
           <h2 className="text-2xl font-bold text-emerald-700">出</h2>
-          <p className="mt-1 text-sm text-gray-500">所持登録しているものから、最大10種類まで選択できます。</p>
+          <p className="mt-1 text-sm text-gray-500">所持しているポケふたから、最大10種類まで選択できます。</p>
         </div>
         <PokefutaSelector rows={pokefutaRows} selectedIds={offers} onChange={setOffers} ownedOnly selectionLabel="出" limit={BOARD_MAX_TYPES} />
       </section>
@@ -95,14 +95,14 @@ export default function BoardPostFormClient({
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
         <div>
           <h2 className="text-2xl font-bold text-amber-700">求</h2>
-          <p className="mt-1 text-sm text-gray-500">すべてのポケふたから、最大10種類まで選択できます。</p>
+          <p className="mt-1 text-sm text-gray-500">欲しいポケふたを最大10種類まで選択できます。</p>
         </div>
         <PokefutaSelector rows={pokefutaRows} selectedIds={wants} onChange={setWants} ownedOnly={false} selectionLabel="求" limit={BOARD_MAX_TYPES} />
       </section>
 
       <section className="space-y-2 rounded-xl border bg-white p-4 shadow-sm">
         <label htmlFor="board-comment" className="font-semibold text-gray-800">任意コメント</label>
-        <textarea id="board-comment" rows={5} maxLength={BOARD_COMMENT_MAX} value={comment} onChange={(event) => setComment(event.target.value)} placeholder="交換条件や受け渡し方法などを入力してください。" className="w-full resize-y rounded-lg border border-gray-300 px-3 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+        <textarea id="board-comment" rows={5} maxLength={BOARD_COMMENT_MAX} value={comment} onChange={(event) => setComment(event.target.value)} placeholder="交換条件や連絡事項などを入力してください。" className="w-full resize-y rounded-lg border border-gray-300 px-3 py-3 text-sm leading-6 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
         <p className="text-right text-xs text-gray-500">{comment.length} / {BOARD_COMMENT_MAX}</p>
       </section>
 
