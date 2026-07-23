@@ -38,7 +38,7 @@ export default async function NewBoardThreadPage() {
   return (
     <BoardPostFormClient
       pokefutaRows={displayRows}
-      poster={user ?? { user_id: "demo-user", nickname: "デモユーザー" }}
+      poster={user ?? { user_id: "demo-user", nickname: "デモ利用者" }}
     />
   );
 }

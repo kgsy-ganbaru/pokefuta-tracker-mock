@@ -69,7 +69,7 @@ function MainNavigation({ isHome, isUsers, isBoard, mobile = false }: MainNaviga
   const usersItem = (
     <Link key="users" href="/users" aria-current={isUsers ? "page" : undefined} className={itemClass(isUsers)}>
       <UsersIcon />
-      <span className="mt-0.5 whitespace-nowrap">ユーザー一覧</span>
+      <span className="mt-0.5 whitespace-nowrap">利用者一覧</span>
     </Link>
   );
   const boardItem = (

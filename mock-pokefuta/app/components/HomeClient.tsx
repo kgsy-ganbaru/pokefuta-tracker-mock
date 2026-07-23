@@ -87,7 +87,7 @@ export default function HomeClient({
     },
     {
       id: "other-owned" as const,
-      label: "自分以外のユーザーが所持",
+      label: "自分以外の利用者が所持",
       matches: (row: PokefutaRow) =>
         Math.max(0, row.any_owned_count - row.owned_count) > 0,
     },
@@ -332,8 +332,8 @@ export default function HomeClient({
                               ) > 0 && (
                                 <Image
                                   src="/status-any-owned-pokeball.svg"
-                                  alt="他のユーザが取得済み"
-                                  title="他のユーザが取得済み"
+                                  alt="他の利用者が取得済み"
+                                  title="他の利用者が取得済み"
                                   width={20}
                                   height={20}
                                 />

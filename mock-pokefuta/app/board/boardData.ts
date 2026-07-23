@@ -47,10 +47,10 @@ export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId:
     return row ? { id: String(row.id), city: row.city_name, pokemon: formatPokemonNames(row.pokefuta_pokemon), image: row.image_url || "/no-image.png" } : null;
   };
   const itemsFor = (rows: SelectionRow[], postId: string) => rows.filter((row) => row.post_id === postId).map(toItem).filter((item): item is BoardItem => item !== null);
-  const commentsFor = (postId: string): BoardComment[] => comments.filter((row) => row.post_id === postId).map((row) => { const user = users.get(row.user_id); return { id: row.id, user: { id: user?.user_id ?? row.user_id, nickname: user?.nickname ?? "ユーザー" }, body: row.body, postedAt: displayDate(row.created_at), isMine: currentUserId === row.user_id }; });
+  const commentsFor = (postId: string): BoardComment[] => comments.filter((row) => row.post_id === postId).map((row) => { const user = users.get(row.user_id); return { id: row.id, user: { id: user?.user_id ?? row.user_id, nickname: user?.nickname ?? "利用者" }, body: row.body, postedAt: displayDate(row.created_at), isMine: currentUserId === row.user_id }; });
 
   return posts.map((post) => {
     const user = users.get(post.user_id);
-    return { id: post.id, user: { id: user?.user_id ?? post.user_id, nickname: user?.nickname ?? "ユーザー", friendCode: user?.friend_code ?? null }, offers: itemsFor(offers, post.id), wants: itemsFor(wants, post.id), comment: post.comment ?? "", updatedAt: displayDate(post.updated_at), expiresAt: post.expires_at, closedAt: post.closed_at, comments: commentsFor(post.id), isMine: currentUserId === post.user_id };
+    return { id: post.id, user: { id: user?.user_id ?? post.user_id, nickname: user?.nickname ?? "利用者", friendCode: user?.friend_code ?? null }, offers: itemsFor(offers, post.id), wants: itemsFor(wants, post.id), comment: post.comment ?? "", updatedAt: displayDate(post.updated_at), expiresAt: post.expires_at, closedAt: post.closed_at, comments: commentsFor(post.id), isMine: currentUserId === post.user_id };
   });
 }

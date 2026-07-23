@@ -161,9 +161,9 @@ export default function DetailClient({
         </form>
       </section>
 
-      {/* 所持ユーザ一覧 */}
+      {/* 所持利用者一覧 */}
       <section className="bg-white border rounded-xl p-5">
-        <h2 className="text-md font-semibold mb-2">所持ユーザ</h2>
+        <h2 className="text-md font-semibold mb-2">所持利用者</h2>
 
         {owners.length === 0 ? (
           <p className="text-sm text-gray-500">まだ誰も取得していません</p>

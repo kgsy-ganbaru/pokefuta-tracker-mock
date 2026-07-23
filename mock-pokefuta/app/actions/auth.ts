@@ -58,7 +58,7 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
 
   if (!userId || !password) {
-    return { error: "ユーザIDとパスワードを入力してください" };
+    return { error: "利用者IDとパスワードを入力してください" };
   }
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
@@ -72,7 +72,7 @@ export async function loginAction(
   });
 
   if (error) {
-    return { error: "ユーザIDまたはパスワードが違います" };
+    return { error: "利用者IDまたはパスワードが違います" };
   }
 
   redirect("/account");
@@ -136,11 +136,11 @@ export async function registerAction(
     return { error: "招待コードが違います" };
   }
   if (userId.length > MAX_USER_ID_LENGTH) {
-    return { error: `ユーザIDは${MAX_USER_ID_LENGTH}文字以内で入力してください` };
+    return { error: `利用者IDは${MAX_USER_ID_LENGTH}文字以内で入力してください` };
   }
   if (!new RegExp(`^[a-z0-9_-]{${MIN_USER_ID_LENGTH},${MAX_USER_ID_LENGTH}}$`).test(userId)) {
     return {
-      error: `ユーザIDは${MIN_USER_ID_LENGTH}〜${MAX_USER_ID_LENGTH}文字の半角英小文字・数字・「-」「_」で入力してください`,
+      error: `利用者IDは${MIN_USER_ID_LENGTH}〜${MAX_USER_ID_LENGTH}文字の半角英小文字・数字・「-」「_」で入力してください`,
     };
   }
   if (nickname.length > MAX_NICKNAME_LENGTH) {
@@ -173,11 +173,11 @@ export async function registerAction(
     .maybeSingle();
 
   if (existingError) {
-    return { error: "ユーザIDの確認に失敗しました" };
+    return { error: "利用者IDの確認に失敗しました" };
   }
 
   if (existingIdentity) {
-    return { error: "このユーザIDは既に使用されています" };
+    return { error: "この利用者IDは既に使用されています" };
   }
 
   const email = userIdToEmail(userId);
@@ -200,7 +200,7 @@ export async function registerAction(
       message.includes("already registered") ||
       message.includes("duplicate key")
     ) {
-      return { error: "このユーザIDは既に使用されています" };
+      return { error: "この利用者IDは既に使用されています" };
     }
     console.error("Invite signup failed", {
       code: error?.code,

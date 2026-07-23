@@ -69,7 +69,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
-          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
+          <div className="pt-3"><PageBackLink href="/users" label="利用者一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -78,7 +78,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケふた状況</span>
+              <span>利用者のポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -99,7 +99,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
-          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
+          <div className="pt-3"><PageBackLink href="/users" label="利用者一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -108,7 +108,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケふた状況</span>
+              <span>利用者のポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -117,7 +117,7 @@ export default async function UserDetailPage({
               />
             </h1>
             <p className="text-sm text-gray-500">
-              指定されたユーザが見つかりませんでした。
+              指定された利用者が見つかりませんでした。
             </p>
           </section>
         </main>
@@ -136,7 +136,7 @@ export default async function UserDetailPage({
 
   const user = (userRows ?? [])[0] as UserRow | undefined;
   const userName =
-    user?.nickname ?? user?.user_id ?? "ユーザ";
+    user?.nickname ?? user?.user_id ?? "利用者";
   const userId = user?.id ?? null;
   const comment =
     user?.comment && user.comment.trim().length > 0
@@ -148,7 +148,7 @@ export default async function UserDetailPage({
     return (
       <>
         <main className="max-w-5xl mx-auto px-4 pb-32">
-          <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
+          <div className="pt-3"><PageBackLink href="/users" label="利用者一覧に戻る" /></div>
           <section className="mt-6">
             <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
               <img
@@ -157,7 +157,7 @@ export default async function UserDetailPage({
                 aria-hidden="true"
                 className="w-5 h-5"
               />
-              <span>ユーザのポケふた状況</span>
+              <span>利用者のポケふた状況</span>
               <img
                 src="/status-any-owned-pokeball.svg"
                 alt=""
@@ -166,7 +166,7 @@ export default async function UserDetailPage({
               />
             </h1>
             <p className="text-sm text-gray-500">
-              指定されたユーザが見つかりませんでした。
+              指定された利用者が見つかりませんでした。
             </p>
           </section>
         </main>
@@ -183,7 +183,7 @@ export default async function UserDetailPage({
   return (
     <>
       <main className="max-w-7xl mx-auto px-4 pb-32">
-        <div className="pt-3"><PageBackLink href="/users" label="ユーザー一覧に戻る" /></div>
+        <div className="pt-3"><PageBackLink href="/users" label="利用者一覧に戻る" /></div>
         <section className="mt-6">
           <h1 className="text-xl font-semibold mb-2 flex items-center gap-2">
             <img

@@ -6,8 +6,8 @@ type UserRow = { id: string; nickname: string; user_id: string };
 
 const actionLabels: Record<string, string> = {
   password_reset: "仮パスワードを設定",
-  user_reactivated: "ユーザーを再開",
-  user_suspended: "ユーザーを停止",
+  user_reactivated: "利用者を再開",
+  user_suspended: "利用者を停止",
   admin_granted: "管理者権限を追加",
   admin_revoked: "管理者権限を解除",
   pokefuta_created: "ポケふたを登録",

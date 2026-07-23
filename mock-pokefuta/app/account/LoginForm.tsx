@@ -32,7 +32,7 @@ export default function LoginForm({
     <form action={formAction} className="space-y-2">
       <input
         name="userId"
-        placeholder="ユーザID"
+        placeholder="利用者ID"
         className="w-full border px-3 py-2 rounded"
         autoComplete="username"
         required
