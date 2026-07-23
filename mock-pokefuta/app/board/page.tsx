@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MobileActionBar from "../components/MobileActionBar";
-import { getAuthProfile } from "../lib/supabase/auth";
+import { getCachedAuthProfile } from "../lib/supabase/auth";
 import { createClient } from "../lib/supabase/server";
 import BoardListClient, { BoardThreadWithMatch } from "./BoardListClient";
 import { fetchBoardThreads } from "./boardData";
@@ -11,14 +11,16 @@ export const dynamic = "force-dynamic";
 
 export default async function BoardPage() {
   const supabase = await createClient();
-  const user = await getAuthProfile(supabase);
-  const activeThreads = supabase ? await fetchBoardThreads(supabase, user?.id ?? null) : boardThreads.filter(isThreadActive);
-
-  let ownedIds = new Set<string>();
-  if (supabase && user) {
-    const { data } = await supabase.from("ownership").select("pokefuta_id").eq("user_id", user.id).gt("count", 0);
-    ownedIds = new Set((data ?? []).map((row) => String(row.pokefuta_id)));
-  }
+  const user = await getCachedAuthProfile();
+  const [activeThreads, ownershipResult] = supabase
+    ? await Promise.all([
+        fetchBoardThreads(supabase, user?.id ?? null),
+        user
+          ? supabase.from("ownership").select("pokefuta_id").eq("user_id", user.id).gt("count", 0)
+          : Promise.resolve({ data: [] as { pokefuta_id: number }[] }),
+      ])
+    : [boardThreads.filter(isThreadActive), { data: [] as { pokefuta_id: number }[] }];
+  const ownedIds = new Set((ownershipResult.data ?? []).map((row) => String(row.pokefuta_id)));
 
   const threads: BoardThreadWithMatch[] = activeThreads.map((thread) => ({
     ...thread,

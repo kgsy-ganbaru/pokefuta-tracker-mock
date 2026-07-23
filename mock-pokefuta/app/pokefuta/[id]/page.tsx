@@ -1,5 +1,5 @@
 import { createClient } from "@/app/lib/supabase/server";
-import { getAuthProfile } from "@/app/lib/supabase/auth";
+import { getCachedAuthProfile } from "@/app/lib/supabase/auth";
 import DetailClient from "./DetailClient";
 
 export const dynamic = "force-dynamic";
@@ -40,13 +40,13 @@ export default async function PokefutaDetailPage({
   }
 
   const supabase = await createClient();
-  const user = await getAuthProfile(supabase);
+  const user = await getCachedAuthProfile();
 
   if (!supabase) {
     return <p className="p-4">ポケふたの情報を取得できませんでした。</p>;
   }
 
-  const { data: pokefuta } = await supabase
+  const pokefutaQuery = supabase
     .from("pokefuta")
     .select(
       "id, address, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
@@ -55,24 +55,34 @@ export default async function PokefutaDetailPage({
     .eq("is_active", true)
     .maybeSingle();
 
-  if (!pokefuta) {
-    return <p className="p-4">該当するポケふたが見つかりませんでした。</p>;
-  }
-
-  const { data: ownersData } = await supabase
+  const ownersQuery = supabase
     .from("ownership")
     .select("count, users (nickname)")
     .eq("pokefuta_id", numericId)
     .order("count", { ascending: false });
 
-  const { data: myOwnership } = user
-    ? await supabase
+  const myOwnershipQuery = user
+    ? supabase
         .from("ownership")
         .select("count")
         .eq("pokefuta_id", numericId)
         .eq("user_id", user.id)
         .maybeSingle()
-    : { data: null };
+    : Promise.resolve({ data: null });
+
+  const [
+    { data: pokefuta },
+    { data: ownersData },
+    { data: myOwnership },
+  ] = await Promise.all([
+    pokefutaQuery,
+    ownersQuery,
+    myOwnershipQuery,
+  ]);
+
+  if (!pokefuta) {
+    return <p className="p-4">該当するポケふたが見つかりませんでした。</p>;
+  }
 
   return (
     <DetailClient

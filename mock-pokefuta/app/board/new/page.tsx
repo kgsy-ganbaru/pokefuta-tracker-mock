@@ -1,7 +1,7 @@
 import BoardPostFormClient from "./BoardPostFormClient";
 import Link from "next/link";
 import { fetchPokefutaRows, PokefutaRow } from "../../lib/pokefuta/listData";
-import { getAuthProfile } from "../../lib/supabase/auth";
+import { getCachedAuthProfile } from "../../lib/supabase/auth";
 import { createClient } from "../../lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +17,7 @@ const demoRows: PokefutaRow[] = [
 
 export default async function NewBoardThreadPage() {
   const supabase = await createClient();
-  const user = await getAuthProfile(supabase);
+  const user = await getCachedAuthProfile();
   if (supabase && !user) {
     return <main className="mx-auto max-w-xl p-6 text-center"><h1 className="text-xl font-semibold text-gray-800">投稿するにはログインが必要です</h1><p className="mt-3 text-sm text-gray-500">ログイン後、持っているポケふたから交換に出すものを選べます。</p><Link href="/account" className="mt-6 inline-block rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white">ログインへ</Link></main>;
   }

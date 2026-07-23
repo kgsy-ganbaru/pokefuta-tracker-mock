@@ -5,6 +5,7 @@ import {
   fetchBoardChanceIds,
 } from "./lib/pokefuta/listData";
 import { createClient } from "./lib/supabase/server";
+import { getCachedAuthUser } from "./lib/supabase/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +16,7 @@ export default async function Page() {
     return <HomeClient recentRows={[]} pokefutaRows={[]} boardChanceIds={[]} />;
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCachedAuthUser();
 
   const [recentRows, pokefutaRows, boardChanceIds] = await Promise.all([
     fetchRecentRows(supabase),

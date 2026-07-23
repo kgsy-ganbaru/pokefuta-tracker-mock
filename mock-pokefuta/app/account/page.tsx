@@ -1,5 +1,5 @@
 import { loginAction, logoutAction } from "../actions/auth";
-import { getAuthProfile } from "../lib/supabase/auth";
+import { getCachedAuthProfile } from "../lib/supabase/auth";
 import Link from "next/link";
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
@@ -12,11 +12,15 @@ import ChangePasswordForm from "./ChangePasswordForm";
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ authError?: string }> }) {
   const { authError } = await searchParams;
   const supabase = await createClient();
-  const user = await getAuthProfile(supabase);
+  const user = await getCachedAuthProfile();
 
   if (user) {
-    const notifications = supabase ? await getNotifications(supabase, user.id) : [];
-    if (supabase) await markNotificationsAsRead(supabase, user.id);
+    const [notifications] = supabase
+      ? await Promise.all([
+          getNotifications(supabase, user.id),
+          markNotificationsAsRead(supabase, user.id),
+        ])
+      : [[]];
 
     return (
       <main className="mx-auto max-w-md space-y-6 p-6">

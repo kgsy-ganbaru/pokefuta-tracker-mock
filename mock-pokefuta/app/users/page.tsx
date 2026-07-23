@@ -1,5 +1,5 @@
 import UsersListClient, { type UserListItem } from "./UsersListClient";
-import { getAuthProfile } from "../lib/supabase/auth";
+import { getCachedAuthProfile } from "../lib/supabase/auth";
 import { createClient } from "../lib/supabase/server";
 type UserRow = {
   id: string;
@@ -34,7 +34,7 @@ export default async function UsersPage() {
       .select("id, user_id, nickname, created_at")
       .order("created_at", { ascending: false }),
     supabase.from("ownership").select("user_id, count"),
-    getAuthProfile(supabase),
+    getCachedAuthProfile(),
   ]);
 
   const ownershipMap = new Map<string, number>();
