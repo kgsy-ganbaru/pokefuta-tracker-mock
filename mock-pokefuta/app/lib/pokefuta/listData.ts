@@ -117,7 +117,7 @@ export async function fetchPokefutaRows(
   supabase: SupabaseClient,
   userId: string | null
 ): Promise<PokefutaRow[]> {
-  const { data: pokefutaData } = await supabase
+  const pokefutaQuery = supabase
     .from("pokefuta")
     .select(
       "id, region_id, prefecture_id, prefecture_order, city_name, difficulty_code, image_url, pokefuta_pokemon (pokemon_name, display_order)"
@@ -127,12 +127,26 @@ export async function fetchPokefutaRows(
     .order("prefecture_id", { ascending: true })
     .order("prefecture_order", { ascending: true });
 
-  const { data: ownershipData } = userId
-    ? await supabase
+  const ownershipQuery = userId
+    ? supabase
         .from("ownership")
         .select("pokefuta_id, count")
         .eq("user_id", userId)
-    : { data: [] };
+    : Promise.resolve({ data: [] as OwnershipCountRow[] });
+
+  const anyOwnershipQuery = supabase
+    .from("ownership")
+    .select("pokefuta_id, count");
+
+  const [
+    { data: pokefutaData },
+    { data: ownershipData },
+    { data: anyOwnershipData },
+  ] = await Promise.all([
+    pokefutaQuery,
+    ownershipQuery,
+    anyOwnershipQuery,
+  ]);
 
   const ownershipMap = new Map<number, number>();
   (ownershipData ?? []).forEach((row: OwnershipCountRow) => {
@@ -145,10 +159,6 @@ export async function fetchPokefutaRows(
         (Number.isFinite(count) ? count : 0)
     );
   });
-
-  const { data: anyOwnershipData } = await supabase
-    .from("ownership")
-    .select("pokefuta_id, count");
 
   const anyOwnershipMap = new Map<number, number>();
   (anyOwnershipData ?? []).forEach((row: OwnershipCountRow) => {
