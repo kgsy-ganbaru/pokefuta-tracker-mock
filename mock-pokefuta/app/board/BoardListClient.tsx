@@ -67,8 +67,8 @@ export default function BoardListClient({ threads, isLoggedIn }: { threads: Boar
 
       {visibleThreads.length === 0 ? (
         <section className="rounded-2xl border border-dashed bg-white p-8 text-center">
-          <p className="font-semibold text-gray-700">{matchOnly ? "交換可能な投稿はありません" : "現在募集中の投稿はありません"}</p>
-          <p className="mt-2 text-sm text-gray-500">{matchOnly ? "所持状況が変わると、新しい交換候補が見つかることがあります。" : "最初の交換募集を投稿してみましょう。"}</p>
+          <p className="font-semibold text-gray-700">{matchOnly ? "交換可能な投稿はありません。" : "現在、募集中の投稿はありません。"}</p>
+          <p className="mt-2 text-sm text-gray-500">{matchOnly ? "所持状況を更新すると、新しい交換候補が見つかることがあります。" : "最初の交換募集を投稿してみましょう。"}</p>
         </section>
       ) : (
         <section aria-label="投稿一覧" className="space-y-4">
@@ -81,7 +81,7 @@ export default function BoardListClient({ threads, isLoggedIn }: { threads: Boar
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">{thread.user.nickname.slice(0, 1)}</div>
                     <div className="min-w-0">
                       <Link href={`/users/${thread.user.id}`} className="block truncate text-sm font-semibold text-emerald-700 hover:underline">{thread.user.nickname}</Link>
-                      <p className="text-[11px] text-gray-500">更新 {thread.updatedAt}</p>
+                      <p className="text-[11px] text-gray-500">更新日：{thread.updatedAt}</p>
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1">

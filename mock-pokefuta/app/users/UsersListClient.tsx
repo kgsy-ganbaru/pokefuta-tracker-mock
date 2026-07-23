@@ -25,8 +25,8 @@ type UsersListClientProps = {
 };
 
 const sortLabels: Record<SortKey, string> = {
-  "pokefuta-desc": "ポケフタ所持種類数：多い順",
-  "pokefuta-asc": "ポケフタ所持種類数：少ない順",
+  "pokefuta-desc": "ポケふた所持種類数：多い順",
+  "pokefuta-asc": "ポケふた所持種類数：少ない順",
   "nickname-asc": "利用者名：昇順",
   "nickname-desc": "利用者名：降順",
   "registered-asc": "登録日：古い順",
@@ -106,10 +106,10 @@ export default function UsersListClient({
             />
           </h2>
           <p className="text-sm text-gray-500">
-            利用者を選択すると、所持しているポケフタの状況を確認できます。
+            利用者を選択すると、ポケふたの所持状況を確認できます。
           </p>
           <div className="mt-2 text-xs text-gray-500">
-            登録利用者：
+            利用者数：
             <span className="ml-1 font-semibold text-gray-700">
               {users.length}人
             </span>
@@ -192,7 +192,7 @@ export default function UsersListClient({
       <section className="rounded-lg border bg-white">
         {!isReady ? (
           <div className="px-4 py-6 text-sm text-gray-500">
-            Supabaseの接続設定が未完了のため、利用者一覧を取得できませんでした。
+            利用者一覧を読み込めませんでした。時間をおいて再度お試しください。
           </div>
         ) : sortedUsers.length === 0 ? (
           <div className="px-4 py-6 text-sm text-gray-500">

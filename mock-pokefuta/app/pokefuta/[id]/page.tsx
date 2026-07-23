@@ -36,14 +36,14 @@ export default async function PokefutaDetailPage({
   const numericId = Number(id);
 
   if (Number.isNaN(numericId)) {
-    return <p className="p-4">不正なIDです</p>;
+    return <p className="p-4">正しいページを開けませんでした。</p>;
   }
 
   const supabase = await createClient();
   const user = await getAuthProfile(supabase);
 
   if (!supabase) {
-    return <p className="p-4">データがありません</p>;
+    return <p className="p-4">ポケふたの情報を取得できませんでした。</p>;
   }
 
   const { data: pokefuta } = await supabase
@@ -56,7 +56,7 @@ export default async function PokefutaDetailPage({
     .maybeSingle();
 
   if (!pokefuta) {
-    return <p className="p-4">該当するポケふたが見つかりません</p>;
+    return <p className="p-4">該当するポケふたが見つかりませんでした。</p>;
   }
 
   const { data: ownersData } = await supabase

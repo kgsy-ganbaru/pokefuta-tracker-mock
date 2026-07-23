@@ -22,7 +22,7 @@ export default async function AdminPage() {
       <header>
         <p className="text-sm font-semibold text-emerald-700">管理者専用</p>
         <h1 className="mt-1 text-2xl font-bold text-gray-900">管理</h1>
-        <p className="mt-2 text-sm leading-6 text-gray-600">利用者とポケふたの情報を安全に管理します。</p>
+        <p className="mt-2 text-sm leading-6 text-gray-600">利用者のアカウントとポケふたの登録情報を管理します。</p>
       </header>
       <div className="grid gap-4 sm:grid-cols-3">
         {cards.map((card) => (
@@ -32,7 +32,7 @@ export default async function AdminPage() {
               <span className="whitespace-nowrap rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">{card.count}</span>
             </div>
             <p className="mt-3 text-sm leading-6 text-gray-600">{card.description}</p>
-            <p className="mt-4 text-sm font-semibold text-emerald-700">開く</p>
+            <p className="mt-4 text-sm font-semibold text-emerald-700">管理画面を開く</p>
           </Link>
         ))}
       </div>

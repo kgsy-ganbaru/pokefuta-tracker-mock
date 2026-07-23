@@ -12,7 +12,7 @@ export async function createBoardPostAction(input: CreateBoardPostInput): Promis
   if (!offers.length || !wants.length || offers.length > 10 || wants.length > 10) return { error: "出せる・欲しいポケふたを各1〜10種類で選択してください。" };
   if (input.comment.length > 200) return { error: "コメントは200文字以内で入力してください。" };
   const supabase = await createClient({ cookieMode: "read-write" });
-  if (!supabase) return { error: "Supabaseへ接続できません。" };
+  if (!supabase) return { error: "掲示板を更新できませんでした。時間をおいて再度お試しください。" };
   const user = await getAuthProfile(supabase);
   if (!user) return { error: "投稿するにはログインが必要です。" };
   const { data: post, error: postError } = await supabase.from("board_posts").insert({ user_id: user.id, comment: input.comment.trim() || null }).select("id").single();

@@ -62,7 +62,7 @@ export async function loginAction(
   }
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "ログインできませんでした。時間をおいて再度お試しください。" };
   }
   const email = await resolveEmailForLogin(userId);
 
@@ -86,7 +86,7 @@ export async function logoutAction(
   void _formData;
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "ログアウトできませんでした。時間をおいて再度お試しください。" };
   }
   await supabase.auth.signOut();
   redirect("/account");
@@ -155,7 +155,7 @@ export async function registerAction(
 
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "新規登録を開始できませんでした。管理者へ連絡してください。" };
   }
 
   const admin = createAdminClient();
@@ -257,7 +257,7 @@ export async function updateProfileAction(
 
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "プロフィールを更新できませんでした。時間をおいて再度お試しください。" };
   }
 
   const {

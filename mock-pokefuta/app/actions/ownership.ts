@@ -37,7 +37,7 @@ export async function updateOwnershipAction(
 
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "所持状況を更新できませんでした。時間をおいて再度お試しください。" };
   }
 
   const user = await getAuthProfile(supabase);
@@ -107,7 +107,7 @@ export async function bulkUpdateOwnershipAction(
 
   const supabase = await createClient({ cookieMode: "read-write" });
   if (!supabase) {
-    return { error: "Supabase環境変数が設定されていません" };
+    return { error: "所持状況を更新できませんでした。時間をおいて再度お試しください。" };
   }
 
   const user = await getAuthProfile(supabase);

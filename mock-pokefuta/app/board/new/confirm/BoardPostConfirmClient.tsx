@@ -54,7 +54,7 @@ export default function BoardPostConfirmClient() {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 pb-24">
-      <header><h1 className="text-xl font-semibold text-gray-800">投稿内容の確認</h1><p className="mt-2 text-sm text-gray-500">この内容で投稿しますか？ 投稿は7日後に自動で募集終了になります。</p></header>
+      <header><h1 className="text-xl font-semibold text-gray-800">投稿内容の確認</h1><p className="mt-2 text-sm text-gray-500">この内容で投稿しますか？ 投稿から7日後に自動で募集終了します。</p></header>
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm"><div className="flex items-center justify-between"><h2 className="text-2xl font-bold text-emerald-700">出</h2><span className="text-sm text-gray-500">{draft.offers.length}種類</span></div>{renderSelections(draft.offers)}</section>
       <section className="space-y-3 rounded-xl border bg-white p-4 shadow-sm"><div className="flex items-center justify-between"><h2 className="text-2xl font-bold text-amber-700">求</h2><span className="text-sm text-gray-500">{draft.wants.length}種類</span></div>{renderSelections(draft.wants)}</section>
       <section className="rounded-xl border bg-white p-4 shadow-sm"><h2 className="font-semibold text-gray-800">任意コメント</h2><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">{draft.comment || "コメントはありません。"}</p></section>

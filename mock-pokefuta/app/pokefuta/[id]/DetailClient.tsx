@@ -166,7 +166,7 @@ export default function DetailClient({
         <h2 className="text-md font-semibold mb-2">所持利用者</h2>
 
         {owners.length === 0 ? (
-          <p className="text-sm text-gray-500">まだ誰も取得していません</p>
+          <p className="text-sm text-gray-500">このポケふたを所持している利用者はいません。</p>
         ) : (
           <div className="max-h-64 overflow-y-auto pr-2">
             <ul className="divide-y">

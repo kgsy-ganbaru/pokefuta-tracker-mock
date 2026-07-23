@@ -271,7 +271,7 @@ export default function HomeClient({
 
                 {rows.length === 0 && (
                   <p className="text-sm text-gray-400">
-                    データがありません
+                    表示できるポケふたがありません。
                   </p>
                 )}
 
@@ -332,8 +332,8 @@ export default function HomeClient({
                               ) > 0 && (
                                 <Image
                                   src="/status-any-owned-pokeball.svg"
-                                  alt="他の利用者が取得済み"
-                                  title="他の利用者が取得済み"
+                                  alt="他の利用者が所持"
+                                  title="他の利用者が所持"
                                   width={20}
                                   height={20}
                                 />
