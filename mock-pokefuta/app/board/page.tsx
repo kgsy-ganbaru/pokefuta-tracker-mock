@@ -14,7 +14,7 @@ export default async function BoardPage() {
   const user = await getCachedAuthProfile();
   const [activeThreads, ownershipResult] = supabase
     ? await Promise.all([
-        fetchBoardThreads(supabase, user?.id ?? null),
+        fetchBoardThreads(supabase, user?.id ?? null, { includeComments: false }),
         user
           ? supabase.from("ownership").select("pokefuta_id").eq("user_id", user.id).gt("count", 0)
           : Promise.resolve({ data: [] as { pokefuta_id: number }[] }),

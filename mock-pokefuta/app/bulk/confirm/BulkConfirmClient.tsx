@@ -154,6 +154,8 @@ export default function BulkConfirmClient() {
                                   src={
                                     row.image_url || "/no-image.png"
                                   }
+                                  loading="lazy"
+                                  decoding="async"
                                   onError={(e) =>
                                     ((e.currentTarget as HTMLImageElement).src =
                                       "/no-image.png")
