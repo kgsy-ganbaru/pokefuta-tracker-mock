@@ -20,6 +20,6 @@ export function useBoardCommentDraft() {
 export function DraftAwareUserLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
   const { hasCommentDraft } = useBoardCommentDraft();
   return <Link href={href} className={className} onClick={(event) => {
-    if (hasCommentDraft && !window.confirm("入力中のコメントは破棄されます。ユーザー画面に移動してもよろしいですか？")) event.preventDefault();
+    if (hasCommentDraft && !window.confirm("入力中のコメントは破棄されます。利用者画面に移動してもよろしいですか？")) event.preventDefault();
   }}>{children}</Link>;
 }

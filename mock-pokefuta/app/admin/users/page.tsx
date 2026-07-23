@@ -16,7 +16,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   return (
     <main className="mx-auto max-w-3xl space-y-5 p-4 pb-28 sm:p-6">
       <PageBackLink href="/admin" label="管理に戻る" />
-      <header><h1 className="text-2xl font-bold text-gray-900">ユーザー管理</h1><p className="mt-2 text-sm text-gray-600">仮パスワードは本人へ安全な方法で伝えてください。</p></header>
+      <header><h1 className="text-2xl font-bold text-gray-900">利用者管理</h1><p className="mt-2 text-sm text-gray-600">仮パスワードは本人へ安全な方法で伝えてください。</p></header>
       {message && <p role="status" className="rounded-xl bg-emerald-50 p-3 text-sm font-medium text-emerald-800">{message}</p>}
       {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-700">{error}</p>}
       <div className="space-y-4">

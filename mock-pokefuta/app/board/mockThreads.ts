@@ -19,7 +19,7 @@ const future = (days: number) => new Date(Date.now() + days * 86_400_000).toISOS
 
 export const boardThreads: BoardThread[] = [
   {
-    id: "thread-1", user: { id: "demo-user", nickname: "デモユーザー", friendCode: "SW-1234-5678-9012" },
+    id: "thread-1", user: { id: "demo-user", nickname: "デモ利用者", friendCode: "SW-1234-5678-9012" },
     offers: [
       { id: "sapporo", city: "札幌", pokemon: "アローラロコン", image: images[0] },
       { id: "otaru", city: "小樽", pokemon: "ロコン", image: images[1] },
@@ -36,7 +36,7 @@ export const boardThreads: BoardThread[] = [
     updatedAt: "2026/07/15 01:25", expiresAt: future(5), closedAt: null, isMine: true,
     comments: [
       { id: "comment-1", user: { id: "satoshi", nickname: "サトシ" }, body: "仙台のラプラスを持っています。札幌との交換は可能ですか？", postedAt: "2026/07/15 09:20" },
-      { id: "comment-2", user: { id: "demo-user", nickname: "デモユーザー" }, body: "ありがとうございます。ぜひ交換をお願いします！", postedAt: "2026/07/15 09:35" },
+      { id: "comment-2", user: { id: "demo-user", nickname: "デモ利用者" }, body: "ありがとうございます。ぜひ交換をお願いします！", postedAt: "2026/07/15 09:35" },
     ],
   },
   {
@@ -58,7 +58,7 @@ export const boardThreads: BoardThread[] = [
     comments: [{ id: "comment-3", user: { id: "kasumi", nickname: "カスミ" }, body: "小樽のロコンを希望しています。", postedAt: "2026/07/15 08:10" }],
   },
   {
-    id: "thread-3", user: { id: "demo-user", nickname: "デモユーザー", friendCode: "SW-1234-5678-9012" },
+    id: "thread-3", user: { id: "demo-user", nickname: "デモ利用者", friendCode: "SW-1234-5678-9012" },
     offers: [{ id: "yokohama", city: "横浜", pokemon: "ピカチュウ", image: images[2] }],
     wants: [
       { id: "kobe", city: "神戸", pokemon: "ベイリーフ", image: images[1] },

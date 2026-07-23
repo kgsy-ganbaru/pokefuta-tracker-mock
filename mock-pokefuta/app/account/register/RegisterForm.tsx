@@ -32,7 +32,7 @@ export default function RegisterForm({
     <form action={formAction} className="space-y-2">
       <div className="space-y-1">
         <label htmlFor="register-user-id" className="block text-sm font-semibold text-gray-800">
-          ユーザID
+          利用者ID
         </label>
         <input
           id="register-user-id"
