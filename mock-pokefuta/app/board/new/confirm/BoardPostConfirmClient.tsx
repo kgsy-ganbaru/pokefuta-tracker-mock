@@ -30,7 +30,7 @@ export default function BoardPostConfirmClient() {
       {ids.map((id) => {
         const row = rowsById.get(id);
         if (!row) return null;
-        return <div key={id} className="rounded-xl border bg-white p-2 text-center shadow-sm"><img src={row.image_url || "/no-image.png"} alt="" className="aspect-square w-full rounded-full object-cover" /><p className="mt-2 truncate text-xs font-semibold text-gray-700">{row.city_name}</p><p className="truncate text-[10px] text-gray-500">{row.pokemon_names}</p></div>;
+        return <div key={id} className="rounded-xl border bg-white p-2 text-center shadow-sm"><img src={row.image_url || "/no-image.png"} loading="lazy" decoding="async" alt="" className="aspect-square w-full rounded-full object-cover" /><p className="mt-2 truncate text-xs font-semibold text-gray-700">{row.city_name}</p><p className="truncate text-[10px] text-gray-500">{row.pokemon_names}</p></div>;
       })}
     </div>
   );

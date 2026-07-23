@@ -11,6 +11,7 @@ export type BoardThread = {
   expiresAt: string;
   closedAt: string | null;
   comments: BoardComment[];
+  commentCount?: number;
   isMine: boolean;
 };
 

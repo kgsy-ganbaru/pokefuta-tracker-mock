@@ -20,6 +20,8 @@ export default function ImageWithFallback({
   return (
     <img
       src={currentSrc || FALLBACK_SRC}
+      loading="lazy"
+      decoding="async"
       onError={() => setCurrentSrc(FALLBACK_SRC)}
       className={className}
       alt={alt}

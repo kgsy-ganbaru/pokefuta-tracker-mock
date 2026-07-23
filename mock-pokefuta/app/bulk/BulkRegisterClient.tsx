@@ -323,6 +323,8 @@ export default function BulkRegisterClient({
                                         p.image_url ||
                                         "/no-image.png"
                                       }
+                                      loading="lazy"
+                                      decoding="async"
                                       onError={(e) =>
                                         ((e.currentTarget as HTMLImageElement).src =
                                           "/no-image.png")

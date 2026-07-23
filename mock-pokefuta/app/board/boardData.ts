@@ -2,7 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { formatPokemonNames } from "../lib/pokefuta/listData";
 import { BoardComment, BoardItem, BoardThread } from "./mockThreads";
 
-type PostRow = { id: string; user_id: string; comment: string | null; expires_at: string; closed_at: string | null; updated_at: string };
+type PostRow = { id: string; user_id: string; comment: string | null; expires_at: string; closed_at: string | null; updated_at: string; board_comments?: { count: number }[] };
 type UserRow = { id: string; user_id: string; nickname: string; friend_code: string | null };
 type SelectionRow = { post_id: string; pokefuta_id: number };
 type PokefutaRecord = { id: number; city_name: string; image_url: string | null; pokefuta_pokemon: { pokemon_name: string; display_order: number | null }[] | null };
@@ -10,8 +10,8 @@ type CommentRow = { id: string; post_id: string; user_id: string; body: string; 
 
 const displayDate = (value: string) => new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 
-export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId: string | null, options: { includeClosed?: boolean; ownerOnly?: boolean; threadId?: string } = {}): Promise<BoardThread[]> {
-  let postsQuery = supabase.from("board_posts").select("id, user_id, comment, expires_at, closed_at, updated_at").order("updated_at", { ascending: false });
+export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId: string | null, options: { includeClosed?: boolean; ownerOnly?: boolean; threadId?: string; includeComments?: boolean } = {}): Promise<BoardThread[]> {
+  let postsQuery = supabase.from("board_posts").select("id, user_id, comment, expires_at, closed_at, updated_at, board_comments(count)").order("updated_at", { ascending: false });
   if (!options.includeClosed) postsQuery = postsQuery.is("closed_at", null).gt("expires_at", new Date().toISOString());
   if (options.ownerOnly && currentUserId) postsQuery = postsQuery.eq("user_id", currentUserId);
   if (options.threadId) postsQuery = postsQuery.eq("id", options.threadId);
@@ -24,7 +24,9 @@ export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId:
   const [offerResult, wantResult, commentResult] = await Promise.all([
     supabase.from("board_post_offers").select("post_id, pokefuta_id").in("post_id", postIds),
     supabase.from("board_post_wants").select("post_id, pokefuta_id").in("post_id", postIds),
-    supabase.from("board_comments").select("id, post_id, user_id, body, created_at").in("post_id", postIds).order("created_at", { ascending: true }),
+    options.includeComments === false
+      ? Promise.resolve({ data: [] as CommentRow[], error: null })
+      : supabase.from("board_comments").select("id, post_id, user_id, body, created_at").in("post_id", postIds).order("created_at", { ascending: true }),
   ]);
   if (offerResult.error) throw offerResult.error;
   if (wantResult.error) throw wantResult.error;
@@ -53,6 +55,7 @@ export async function fetchBoardThreads(supabase: SupabaseClient, currentUserId:
 
   return posts.map((post) => {
     const user = users.get(post.user_id);
-    return { id: post.id, user: { id: user?.user_id ?? post.user_id, nickname: user?.nickname ?? "利用者", friendCode: user?.friend_code ?? null }, offers: itemsFor(offers, post.id), wants: itemsFor(wants, post.id), comment: post.comment ?? "", updatedAt: displayDate(post.updated_at), expiresAt: post.expires_at, closedAt: post.closed_at, comments: commentsFor(post.id), isMine: currentUserId === post.user_id };
+    const postComments = commentsFor(post.id);
+    return { id: post.id, user: { id: user?.user_id ?? post.user_id, nickname: user?.nickname ?? "利用者", friendCode: user?.friend_code ?? null }, offers: itemsFor(offers, post.id), wants: itemsFor(wants, post.id), comment: post.comment ?? "", updatedAt: displayDate(post.updated_at), expiresAt: post.expires_at, closedAt: post.closed_at, comments: postComments, commentCount: post.board_comments?.[0]?.count ?? postComments.length, isMine: currentUserId === post.user_id };
   });
 }

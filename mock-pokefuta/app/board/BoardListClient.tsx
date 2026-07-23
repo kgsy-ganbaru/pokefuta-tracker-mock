@@ -93,7 +93,7 @@ export default function BoardListClient({ threads, isLoggedIn }: { threads: Boar
                   <section className="space-y-2"><h2 className="text-sm font-bold text-emerald-700">出</h2><ItemPreview items={thread.offers} tone="offer" /></section>
                   <section className="space-y-2"><h2 className="text-sm font-bold text-amber-700">求</h2><ItemPreview items={thread.wants} tone="want" /></section>
                   <p className="line-clamp-2 text-sm leading-6 text-gray-600">{thread.comment}</p>
-                  <div className="flex items-center justify-between border-t pt-3 text-xs text-gray-500"><span className="font-medium text-emerald-700">投稿の詳細を見る →</span><span>コメント {thread.comments.length}件</span></div>
+                  <div className="flex items-center justify-between border-t pt-3 text-xs text-gray-500"><span className="font-medium text-emerald-700">投稿の詳細を見る →</span><span>コメント {thread.commentCount ?? thread.comments.length}件</span></div>
                 </Link>
               </article>
             );

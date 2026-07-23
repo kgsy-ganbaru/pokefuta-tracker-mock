@@ -64,6 +64,9 @@ export default function HomeClient({
   const [activeRegionId, setActiveRegionId] = useState<
     number | null
   >(null);
+  const [selectedRegionId, setSelectedRegionId] = useState<number>(
+    REGION_ORDER[0]
+  );
   const [activeFilterId, setActiveFilterId] = useState<
     StatusFilterId | null
   >(null);
@@ -104,6 +107,9 @@ export default function HomeClient({
     ? pokefutaRows.filter(activeFilter.matches)
     : pokefutaRows;
   const regionSections = buildRegionSections(filteredRows);
+  const visibleRegionSections = regionSections.filter(
+    (section) => section.regionId === selectedRegionId
+  );
   const activePrefectureIds =
     activeRegionId !== null
       ? regionSections.find(
@@ -209,6 +215,8 @@ export default function HomeClient({
                 <div className="flex flex-col items-center text-center">
                   <img
                     src={r.image_url || "/no-image.png"}
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) =>
                       ((e.currentTarget as HTMLImageElement).src =
                         "/no-image.png")
@@ -246,8 +254,14 @@ export default function HomeClient({
             {REGION_ORDER.map((id) => (
               <button
                 key={id}
-                onClick={() => setActiveRegionId(id)}
-                className="px-4 py-2 rounded-full text-sm whitespace-nowrap pft-chip"
+                onClick={() => {
+                  setSelectedRegionId(id);
+                  setActiveRegionId(id);
+                }}
+                aria-pressed={selectedRegionId === id}
+                className={`px-4 py-2 rounded-full text-sm whitespace-nowrap pft-chip ${
+                  selectedRegionId === id ? "ring-2 ring-emerald-400" : ""
+                }`}
               >
                 {REGION_LABELS[id]}
               </button>
@@ -259,7 +273,7 @@ export default function HomeClient({
             一覧
         ===================== */}
         <section>
-          {regionSections.map(
+          {visibleRegionSections.map(
             ({ regionId, rows, rowsByPrefectureId, prefectureIdsToRender }) => (
               <div
                 key={regionId}
@@ -305,6 +319,8 @@ export default function HomeClient({
                         >
                           <img
                             src={p.image_url || "/no-image.png"}
+                            loading="lazy"
+                            decoding="async"
                             onError={(e) =>
                               ((e.currentTarget as HTMLImageElement).src =
                                 "/no-image.png")
